@@ -1,5 +1,13 @@
-function errorHandler404() {}
+import { NextFunction, Request, Response } from 'express'
+import ApiError from '../errors/ApiError'
 
-function globalErrorHandler() {}
+const apiErrorHandler = (err: typeof ApiError, req: Request, res: Response, next: NextFunction) => {
+  if (err instanceof ApiError) {
+    res.status(err.code).json({ msg: err.message })
+    return
+  }
 
-export default { globalErrorHandler, errorHandler404 }
+  res.status(500).json({ msg: 'Something went wrong.' })
+}
+
+export default apiErrorHandler

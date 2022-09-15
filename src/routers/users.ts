@@ -1,17 +1,27 @@
 import express from 'express'
+
+import ApiError from '../errors/ApiError'
 const router = express.Router()
 
+router.param('userId', (req, res, next, userId) => {
+  const user = users.find((user) => user.id === userId)
+  if (!user) {
+    next(ApiError.badRequest('user id is required.'))
+    return
+  }
+  req.user = user
+  next()
+})
+
 router.delete('/:userId', (req, res) => {
-  const { userId } = req.params
-  const updatedUsers = users.filter((user) => user.id !== userId)
+  const updatedUsers = users.filter((user) => user.id !== req.user.id)
   res.json({ users: updatedUsers })
 })
 router.put('/:userId', (req, res) => {
-  const { userId } = req.params
   const { first_name } = req.body
 
   const updatedUsers = users.map((user) => {
-    if (user.id === userId) {
+    if (user.id === req.user.id) {
       return {
         ...user,
         first_name,
@@ -22,13 +32,12 @@ router.put('/:userId', (req, res) => {
   res.json({ users: updatedUsers })
 })
 
-router.post('/', (req, res) => {
+router.post('/', (req, res, next) => {
   const { id, first_name } = req.body
 
   if (!id || !first_name) {
-    return res.json({
-      msg: 'id and username are requried',
-    })
+    next(ApiError.badRequest('id and username are required'))
+    return
   }
   const updatedUsers = [{ id, first_name }, ...users]
   res.json({
@@ -37,21 +46,10 @@ router.post('/', (req, res) => {
   })
 })
 
-router.get('/:userId', (req, res) => {
-  const { userId } = req.params
-  const user = users.find((user) => user.id === userId)
-
-  if (!user) {
-    res.json({
-      msg: 'User not found',
-      user: null,
-    })
-    return
-  }
-
+router.get('/:userId/page/:page', (req, res) => {
   res.json({
     msg: 'done',
-    user,
+    user: req.user,
   })
 })
 
