@@ -1,6 +1,7 @@
 import express from 'express'
 
 import ApiError from '../errors/ApiError'
+import User from '../models/user'
 const router = express.Router()
 
 router.param('userId', (req, res, next, userId) => {
@@ -53,7 +54,8 @@ router.get('/:userId/page/:page', (req, res) => {
   })
 })
 
-router.get('/', (_, res) => {
+router.get('/', async (_, res) => {
+  const users = await User.find().populate('order')
   res.json({
     users,
   })
