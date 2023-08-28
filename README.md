@@ -1,22 +1,38 @@
-# Express Practice template
+# Library/E-commerce Application API
 
-this is just a template to practice what we have done in the Express demos.
+This repository contains a Node.js/Express.js application with RESTful API endpoints for a library or e-commerce application. The API allows you to interact with items in the library or products in the store.
 
-checkout into `ready-code` branch if you want the final code
+`This is a teamwork assignment where you will work as a team within your group`
 
-checkout into `skeleton` branch if you want the starting code
+## Level 1: Basic Requirements
 
+In this level, the application includes the following features:
 
-## How to run?
-1. run `yarn install`
+1. Create all the needed models for the backend to function.
+2. Create routes to handle CRUD requests.
+3. Implement a route to handle GET requests for fetching a specific item or product based on a unique identifier (e.g., item ID or product ID).
 
-2. you need `two terminals`
-in the first terminal run
-```
-yarn ts-watch
-```
+## Level 2: Additional Requirements
 
-in the second terminal run
-```
-yarn start
-```
+In addition to the basic requirements, the application enhances its functionality with the following features:
+
+1. Include pagination functionality to retrieve items or products in batches or limit the number of items returned in a single request.
+2. Implement a route to handle GET requests with query parameters for filtering items or products based on specific criteria (e.g., by category, price range).
+3. Add validation checks to ensure the data meets certain criteria before performing create or update operations (e.g., validating required fields, data format) using Zod.
+4. Create routes to handle GET requests to fetch items or products sorted in a specific order (e.g., by title, by date added).
+
+## Level 3: Bonus Requirements (Optional)
+
+If you have a higher skill level and finish the previous requirements before the deadline, you can tackle the following bonus tasks:
+
+1. Implement search functionality to allow users to search for specific items or products based on keywords or specific fields (e.g., by title, by author).
+2. Integrate JWT authentication and authorization mechanisms to secure the API endpoints and restrict access to certain routes or operations.
+3. Add functionality to handle related resources (e.g., for a library, add routes to handle borrowing or returning books; for an e-commerce store, add routes for placing an order).
+
+4. Peer Review:
+   - Review the code and implementation of 2 assignments from other participants.
+   - Provide constructive feedback and suggestions for improvement.
+
+`Please note that the bonus requirements and reviews are optional and can be completed if you have additional time and advanced skills.`
+
+Happy coding!
