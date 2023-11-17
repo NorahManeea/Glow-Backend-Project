@@ -4,11 +4,12 @@ This repository contains a Node.js/Express.js application with RESTful API endpo
 
 `This is a teamwork assignment where you will work as a team within your group`
 ## How to work
-1. One team member should fork the repo
-2. the other team memebers should clone the forked repo (Your team memeber's forked repo)
-3. all team memembers now work from the origin repository
-4. The memeber who forked the repo should Open a PR
-Please, ask your intrsuctor or supporting instructor if you have any questions or need help.
+1. One team member should fork the repo.
+2. The other team members should clone the forked repo (your team member's forked repo).
+3. All team members now work from the origin repository.
+4. The member who forked the repo should open a PR 
+
+Please ask your instructor or supporting instructor if you have any questions or need help.
 
 ## Level 1: Basic Requirements
 
