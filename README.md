@@ -3,6 +3,12 @@
 This repository contains a Node.js/Express.js application with RESTful API endpoints for a library or e-commerce application. The API allows you to interact with items in the library or products in the store.
 
 `This is a teamwork assignment where you will work as a team within your group`
+## How to work
+1. One team member should fork the repo
+2. the other team memebers should clone the forked repo (Your team memeber's forked repo)
+3. all team memembers now work from the origin repository
+4. The memeber who forked the repo should Open a PR
+Please, ask your intrsuctor or supporting instructor if you have any questions or need help.
 
 ## Level 1: Basic Requirements
 
