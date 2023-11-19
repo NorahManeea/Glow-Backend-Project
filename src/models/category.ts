@@ -1,5 +1,9 @@
 import mongoose from 'mongoose'
 
+export type CategoryDocument = Document & {
+  categoryName: string;
+  categoryDescription: string;
+}
 const categorySchema = new mongoose.Schema({
   name: {
     type: String,
@@ -8,4 +12,4 @@ const categorySchema = new mongoose.Schema({
   },
 })
 
-export default mongoose.model('Category', categorySchema)
+export default mongoose.model<CategoryDocument>('Category', categorySchema)
