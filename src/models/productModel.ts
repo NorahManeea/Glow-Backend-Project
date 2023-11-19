@@ -1,5 +1,14 @@
 import mongoose from 'mongoose'
 
+export type ProductDocument = Document &{
+  productName: string;
+  productDescription: string;
+  productImage: string;
+  quantityInStock: number;
+  productPrice: number;
+  category: mongoose.Types.ObjectId[]; 
+}
+
 const productSchema = new mongoose.Schema(
   {
     productName: {
@@ -23,13 +32,19 @@ const productSchema = new mongoose.Schema(
       required: true,
       default: 1,
     },
-    price: {
+    productPrice: {
       type: Number,
       required: true,
     },
-    //Category will be added after creating Category Model
+    category: {
+      type: [{ type:
+        mongoose.Schema.Types.ObjectId,
+        ref: 'Category',
+      }], 
+      required: true,
+     },
   },
   { timestamps: true }
 )
 
-export default mongoose.model('Product', productSchema)
+export default mongoose.model<ProductDocument>('Product', productSchema)
