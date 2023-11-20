@@ -1,13 +1,24 @@
 import mongoose, { Document } from 'mongoose'
 
 export type OrderDocument = Document & {
-  name: string
-  products: mongoose.Schema.Types.ObjectId[]
+  user: string
+  orderDate: Date
+  products: {
+    product: mongoose.Schema.Types.ObjectId
+    quantity: number
+  }[]
+  totalPrice: number
+  shippingInfo: {
+    country: string
+    city: string
+    address: string
+  }
+  orderStatus: string
 }
 
 const orderSchema = new mongoose.Schema(
   {
-    userId: {
+    user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
@@ -15,21 +26,17 @@ const orderSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
-    products: {
+    products: [{
       product: {
-        type: [mongoose.Schema.Types.ObjectId],
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Product',
       },
       quantity: {
         type: Number,
         default: 1,
         required: true,
-      },
-      subTotal: {
-        type: Number,
-        required: true,
-      },
-    },
+      }
+    }],
     totalPrice: {
       type: Number,
       required: true,
@@ -42,7 +49,7 @@ const orderSchema = new mongoose.Schema(
     orderStatus: {
       type: String,
       enum: ['Pending', 'Processing', 'Shipped', 'Delivered'],
-      required: true,
+      default: 'Pending',
     },
   },
   { timestamps: true }
