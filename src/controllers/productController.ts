@@ -29,3 +29,11 @@ export const getAllProducts = async (req: Request, res: Response) => {
   }
   res.status(200).json(products)
 }
+
+export const getProductById = async (req: Request, res: Response) => {
+  const product = await Product.findById(req.params.id)
+  if (!product) {
+    return res.status(404).json({ message: 'product not found' })
+  }
+  res.status(200).json({ product })
+}
