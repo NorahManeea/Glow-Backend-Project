@@ -1,12 +1,14 @@
-import mongoose , { Document} from 'mongoose'
+import mongoose, { Document } from 'mongoose'
 
-export type ProductDocument = Document &{
-  productName: string;
-  productDescription: string;
-  productImage: string;
-  quantityInStock: number;
-  productPrice: number;
-  category: mongoose.Types.ObjectId[]; 
+export type ProductDocument = Document & {
+  productName: string
+  productDescription: string
+  productImage: string
+  quantityInStock: number
+  productPrice: number
+  category: mongoose.Types.ObjectId[]
+  variants: string[]
+  sizes: string[]
 }
 
 const productSchema = new mongoose.Schema(
@@ -37,12 +39,17 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
     category: {
-      type: [{ type:
-        mongoose.Schema.Types.ObjectId,
-        ref: 'Category',
-      }], 
+      type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Category' }],
       required: true,
-     },
+    },
+    variants: {
+      type: [String],
+      required: true,
+    },
+    sizes: {
+      type: [String],
+      required: true,
+    },
   },
   { timestamps: true }
 )
