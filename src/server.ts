@@ -3,6 +3,9 @@ import mongoose from 'mongoose'
 import { config } from 'dotenv'
 
 import usersRouter from './routers/usersRoute'
+
+import authRoutes from './routers/authRoute'
+
 import productsRouter from './routers/productsRoute'
 import ordersRouter from './routers/ordersRoute'
 import apiErrorHandler from './middlewares/errorHandler'
@@ -17,6 +20,7 @@ app.use(myLogger)
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
+app.use('/api/auth', authRoutes)
 app.use('/api/users', usersRouter)
 app.use('/api/orders', ordersRouter)
 app.use('/api/products', productsRouter)
