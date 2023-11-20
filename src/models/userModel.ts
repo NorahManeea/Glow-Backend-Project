@@ -1,4 +1,4 @@
-import mongoose, { Document } from 'mongoose'
+import mongoose,{ Document } from 'mongoose';
 
 export type UserDocument = Document & {
   firstName: string
