@@ -7,7 +7,6 @@ export type OrderDocument = Document & {
     product: mongoose.Schema.Types.ObjectId
     quantity: number
   }[]
-  totalPrice: number
   shippingInfo: {
     country: string
     city: string
@@ -36,10 +35,6 @@ const orderSchema = new mongoose.Schema(
         default: 1,
       }
     }],
-    totalPrice: {
-      type: Number,
-      required: true,
-    },
     shippingInfo: {
       country: { type: String, required: true },
       city: { type: String, required: true },
