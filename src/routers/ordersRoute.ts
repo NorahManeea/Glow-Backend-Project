@@ -1,7 +1,7 @@
 import express from 'express'
 const router = express.Router()
 
-import Order from '../models/order'
+import {Order} from '../models/orderModel'
 import User from '../models/user'
 
 router.get('/', async (req, res) => {
