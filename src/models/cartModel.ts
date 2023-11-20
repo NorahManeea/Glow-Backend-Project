@@ -1,11 +1,6 @@
 import mongoose from 'mongoose'
-export type CartDocument = Document & {
-  user: string
-  products: {
-    product: mongoose.Schema.Types.ObjectId
-    quantity: number
-  }[]
-}
+import { CartDocument } from '../types/types'
+
 const cartSchema = new mongoose.Schema(
   {
     user: {

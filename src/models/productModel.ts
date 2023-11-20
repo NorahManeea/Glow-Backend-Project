@@ -1,15 +1,5 @@
-import mongoose, { Document } from 'mongoose'
-
-export type ProductDocument = Document & {
-  productName: string
-  productDescription: string
-  productImage: string
-  quantityInStock: number
-  productPrice: number
-  category: mongoose.Types.ObjectId[]
-  variants: string[]
-  sizes: string[]
-}
+import mongoose from 'mongoose'
+import { ProductDocument } from '../types/types'
 
 const productSchema = new mongoose.Schema(
   {

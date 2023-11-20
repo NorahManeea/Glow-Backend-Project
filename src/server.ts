@@ -2,9 +2,9 @@ import express from 'express'
 import mongoose from 'mongoose'
 import { config } from 'dotenv'
 
-import usersRouter from './routers/users'
-import productsRouter from './routers/products'
-import ordersRouter from './routers/orders'
+import usersRouter from './routers/usersRoute'
+import productsRouter from './routers/productsRoute'
+import ordersRouter from './routers/ordersRoute'
 import apiErrorHandler from './middlewares/errorHandler'
 import myLogger from './middlewares/logger'
 

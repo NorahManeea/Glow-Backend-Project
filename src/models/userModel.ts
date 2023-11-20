@@ -1,12 +1,5 @@
-import mongoose,{ Document } from 'mongoose';
-
-export type UserDocument = Document & {
-  firstName: string
-  lastName: string
-  email: string
-  password: string
-  role: string
-}
+import mongoose from 'mongoose';
+import { UserDocument } from '../types/types';
 
 const userSchema = new mongoose.Schema(
   {
