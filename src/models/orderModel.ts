@@ -34,7 +34,6 @@ const orderSchema = new mongoose.Schema(
       quantity: {
         type: Number,
         default: 1,
-        required: true,
       }
     }],
     totalPrice: {
@@ -55,4 +54,4 @@ const orderSchema = new mongoose.Schema(
   { timestamps: true }
 )
 
-export default mongoose.model<OrderDocument>('Order', orderSchema)
+export const Order =  mongoose.model<OrderDocument>('Order', orderSchema)
