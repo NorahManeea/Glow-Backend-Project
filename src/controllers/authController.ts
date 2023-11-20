@@ -1,6 +1,8 @@
 import { Request, Response } from 'express'
 import { User } from '../models/userModel'
 
+import bcrypt from 'bcrypt'
+
 /**
  * @desc Register User
  * @route /api/auth/register
@@ -16,11 +18,16 @@ export const registerUser = async (req: Request, res: Response) => {
     if (user) {
       return res.status(400).json({ message: 'This email is already registered' })
     }
+
+    // Hash Pasword
+    const salt = await bcrypt.genSalt(10)
+    const hashPassword = await bcrypt.hash(req.body.password, salt)
+
     user = new User({
       email: email,
       firstName: firstName,
       lastName: lastName,
-      password: password,
+      password: hashPassword,
     })
     const result = await user.save()
     res.status(201).json({
@@ -33,7 +40,6 @@ export const registerUser = async (req: Request, res: Response) => {
   }
 }
 
-
 /**
  * @desc Login User
  * @route /api/auth/login
@@ -42,11 +48,10 @@ export const registerUser = async (req: Request, res: Response) => {
  */
 
 export const loginUser = async (req: Request, res: Response) => {
-    const {email,password} = req.body
-    const user = await User.findOne({email: email})
-   if(!user){
-    return res.status(404).json({message: 'User not found'})
-   }
-   return res.status(200).json({message: 'Logged In successfully', user})
+  const { email, password } = req.body
+  const user = await User.findOne({ email: email })
+  if (!user) {
+    return res.status(404).json({ message: 'User not found' })
+  }
+  return res.status(200).json({ message: 'Logged In successfully', user })
 }
-
