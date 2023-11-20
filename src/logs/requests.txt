@@ -67,9 +67,8 @@ Method: GET, Path: /api/auth/count, Date: 11/20/2023, Time: 3:56:12 PM
 Method: GET, Path: /api/auth/count, Date: 11/20/2023, Time: 3:56:26 PM
 Method: GET, Path: /api/auth/count, Date: 11/20/2023, Time: 3:56:27 PM
 Method: GET, Path: /api/auth/count, Date: 11/20/2023, Time: 3:56:52 PM
-Method: GET, Path: /api/products, Date: 11/20/2023, Time: 4:28:24 PM
-Method: GET, Path: /api/products, Date: 11/20/2023, Time: 6:22:05 PM
-Method: GET, Path: /api/products, Date: 11/20/2023, Time: 6:22:14 PM
-Method: GET, Path: /api/products/7, Date: 11/20/2023, Time: 8:12:08 PM
-Method: GET, Path: /api/products/7, Date: 11/20/2023, Time: 8:12:58 PM
-Method: GET, Path: /api/products/64ac3b309ec6a99793e95aba, Date: 11/20/2023, Time: 8:16:26 PM
+Method: POST, Path: /api/auth/register, Date: 11/20/2023, Time: 9:42:27 PM
+Method: POST, Path: /api/auth/register, Date: 11/20/2023, Time: 9:46:50 PM
+Method: POST, Path: /api/auth/login, Date: 11/20/2023, Time: 9:47:00 PM
+Method: POST, Path: /api/auth/login, Date: 11/20/2023, Time: 9:47:07 PM
+Method: POST, Path: /api/auth/login, Date: 11/20/2023, Time: 9:47:30 PM
