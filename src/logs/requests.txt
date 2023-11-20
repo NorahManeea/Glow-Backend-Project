@@ -67,3 +67,6 @@ Method: GET, Path: /api/auth/count, Date: 11/20/2023, Time: 3:56:12 PM
 Method: GET, Path: /api/auth/count, Date: 11/20/2023, Time: 3:56:26 PM
 Method: GET, Path: /api/auth/count, Date: 11/20/2023, Time: 3:56:27 PM
 Method: GET, Path: /api/auth/count, Date: 11/20/2023, Time: 3:56:52 PM
+Method: GET, Path: /api/products, Date: 11/20/2023, Time: 4:28:24 PM
+Method: GET, Path: /api/products, Date: 11/20/2023, Time: 6:22:05 PM
+Method: GET, Path: /api/products, Date: 11/20/2023, Time: 6:22:14 PM
