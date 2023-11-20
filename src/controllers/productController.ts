@@ -43,3 +43,22 @@ export const getProductById = async (req: Request, res: Response) => {
   }
   res.status(200).json({ product })
 }
+
+/**-----------------------------------------------
+ * @desc Delete Product by ID
+ * @route /api/products/:id
+ * @method DELETE
+ * @access private (admin Only)
+ -----------------------------------------------*/
+export const deleteProduct = async (req: Request, res: Response) => {
+  const product = await Product.findById(req.params.id)
+  if (!product) {
+    return res.status(404).json({ message: 'Product not found' })
+  }
+  await Product.findByIdAndDelete(req.params.id)
+
+  res.status(200).json({
+    message: 'Product has been deleted Successfully',
+    productID: product._id,
+  })
+}
