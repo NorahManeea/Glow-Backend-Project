@@ -1,12 +1,13 @@
-import mongoose, { Document} from 'mongoose'
+import mongoose, { Document} from 'mongoose';
 
 export type CategoryDocument = Document & {
   categoryName: string;
 }
 const categorySchema = new mongoose.Schema({
-  name: {
+  categoryName: {
     type: String,
-    index: true,
+    minlength: 3,
+    maxlength: 30,
     required: true,
   },
 })
