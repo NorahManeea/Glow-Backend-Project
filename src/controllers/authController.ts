@@ -1,12 +1,12 @@
 import { Request, Response } from 'express'
 import { User } from '../models/userModel'
 
-/**
+/**-----------------------------------------------
  * @desc Register User
  * @route /api/auth/register
  * @method POST
  * @access public
- */
+  ------------------------------------------------*/
 export const registerUser = async (req: Request, res: Response) => {
   try {
     const { email, firstName, lastName, password } = req.body
@@ -34,12 +34,12 @@ export const registerUser = async (req: Request, res: Response) => {
 }
 
 
-/**
+/**-----------------------------------------------
  * @desc Login User
  * @route /api/auth/login
  * @method POST
  * @access public
- */
+  ------------------------------------------------*/
 
 export const loginUser = async (req: Request, res: Response) => {
     const {email,password} = req.body
