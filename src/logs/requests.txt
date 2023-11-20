@@ -62,3 +62,8 @@ Method: POST, Path: /api/auth/register, Date: 11/20/2023, Time: 3:28:39 PM
 Method: POST, Path: /api/auth/login, Date: 11/20/2023, Time: 3:35:44 PM
 Method: POST, Path: /api/auth/login, Date: 11/20/2023, Time: 3:36:27 PM
 Method: POST, Path: /api/auth/login, Date: 11/20/2023, Time: 3:36:38 PM
+Method: GET, Path: /api/auth/count, Date: 11/20/2023, Time: 3:56:10 PM
+Method: GET, Path: /api/auth/count, Date: 11/20/2023, Time: 3:56:12 PM
+Method: GET, Path: /api/auth/count, Date: 11/20/2023, Time: 3:56:26 PM
+Method: GET, Path: /api/auth/count, Date: 11/20/2023, Time: 3:56:27 PM
+Method: GET, Path: /api/auth/count, Date: 11/20/2023, Time: 3:56:52 PM

@@ -3,7 +3,7 @@ import { User } from '../models/userModel'
 
 /**
  * @desc Register User
- * @route /register
+ * @route /api/auth/register
  * @method POST
  * @access public
  */
@@ -36,7 +36,7 @@ export const registerUser = async (req: Request, res: Response) => {
 
 /**
  * @desc Login User
- * @route /login
+ * @route /api/auth/login
  * @method POST
  * @access public
  */
@@ -49,3 +49,4 @@ export const loginUser = async (req: Request, res: Response) => {
    }
    return res.status(200).json({message: 'Logged In successfully', user})
 }
+
