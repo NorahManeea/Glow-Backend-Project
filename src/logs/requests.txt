@@ -72,3 +72,6 @@ Method: POST, Path: /api/auth/register, Date: 11/20/2023, Time: 9:46:50 PM
 Method: POST, Path: /api/auth/login, Date: 11/20/2023, Time: 9:47:00 PM
 Method: POST, Path: /api/auth/login, Date: 11/20/2023, Time: 9:47:07 PM
 Method: POST, Path: /api/auth/login, Date: 11/20/2023, Time: 9:47:30 PM
+Method: GET, Path: /api/products/, Date: 11/21/2023, Time: 12:50:08 AM
+Method: GET, Path: /api/products/655bd47ec8f924c054585a9e, Date: 11/21/2023, Time: 12:50:17 AM
+Method: DELETE, Path: /api/products/655bd47ec8f924c054585a9e, Date: 11/21/2023, Time: 12:51:38 AM
