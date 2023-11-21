@@ -1,31 +1,15 @@
 import express from 'express'
 const router = express.Router()
 
-import {Order} from '../models/orderModel'
-import User from '../models/user'
+import { addOrder, deleteOrder, getAllOrders, getOrderById, updateOrderStatus } from '../controllers/orderController'
 
-router.get('/', async (req, res) => {
-  const orders = await Order.find().populate('products')
-  res.json(orders)
-})
+router.get('/', getAllOrders)
+router.get('/:id', getOrderById)
 
-router.post('/', async (req, res, next) => {
-  const { name, products } = req.body
+router.post('/', addOrder)
 
-  const order = new Order({
-    name,
-    products,
-  })
-  console.log('orderId:', order._id)
+router.delete('/:id', deleteOrder)
 
-  const user = new User({
-    name: 'Walter',
-    order: order._id,
-  })
-
-  await order.save()
-  await user.save()
-  res.json(order)
-})
+router.put('/:id', updateOrderStatus)
 
 export default router
