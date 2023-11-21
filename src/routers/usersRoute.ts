@@ -3,7 +3,7 @@ import ApiError from '../errors/ApiError'
 import User from '../models/user'
 import user from '../models/user'
 import { Router } from 'express'
-import { getAllUsers } from '../controllers/userController'
+import { getAllUsers, updateUser } from '../controllers/userController'
 const router = express.Router()
 import { getUsersCount } from '../controllers/userController'
 // router.param('userId', (req, res, next, userId) => {
@@ -20,20 +20,7 @@ import { getUsersCount } from '../controllers/userController'
 //   const updatedUsers = users.filter((user) => user.id !== req.user.id)
 //   res.json({ users: updatedUsers })
 // })
-// router.put('/:userId', (req, res) => {
-//   const { first_name } = req.body
-
-//   const updatedUsers = users.map((user) => {
-//     if (user.id === req.user.id) {
-//       return {
-//         ...user,
-//         first_name,
-//       }
-//     }
-//     return user
-//   })
-//   res.json({ users: updatedUsers })
-// })
+router.put('/:userId', updateUser)
 
 // router.post('/', (req, res, next) => {
 //   const { id, first_name } = req.body
