@@ -3,7 +3,7 @@ import ApiError from '../errors/ApiError'
 import User from '../models/user'
 import user from '../models/user'
 import { Router } from 'express'
-import { getAllUsers, updateUser } from '../controllers/userController'
+import { deleteUser, getAllUsers, updateUser } from '../controllers/userController'
 const router = express.Router()
 import { getUsersCount } from '../controllers/userController'
 // router.param('userId', (req, res, next, userId) => {
@@ -16,11 +16,6 @@ import { getUsersCount } from '../controllers/userController'
 //   next()
 // })
 
-// router.delete('/:userId', (req, res) => {
-//   const updatedUsers = users.filter((user) => user.id !== req.user.id)
-//   res.json({ users: updatedUsers })
-// })
-router.put('/:userId', updateUser)
 
 // router.post('/', (req, res, next) => {
 //   const { id, first_name } = req.body
@@ -43,16 +38,15 @@ router.put('/:userId', updateUser)
 //   })
 // })
 
-// router.get('/', async (_, res) => {
-//   const users = await User.find().populate('order')
-//   res.json({
-//     users,
-//   })
-// })
-
 // Route to get all users
 router.get('/', getAllUsers)
 router.get('/count', getUsersCount)
+
+// Delete user
+router.delete('/:userId', deleteUser)
+
+// Update user
+router.put('/:userId', updateUser)
 
 export default router
 
