@@ -47,7 +47,11 @@ export const registerUser = async (req: Request, res: Response) => {
 
 export const loginUser = async (req: Request, res: Response) => {
   const { email, password } = req.body
+  if (!email || !password) {
+    return res.status(400).json({ message: 'Email and password are required' });
+  } // I'll change it when we use Zod Validation
   const user = await User.findOne({ email: email })
+
   if (!user) {
     return res.status(404).json({ message: 'User not found' })
   }
