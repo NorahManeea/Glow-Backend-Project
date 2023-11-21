@@ -65,8 +65,36 @@ export const getCartItems = async (req: Request, res: Response) => {
     if (!cart) {
       return res.status(404).json({ error: 'Cart not found' })
     }
+    const itemsCount = cart.products.reduce((total, item) => total + item.quantity, 0)
 
-    res.json({ cart })
+    res.json({ cart, itemsCount })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: 'Internal Server Error' })
+  }
+}
+
+/**
+ * @desc Update cart items
+ * @route /api/cart/:id
+ * @method PUT
+ * @access private (user himself only)
+ */
+export const updateCartItems = async (req: Request, res: Response) => {
+  try {
+    const { productId, quantity } = req.body
+
+    const updatedItem = await Cart.findOneAndUpdate(
+      { 'products._id': productId },
+      { $set: { 'products.$.quantity': quantity } },
+      { new: true }
+    )
+
+    if (!updatedItem) {
+      return res.status(404).json({ error: 'Product not found in the cart' })
+    }
+
+    res.status(200).json(updatedItem)
   } catch (error) {
     console.error(error)
     res.status(500).json({ error: 'Internal Server Error' })
