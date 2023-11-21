@@ -121,3 +121,7 @@ Method: GET, Path: /api/cart/6551d693b02415cecc13aa7b, Date: 11/21/2023, Time: 6
 Method: GET, Path: /api/cart/6551d693b02415cecc13aa7b, Date: 11/21/2023, Time: 6:14:49 PM
 Method: GET, Path: /api/cart/6551d693b02415cecc13aa7b, Date: 11/21/2023, Time: 6:15:10 PM
 Method: GET, Path: /api/cart/6551d693b02415cecc13aa7b, Date: 11/21/2023, Time: 6:16:03 PM
+Method: GET, Path: /api/cart/6551d693b02415cecc13aa7b, Date: 11/21/2023, Time: 6:21:35 PM
+Method: POST, Path: /api/cart, Date: 11/21/2023, Time: 6:21:40 PM
+Method: POST, Path: /api/cart, Date: 11/21/2023, Time: 6:21:41 PM
+Method: POST, Path: /api/cart, Date: 11/21/2023, Time: 6:21:42 PM
