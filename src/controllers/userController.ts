@@ -1,5 +1,7 @@
 // userController.ts
 import { Request, Response } from 'express'
+import bcrypt from 'bcrypt'
+
 import { User } from '../models/userModel'
 
 export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
@@ -19,33 +21,34 @@ export const getUsersCount = async (req: Request, res: Response) => {
 
 export const updateUser = async (req: Request, res: Response) => {
   try {
-    const user = await User.findById(req.params.userId);
+    const user = await User.findById(req.params.userId)
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: 'User not found' })
     }
 
-    const { firstName, lastName, email, password } = req.body;
+    const { firstName, lastName, email, password } = req.body
     if (firstName !== undefined) {
-      user.firstName = firstName;
+      user.firstName = firstName
     }
     if (lastName !== undefined) {
-      user.lastName = lastName;
+      user.lastName = lastName
     }
     if (email !== undefined) {
-      user.email = email;
+      user.email = email
     }
     if (password !== undefined) {
-      user.password = password; 
+      // Hash Pasword
+      const salt = await bcrypt.genSalt(10)
+      user.password = await bcrypt.hash(req.body.password, salt)
     }
 
-    await user.save();
+    await user.save()
 
     res.status(200).json({
       message: 'User updated successfully',
       updatedUser: user,
-    });
+    })
   } catch (error) {
-    res.status(500).json({ message: 'Internal Server Error' });
+    res.status(500).json({ message: 'Internal Server Error' })
   }
-};
-
+}
