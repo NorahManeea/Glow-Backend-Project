@@ -6,6 +6,7 @@ export type UserDocument = Document & {
   email: string
   password: string
   role: string
+  isAccountVerified: boolean
 }
 
 export type ProductDocument = Document & {

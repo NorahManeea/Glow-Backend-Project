@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
-import { UserDocument } from '../types/types';
-import { Role } from '../enums/enums';
+import mongoose from 'mongoose'
+import { UserDocument } from '../types/types'
+import { Role } from '../enums/enums'
 
 const userSchema = new mongoose.Schema(
   {
@@ -31,6 +31,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: Role,
       default: Role.USER,
+    },
+    isAccountVerified: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }
