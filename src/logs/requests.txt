@@ -248,3 +248,4 @@ Method: DELETE, Path: /api/users/655de8089675575f6adafec8, Date: 11/22/2023, Tim
 Method: DELETE, Path: /api/users/655de8089675575f6adafec8, Date: 11/22/2023, Time: 2:41:30 PM
 Method: DELETE, Path: /api/users/655de8089675575f6adafec8, Date: 11/22/2023, Time: 2:41:31 PM
 Method: DELETE, Path: /api/users/655de8089675575f6adafec8, Date: 11/22/2023, Time: 2:41:58 PM
+Method: POST, Path: /api/products/, Date: 11/22/2023, Time: 3:01:08 PM

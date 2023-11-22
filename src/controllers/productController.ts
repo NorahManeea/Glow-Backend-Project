@@ -9,7 +9,7 @@ import { Product } from '../models/productModel'
  -----------------------------------------------*/
 export const getAllProducts = async (req: Request, res: Response) => {
   const productPerPage: number = 8
-  const { pageNumber, lowestPrice, highestPrice, newest } = req.query
+  const { pageNumber, lowestPrice, highestPrice, newest, searchText } = req.query
   let products
 
   if (pageNumber) {
@@ -24,7 +24,10 @@ export const getAllProducts = async (req: Request, res: Response) => {
     products = await Product.find().sort({ price: 1 })
   } else if (newest) {
     products = await Product.find().sort({ createdAt: -1 })
-  } else {
+  } else if(searchText){
+    products = await Product.find({productName: searchText}).sort({ createdAt: -1 })
+  }
+  else {
     products = await Product.find().sort({ createdAt: -1 })
   }
   res.status(200).json(products)
@@ -64,7 +67,6 @@ export const deleteProduct = async (req: Request, res: Response) => {
 }
 
 export const createProduct = async (req: Request, res: Response) => {
-  console.log("hi")
   try {
     const { productName, productDescription, productImage, quantityInStock, productPrice, category, variants, sizes } = req.body
     const product = await Product.create({
