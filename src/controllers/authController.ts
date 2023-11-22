@@ -17,7 +17,7 @@ export const registerUser = async (req: Request, res: Response) => {
       return res.status(400).json({ message: 'This email is already registered' })
     }
     const salt = await bcrypt.genSalt(10)
-    const hashPassword = await bcrypt.hash(req.body.password, salt)
+    const hashPassword = await bcrypt.hash(password, salt)
 
     user = new User({
       email: email,
