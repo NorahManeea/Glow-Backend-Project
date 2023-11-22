@@ -27,23 +27,22 @@ export const addToCart = async (req: Request, res: Response) => {
     if (!cart) {
       cart = await Cart.create({ user: user, products: [] })
     }
-    const existingCartItem = cart.products.find((p) => p.product === productId)
+    const existingCartItem = cart.products.find((p) => p.product.toString() === productId)
     if (existingCartItem) {
       existingCartItem.quantity += quantity
     } else {
       cart.products.push({ product: productId, quantity: quantity })
     }
-    let subtotal = 0
+    let total = 0
     cart.products.forEach((p) => {
       const productPrice = product.productPrice
       const productQuantity = p.quantity
-      subtotal += productPrice * productQuantity
+      total += productPrice * productQuantity
     })
-    let total = 0 // @TODO : i'll Calculate total
 
     await cart.save()
 
-    res.json({ cart, subtotal, total })
+    res.json({ cart, total })
   } catch (error) {
     console.error(error)
     res.status(500).json({ error: 'Internal Server Error' })

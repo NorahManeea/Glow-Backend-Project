@@ -51,7 +51,6 @@ export const getCategoryById = async (req: Request, res: Response) => {
 export const updateCategory = async (req: Request, res: Response) => {
   try {
     const newCategoryName = req.body.categoryName
-    console.log(newCategoryName)
     const categoryId = await Category.findById(req.params.id)
     if (!categoryId) {
       res.status(404).json({ message: 'Category Not Found' })
