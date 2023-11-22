@@ -62,3 +62,23 @@ export const deleteProduct = async (req: Request, res: Response) => {
     productID: product._id,
   })
 }
+
+export const createProduct = async (req: Request, res: Response) => {
+  try {
+    const { productName, productDescription, productImage, quantityInStock, productPrice, category, variants, sizes } = req.body
+    const product = new Product({
+      productName,
+      productDescription,
+      productImage,
+      quantityInStock,
+      productPrice,
+      category,
+      variants,
+      sizes,
+    })
+    await product.save()
+    res.status(201).json(product)
+  } catch (error) {
+    res.status(500).json({ message: 'Internal Server Error' })
+  }
+}
