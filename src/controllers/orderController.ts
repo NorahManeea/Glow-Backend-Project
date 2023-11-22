@@ -10,10 +10,13 @@ import { Order } from '../models/orderModel'
 export const getAllOrders = async (req: Request, res: Response) => {
   try {
     const orders = await Order.find().populate('products')
-    res.status(200).json(orders)
+    res.status(200).json({
+      message: 'All orders returned',
+      payload: orders,
+    })
   } catch (error) {
     res.status(500).json({
-      message: 'Internal Server Error',
+      message: error,
     })
   }
 }
@@ -27,11 +30,17 @@ export const getAllOrders = async (req: Request, res: Response) => {
 export const getOrderById = async (req: Request, res: Response) => {
   try {
     const orderId = req.params.orderId
-    const orders = await Order.findById(orderId).populate('products')
-    res.status(200).json(orders)
+    const order = await Order.findById(orderId).populate('products')
+    if (!order) {
+      return res.status(404).json({ message: `no order with id: ${orderId}` })
+    }
+    res.status(200).json({
+      message: 'Order found and returned',
+      payload: order,
+    })
   } catch (error) {
     res.status(500).json({
-      message: 'Internal Server Error',
+      message: error,
     })
   }
 }
@@ -53,7 +62,10 @@ export const createOrder = async (req: Request, res: Response) => {
       orderStatus: orderStatus,
     })
     await order.save()
-    res.status(201).json(order)
+    res.status(201).json({
+      message: 'Order has been created successfully',
+      payload: order,
+    })
   } catch (error) {
     res.status(500).json({ message: error })
   }
@@ -67,17 +79,18 @@ export const createOrder = async (req: Request, res: Response) => {
  -----------------------------------------------*/
 export const deleteOrder = async (req: Request, res: Response) => {
   try {
-    const order = await Order.findById(req.params.orderId)
+    const orderId = req.params.orderId
+    const order = await Order.findById(orderId)
     if (!order) {
-      return res.status(404).json({ message: 'Order not found' })
+      return res.status(404).json({ message: `no order with id: ${orderId}` })
     }
-    await Order.findByIdAndDelete(req.params.orderId)
+    await Order.findByIdAndDelete(orderId)
     res.status(200).json({
       message: 'Order has been deleted successfully',
       orderId: order._id,
     })
   } catch (error) {
-    res.status(500).json({ message: 'Internal Server Error' })
+    res.status(500).json({ message: error })
   }
 }
 
@@ -89,13 +102,18 @@ export const deleteOrder = async (req: Request, res: Response) => {
  -----------------------------------------------*/
 export const updateOrderStatus = async (req: Request, res: Response) => {
   try {
-    const order = await Order.findById(req.params.orderId)
+    const orderId = req.params.orderId
+    const order = await Order.findById(orderId)
     if (!order) {
-      return res.status(404).json({ message: 'Order not found' })
+      return res.status(404).json({ message: `no order with id: ${orderId}` })
     }
 
     const { orderStatus } = req.body
-    const updatedOrder = await Order.findByIdAndUpdate(req.params.orderId, {$set: {orderStatus: orderStatus}}, {new:true})
+    const updatedOrder = await Order.findByIdAndUpdate(
+      orderId,
+      { $set: { orderStatus: orderStatus } },
+      { new: true }
+    )
 
     res.status(200).json({
       message: 'Order status updated successfully',
