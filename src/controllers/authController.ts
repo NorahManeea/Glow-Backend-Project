@@ -55,7 +55,7 @@ export const registerUser = async (req: Request, res: Response) => {
 
 /** -----------------------------------------------
  * @desc Create User 
- * @route /api/auth/activate
+ * @route /api/auth/activate/:token
  * @method GET
  * @access private
   -----------------------------------------------*/
