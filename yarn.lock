@@ -1394,6 +1394,11 @@ node-walker@*:
   resolved "https://registry.npmjs.org/node-walker/-/node-walker-0.1.0.tgz"
   integrity sha512-oC1skUd/BuOroGKhTnUJn1B20ETn9SFaHjRRfS911XcdQxTlzDEWTaK0KJpgluI66tHvFBC3QnN5x7YlZb5SeQ==
 
+nodemailer@^6.9.7:
+  version "6.9.7"
+  resolved "https://registry.npmjs.org/nodemailer/-/nodemailer-6.9.7.tgz"
+  integrity sha512-rUtR77ksqex/eZRLmQ21LKVH5nAAsVicAtAYudK7JgwenEDZ0UIQ1adUGqErz7sMkWYxWTTU1aeP2Jga6WQyJw==
+
 nodemon@^2.0.13:
   version "2.0.16"
   resolved "https://registry.npmjs.org/nodemon/-/nodemon-2.0.16.tgz"

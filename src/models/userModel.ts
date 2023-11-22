@@ -32,10 +32,6 @@ const userSchema = new mongoose.Schema(
       enum: Role,
       default: Role.USER,
     },
-    isAccountVerified: {
-      type: Boolean,
-      default: false,
-    },
   },
   { timestamps: true }
 )
