@@ -1,26 +1,63 @@
-// src/controllers/categoryController.ts
 import { Request, Response } from 'express'
-import Category from '../models/category'
+import { Category } from '../models/categoryModel'
+import ApiError from '../errors/ApiError'
 
-export const createCategory = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { name } = req.body
-
-    // Validate that the 'name' field is present in the request body
+export const createCategory = async (req: Request, res: Response, next: (arg0: ApiError) => void) => {
+    const name = req.body.name
+  
     if (!name) {
-      res.status(400).json({ error: 'Name is required for a category' })
+      next(ApiError.badRequest('Name is requried'))
       return
     }
-
-    // Create a new category
-    const newCategory = new Category({ name })
-    await newCategory.save()
-
-    // Send a success response
-    res.status(201).json({ message: 'Category created successfully', category: newCategory })
-  } catch (error) {
-    // Handle any errors that occur during the category creation process
-    console.error(error)
-    res.status(500).json({ error: 'Internal Server Error' })
+  
+    const category = new Category({
+      name,
+    })
+  
+    await category.save()
+  
+    res.status(201).json({
+      category,
+    })
   }
-}
+
+  export const getAllCategory = async (req: Request, res: Response) => {
+    const categories = await Category.find()
+  
+    res.status(200).json(categories)
+  }
+
+
+  export const getCategoryById = async (req: Request, res: Response) => {
+    const categoryId = req.params.categoryId
+    const category = await Category.findById(categoryId)
+  
+    res.status(200).json(category)
+  }
+
+  export const updateCategory =  async (req: Request, res: Response) => {
+    const newName = req.body.name
+    const categoryId = req.params.categoryId
+  
+    const newCat = await Category.findByIdAndUpdate(
+      categoryId,
+      { name: newName },
+      {
+        new: true,
+      }
+    )
+  
+    res.json({
+      category: newCat,
+    })
+  }
+
+export const deleteCategory =  async (req: Request, res: Response) => {
+    const { categoryId } = req.params
+  
+    await Category.deleteOne({
+      _id: categoryId,
+    })
+  
+    res.status(204).send()
+  }
