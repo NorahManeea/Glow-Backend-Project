@@ -64,21 +64,23 @@ export const deleteProduct = async (req: Request, res: Response) => {
 }
 
 export const createProduct = async (req: Request, res: Response) => {
+  console.log("hi")
   try {
     const { productName, productDescription, productImage, quantityInStock, productPrice, category, variants, sizes } = req.body
-    const product = new Product({
-      productName,
-      productDescription,
-      productImage,
-      quantityInStock,
-      productPrice,
-      category,
-      variants,
-      sizes,
+    const product = await Product.create({
+      productName: productName,
+      productDescription: productDescription,
+      productImage: productImage,
+      quantityInStock: quantityInStock,
+      productPrice: productPrice,
+      category: category,
+      variants: variants,
+      sizes: sizes,
     })
     await product.save()
     res.status(201).json(product)
   } catch (error) {
-    res.status(500).json({ message: 'Internal Server Error' })
+    console.log(error)
+    res.status(500).json({ message: error })
   }
 }

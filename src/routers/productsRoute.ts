@@ -8,6 +8,6 @@ router.route("/").get(getAllProducts)
 router.route('/:id').get(getProductById).delete(deleteProduct)
 
 // Add product route
-router.route('/').put(createProduct)
+router.route('/').post(createProduct)
 
 export default router
