@@ -25,7 +25,7 @@ export const getAllProducts = async (req: Request, res: Response) => {
   } else if (newest) {
     products = await Product.find().sort({ createdAt: -1 })
   } else if(searchText){
-    products = await Product.find({productName: searchText}).sort({ createdAt: -1 })
+    products = await Product.find({productName: {$regex: searchText}}).sort({ createdAt: -1 })
   }
   else {
     products = await Product.find().sort({ createdAt: -1 })
