@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import { OrderDocument } from '../types/types'
+import { OrderStatus } from '../enums/enums'
 
 const orderSchema = new mongoose.Schema(
   {
@@ -28,8 +29,8 @@ const orderSchema = new mongoose.Schema(
     },
     orderStatus: {
       type: String,
-      enum: ['Pending', 'Processing', 'Shipped', 'Delivered'],
-      default: 'Pending',
+      enum: OrderStatus,
+      default: OrderStatus.PENDING,
     },
   },
   { timestamps: true }

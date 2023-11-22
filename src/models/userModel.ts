@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { UserDocument } from '../types/types';
+import { Role } from '../enums/enums';
 
 const userSchema = new mongoose.Schema(
   {
@@ -28,8 +29,8 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['User', 'Admin'],
-      default: 'User',
+      enum: Role,
+      default: Role.USER,
     },
   },
   { timestamps: true }
