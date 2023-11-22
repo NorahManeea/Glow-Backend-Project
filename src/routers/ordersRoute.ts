@@ -4,12 +4,12 @@ const router = express.Router()
 import { addOrder, deleteOrder, getAllOrders, getOrderById, updateOrderStatus } from '../controllers/orderController'
 
 router.get('/', getAllOrders)
-router.get('/:id', getOrderById)
+router.get('/:orderId', getOrderById)
 
 router.post('/', addOrder)
 
-router.delete('/:id', deleteOrder)
+router.delete('/:orderId', deleteOrder)
 
-router.put('/:id', updateOrderStatus)
+router.put('/:orderId', updateOrderStatus)
 
 export default router
