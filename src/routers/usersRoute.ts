@@ -1,8 +1,5 @@
 import express from 'express'
-import ApiError from '../errors/ApiError'
-import User from '../models/user'
-import user from '../models/user'
-import { Router } from 'express'
+
 import {
   deleteUser,
   getAllUsers,
@@ -12,10 +9,13 @@ import {
 } from '../controllers/userController'
 const router = express.Router()
 
-router.get('/count', getUsersCount)
 router.get('/', getAllUsers)
+router.get('/count', getUsersCount)
 router.delete('/:id', deleteUser)
+router.put('/:id', updateUser)
 router.get('/:id', getUserById)
+
+
 
 export default router
 

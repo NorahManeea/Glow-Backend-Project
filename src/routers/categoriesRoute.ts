@@ -10,7 +10,10 @@ import {
   deleteCategory,
 } from '../controllers/categoryController'
 
-router.route('/').get(getAllCategory).post(createCategory)
-router.route('/:id').get(getCategoryById).put(updateCategory).delete(deleteCategory)
+router.get('/', getAllCategory)
+router.post("/", createCategory)
+router.get("/:id", getCategoryById)
+router.put("/:id", updateCategory)
+router.delete("/:id", deleteCategory)
 
 export default router
