@@ -11,9 +11,9 @@ const router = express.Router()
 
 router.get('/', getAllUsers)
 router.get('/count', getUsersCount)
-router.delete('/:id', deleteUser)
-router.put('/:id', updateUser)
-router.get('/:id', getUserById)
+router.delete('/:userId', deleteUser)
+router.put('/:userId', updateUser)
+router.get('/:userId', getUserById)
 
 
 
