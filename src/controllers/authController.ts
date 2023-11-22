@@ -1,10 +1,11 @@
 import { Request, Response } from 'express'
 import { User } from '../models/userModel'
 
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken'
 
 import bcrypt from 'bcrypt'
-import { authConfig } from '../config/auth.config';
+import { authConfig } from '../config/auth.config'
+import { sendEmail } from '../utils/sendEmail'
 
 /** -----------------------------------------------
  * @desc Register User
@@ -22,17 +23,62 @@ export const registerUser = async (req: Request, res: Response) => {
     const salt = await bcrypt.genSalt(10)
     const hashPassword = await bcrypt.hash(password, salt)
 
-    const token = jwt.sign({
-      email: email,
-      firstName: firstName,
-      lastName: lastName,
-      password: hashPassword,
-    },authConfig.jwt.accessToken)
+    const token = jwt.sign(
+      {
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+        password: hashPassword,
+      },
+      authConfig.jwt.accessToken
+    )
+
+    const subject = 'Welcome to Black Tigers Team!'
+    const htmlTemplate = `
+    <div style="color: #333; text-align: center;">
+      <h1 style="color: #1E1E1E;">Welcome to Black Tigers Team!</h1>
+      <a href="http://localhost:5050/api/auth/activate/${token}" style="display: inline-block; padding: 10px 20px; background-color: #664971; color: #FFFFFF; font-size: 18px; text-decoration: none; border-radius: 5px;">Activate Now</a>
+      <p style="font-size: 14px; color: #302B2E;">Black Tigers Team</p>
+    </div>
+    `
+    await sendEmail(email, subject, htmlTemplate)
 
     res.status(201).json({
       message: 'Registration successful. Check your email to activate your account',
       token: token,
     })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: 'Internal Server Error' })
+  }
+}
+
+/** -----------------------------------------------
+ * @desc Create User 
+ * @route /api/auth/activate
+ * @method GET
+ * @access private
+  -----------------------------------------------*/
+export const createrUser = async (req: Request, res: Response) => {
+  try {
+    const token = req.params.token
+
+    const verifiedToken = jwt.verify(token, authConfig.jwt.accessToken) as JwtPayload
+
+    if (!verifiedToken) {
+      return res.status(400).json({ message: 'Invalid token' })
+    }
+    const { email, firstName, lastName, password } = verifiedToken
+    const user = new User({
+      email: email,
+      firstName: firstName,
+      lastName: lastName,
+      password: password,
+    })
+
+    await user.save()
+
+    res.status(200).json({ message: 'Your Account has been activated successfully' })
   } catch (error) {
     console.error(error)
     res.status(500).json({ message: 'Internal Server Error' })
@@ -49,8 +95,8 @@ export const registerUser = async (req: Request, res: Response) => {
 export const loginUser = async (req: Request, res: Response) => {
   const { email, password } = req.body
   if (!email || !password) {
-    return res.status(400).json({ message: 'Email and password are required' });
-  } 
+    return res.status(400).json({ message: 'Email and password are required' })
+  }
   const user = await User.findOne({ email: email })
 
   if (!user) {
