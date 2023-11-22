@@ -108,9 +108,9 @@ export const updateCartItems = async (req: Request, res: Response) => {
  * @access private (user himself only)
   -----------------------------------------------*/
 export const deleteCartItem = async (req: Request, res: Response) => {
-    // const { productId } = req.params 
-    // await Cart.deleteOne({
-    //   _id: Cart,
-    // })
-    // res.status(204).send()
-  }
+  // const { productId } = req.params
+  // await Cart.deleteOne({
+  //   _id: Cart,
+  // })
+  // res.status(204).send()
+}

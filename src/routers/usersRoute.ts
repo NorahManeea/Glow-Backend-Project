@@ -11,87 +11,11 @@ import {
   updateUser,
 } from '../controllers/userController'
 const router = express.Router()
-// router.param('userId', (req, res, next, userId) => {
-//   const user = users.find((user) => user.id === userId)
-//   if (!user) {
-//     next(ApiError.badRequest('user id is required.'))
-//     return
-//   }
-//   req.user = user
-//   next()
-// })
 
-// Route to get all users
-router.get('/', getAllUsers)
-router.get('/count', getUsersCount)
-
-// Delete user
-router.delete('/:userId', deleteUser)
-
-// Update user
-router.get('/:userId', getUserById)
-router.put('/:userId', updateUser)
-
-// router.param('userId', (req, res, next, userId) => {
-//   const user = users.find((user) => user.id === userId)
-//   if (!user) {
-//     next(ApiError.badRequest('user id is required.'))
-//     return
-//   }
-//   req.user = user
-//   next()
-// })
-
-// router.delete('/:userId', (req, res) => {
-//   const updatedUsers = users.filter((user) => user.id !== req.user.id)
-//   res.json({ users: updatedUsers })
-// })
-// router.put('/:userId', (req, res) => {
-//   const { first_name } = req.body
-
-//   const updatedUsers = users.map((user) => {
-//     if (user.id === req.user.id) {
-//       return {
-//         ...user,
-//         first_name,
-//       }
-//     }
-//     return user
-//   })
-//   res.json({ users: updatedUsers })
-// })
-
-// router.post('/', (req, res, next) => {
-//   const { id, first_name } = req.body
-
-//   if (!id || !first_name) {
-//     next(ApiError.badRequest('id and username are required'))
-//     return
-//   }
-//   const updatedUsers = [{ id, first_name }, ...users]
-//   res.json({
-//     msg: 'done',
-//     users: updatedUsers,
-//   })
-// })
-
-// router.get('/:userId/page/:page', (req, res) => {
-//   res.json({
-//     msg: 'done',
-//     user: req.user,
-//   })
-// })
-
-// router.get('/', async (_, res) => {
-//   const users = await User.find().populate('order')
-//   res.json({
-//     users,
-//   })
-// })
 router.get('/count', getUsersCount)
 router.get('/', getAllUsers)
 router.delete('/:id', deleteUser)
-router.get('/id', getUserById)
+router.get('/:id', getUserById)
 
 export default router
 

@@ -236,3 +236,15 @@ Method: GET, Path: /api/categories/655de2a5fe978ca1d3b6845c, Date: 11/22/2023, T
 Method: GET, Path: /api/categories, Date: 11/22/2023, Time: 2:17:19 PM
 Method: GET, Path: /api/categories/655ddb5bea7d152aca72ce8d, Date: 11/22/2023, Time: 2:17:27 PM
 Method: GET, Path: /api/categories/655ddb5bea7d152aca72ce8d, Date: 11/22/2023, Time: 2:17:43 PM
+Method: GET, Path: /api/users/count, Date: 11/22/2023, Time: 2:37:40 PM
+Method: POST, Path: /api/auth/register, Date: 11/22/2023, Time: 2:37:44 PM
+Method: GET, Path: /api/users/count, Date: 11/22/2023, Time: 2:37:53 PM
+Method: GET, Path: /api/users/655de8089675575f6adafec8, Date: 11/22/2023, Time: 2:38:38 PM
+Method: GET, Path: /api/users/655de8089675575f6adafec8, Date: 11/22/2023, Time: 2:39:05 PM
+Method: DELETE, Path: /api/users/655de8089675575f6adafec8, Date: 11/22/2023, Time: 2:40:14 PM
+Method: POST, Path: /api/auth/register, Date: 11/22/2023, Time: 2:40:19 PM
+Method: GET, Path: /api/users/, Date: 11/22/2023, Time: 2:40:42 PM
+Method: DELETE, Path: /api/users/655de8089675575f6adafec8, Date: 11/22/2023, Time: 2:40:52 PM
+Method: DELETE, Path: /api/users/655de8089675575f6adafec8, Date: 11/22/2023, Time: 2:41:30 PM
+Method: DELETE, Path: /api/users/655de8089675575f6adafec8, Date: 11/22/2023, Time: 2:41:31 PM
+Method: DELETE, Path: /api/users/655de8089675575f6adafec8, Date: 11/22/2023, Time: 2:41:58 PM
