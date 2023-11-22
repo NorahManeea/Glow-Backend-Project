@@ -2,12 +2,12 @@ import { Request, Response } from 'express'
 import { Cart } from '../models/cartModel'
 import { Product } from '../models/productModel'
 
-/**
+/** -----------------------------------------------
  * @desc Add to cart
  * @route /api/cart/
  * @method POST
  * @access public
- */
+  -----------------------------------------------*/
 export const addToCart = async (req: Request, res: Response) => {
   const { user, productId, quantity } = req.body
   try {
@@ -50,12 +50,12 @@ export const addToCart = async (req: Request, res: Response) => {
   }
 }
 
-/**
+/** -----------------------------------------------
  * @desc Get cart items
  * @route /api/cart/:id
  * @method GET
  * @access private (user himself only)
- */
+  -----------------------------------------------*/
 export const getCartItems = async (req: Request, res: Response) => {
   const { id } = req.params
 
@@ -74,12 +74,12 @@ export const getCartItems = async (req: Request, res: Response) => {
   }
 }
 
-/**
+/** -----------------------------------------------
  * @desc Update cart items
  * @route /api/cart/:id
  * @method PUT
  * @access private (user himself only)
- */
+  -----------------------------------------------*/
 export const updateCartItems = async (req: Request, res: Response) => {
   try {
     const { productId, quantity } = req.body
@@ -100,12 +100,17 @@ export const updateCartItems = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Internal Server Error' })
   }
 }
+
+/** -----------------------------------------------
+ * @desc Delete cart item
+ * @route /api/cart/:id
+ * @method DELETE
+ * @access private (user himself only)
+  -----------------------------------------------*/
 export const deleteCartItem = async (req: Request, res: Response) => {
-    const { productId } = req.params
-  
-    await Cart.deleteOne({
-      _id: Cart,
-    })
-  
-    res.status(204).send()
+    // const { productId } = req.params 
+    // await Cart.deleteOne({
+    //   _id: Cart,
+    // })
+    // res.status(204).send()
   }

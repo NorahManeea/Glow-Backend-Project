@@ -3,21 +3,19 @@ import { User } from '../models/userModel'
 
 import bcrypt from 'bcrypt'
 
-/**
+/** -----------------------------------------------
  * @desc Register User
  * @route /api/auth/register
  * @method POST
  * @access public
- */
+  -----------------------------------------------*/
 export const registerUser = async (req: Request, res: Response) => {
   try {
     const { email, firstName, lastName, password } = req.body
-    // Check if email already registered
     let user = await User.findOne({ email })
     if (user) {
       return res.status(400).json({ message: 'This email is already registered' })
     }
-    // Hash Pasword
     const salt = await bcrypt.genSalt(10)
     const hashPassword = await bcrypt.hash(req.body.password, salt)
 
@@ -38,12 +36,12 @@ export const registerUser = async (req: Request, res: Response) => {
   }
 }
 
-/**
+/** -----------------------------------------------
  * @desc Login User
  * @route /api/auth/login
  * @method POST
  * @access public
- */
+  -----------------------------------------------*/
 
 export const loginUser = async (req: Request, res: Response) => {
   const { email, password } = req.body

@@ -4,7 +4,13 @@ import bcrypt from 'bcryptjs'
 
 import { User } from '../models/userModel'
 
-export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
+/** -----------------------------------------------
+ * @desc Get All User
+ * @route /api/users/
+ * @method GET
+ * @access private (Admin Only)
+  -----------------------------------------------*/
+export const getAllUsers = async (req: Request, res: Response) => {
   try {
     const users = await User.find()
     res.status(200).json(users)
@@ -13,12 +19,22 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
     res.status(500).json({ error: 'Internal Server Error' })
   }
 }
-
+/** -----------------------------------------------
+ * @desc Get User Count
+ * @route /api/users/count
+ * @method GET
+ * @access private (Admin Only)
+  -----------------------------------------------*/
 export const getUsersCount = async (req: Request, res: Response) => {
   let usersCount = await User.countDocuments()
   res.status(200).json(usersCount)
 }
-
+/** -----------------------------------------------
+ * @desc Update user profile
+ * @route /api/users/:userId
+ * @method PUT
+ * @access private (User himself)
+  -----------------------------------------------*/
 export const updateUser = async (req: Request, res: Response) => {
   try {
     const user = await User.findById(req.params.userId)
@@ -52,7 +68,12 @@ export const updateUser = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Internal Server Error' })
   }
 }
-
+/** -----------------------------------------------
+ * @desc Delete user by ID
+ * @route /api/users/:id
+ * @method DELETE
+ * @access private (Admin Only)
+  -----------------------------------------------*/
 export const deleteUser = async (req: Request, res: Response) => {
   try {
     const user = await User.findById(req.params.userId)
@@ -68,7 +89,13 @@ export const deleteUser = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Internal Server Error' })
   }
 }
-export const getUserById = async (req: Request, res: Response): Promise<void> => {
+/** -----------------------------------------------
+ * @desc get all user
+ * @route /api/users/
+ * @method GET
+ * @access private (Admin Only)
+  -----------------------------------------------*/
+export const getUserById = async (req: Request, res: Response) => {
   try {
     const userId = req.params.id
 
