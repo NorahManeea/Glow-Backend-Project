@@ -7,6 +7,4 @@ router.route("/").post(addToCart)
 router.route("/:id").get(getCartItems).put(updateCartItems).delete(deleteCartItem)
 
 
-
-
 export default router;
