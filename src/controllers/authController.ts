@@ -1,7 +1,10 @@
 import { Request, Response } from 'express'
 import { User } from '../models/userModel'
 
+import jwt from 'jsonwebtoken';
+
 import bcrypt from 'bcrypt'
+import { authConfig } from '../config/auth.config';
 
 /** -----------------------------------------------
  * @desc Register User
@@ -19,16 +22,16 @@ export const registerUser = async (req: Request, res: Response) => {
     const salt = await bcrypt.genSalt(10)
     const hashPassword = await bcrypt.hash(password, salt)
 
-    user = new User({
+    const token = jwt.sign({
       email: email,
       firstName: firstName,
       lastName: lastName,
       password: hashPassword,
-    })
-    const result = await user.save()
+    },authConfig.jwt.accessToken)
+
     res.status(201).json({
-      message: 'You registered successfuly',
-      result: result,
+      message: 'Registration successful. Check your email to activate your account',
+      token: token,
     })
   } catch (error) {
     console.error(error)
@@ -47,7 +50,7 @@ export const loginUser = async (req: Request, res: Response) => {
   const { email, password } = req.body
   if (!email || !password) {
     return res.status(400).json({ message: 'Email and password are required' });
-  } // I'll change it when we use Zod Validation
+  } 
   const user = await User.findOne({ email: email })
 
   if (!user) {

@@ -176,3 +176,10 @@ Method: PUT, Path: /api/products/655dfa45c904a3edec2f798c, Date: 11/22/2023, Tim
 Method: PUT, Path: /api/products/655dfa45c904a3edec2f798c, Date: 11/22/2023, Time: 8:49:24 PM
 Method: PUT, Path: /api/products/655dfa45c904a3edec2f798c, Date: 11/22/2023, Time: 8:49:31 PM
 Method: GET, Path: /api/products, Date: 11/22/2023, Time: 8:49:39 PM
+Method: POST, Path: /api/auth/register, Date: 11/22/2023, Time: 9:17:04 PM
+Method: POST, Path: /api/auth/register, Date: 11/22/2023, Time: 9:17:09 PM
+Method: POST, Path: /api/auth/register, Date: 11/22/2023, Time: 9:37:02 PM
+Method: POST, Path: /api/auth/register, Date: 11/22/2023, Time: 9:37:27 PM
+Method: POST, Path: /api/auth/register, Date: 11/22/2023, Time: 9:37:32 PM
+Method: GET, Path: /api/users/, Date: 11/22/2023, Time: 9:38:14 PM
+Method: POST, Path: /api/auth/register, Date: 11/22/2023, Time: 9:40:09 PM
