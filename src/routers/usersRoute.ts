@@ -1,65 +1,21 @@
 import express from 'express'
 
-import ApiError from '../errors/ApiError'
-import User from '../models/user'
+import {
+  deleteUser,
+  getAllUsers,
+  getUserById,
+  getUsersCount,
+  updateUser,
+} from '../controllers/userController'
 const router = express.Router()
 
-router.param('userId', (req, res, next, userId) => {
-  const user = users.find((user) => user.id === userId)
-  if (!user) {
-    next(ApiError.badRequest('user id is required.'))
-    return
-  }
-  req.user = user
-  next()
-})
+router.get('/', getAllUsers)
+router.get('/count', getUsersCount)
+router.delete('/:id', deleteUser)
+router.put('/:id', updateUser)
+router.get('/:id', getUserById)
 
-router.delete('/:userId', (req, res) => {
-  const updatedUsers = users.filter((user) => user.id !== req.user.id)
-  res.json({ users: updatedUsers })
-})
-router.put('/:userId', (req, res) => {
-  const { first_name } = req.body
 
-  const updatedUsers = users.map((user) => {
-    if (user.id === req.user.id) {
-      return {
-        ...user,
-        first_name,
-      }
-    }
-    return user
-  })
-  res.json({ users: updatedUsers })
-})
-
-router.post('/', (req, res, next) => {
-  const { id, first_name } = req.body
-
-  if (!id || !first_name) {
-    next(ApiError.badRequest('id and username are required'))
-    return
-  }
-  const updatedUsers = [{ id, first_name }, ...users]
-  res.json({
-    msg: 'done',
-    users: updatedUsers,
-  })
-})
-
-router.get('/:userId/page/:page', (req, res) => {
-  res.json({
-    msg: 'done',
-    user: req.user,
-  })
-})
-
-router.get('/', async (_, res) => {
-  const users = await User.find().populate('order')
-  res.json({
-    users,
-  })
-})
 
 export default router
 
