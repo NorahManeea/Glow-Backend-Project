@@ -2,34 +2,24 @@ import { Request, Response } from 'express'
 import { Category } from '../models/categoryModel'
 import ApiError from '../errors/ApiError'
 
-
 /**-----------------------------------------------
  * @desc Create Category 
  * @route /api/categories/
  * @method POST
  * @access private (Admin Only)
  -----------------------------------------------*/
-export const createCategory = async (
-  req: Request,
-  res: Response,
-  next: (arg0: ApiError) => void
-) => {
-  const name = req.body.name
-
-  if (!name) {
-    next(ApiError.badRequest('Name is requried'))
-    return
+export const createCategory = async (req: Request, res: Response) => {
+  try {
+    const { categoryName } = req.body
+    const category = await Category.create({
+      categoryName: categoryName,
+    })
+    await category.save()
+    res.status(201).json(category)
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: error })
   }
-
-  const category = new Category({
-    name,
-  })
-
-  await category.save()
-
-  res.status(201).json({
-    category,
-  })
 }
 /**-----------------------------------------------
  * @desc Get All Categories
@@ -48,7 +38,7 @@ export const getAllCategory = async (req: Request, res: Response) => {
  * @access public
  -----------------------------------------------*/
 export const getCategoryById = async (req: Request, res: Response) => {
-  const categoryId = req.params.categoryId
+  const categoryId = req.params.id
   const category = await Category.findById(categoryId)
   res.status(200).json(category)
 }
@@ -59,18 +49,27 @@ export const getCategoryById = async (req: Request, res: Response) => {
  * @access private (Admin Only)
  -----------------------------------------------*/
 export const updateCategory = async (req: Request, res: Response) => {
-  const newName = req.body.name
-  const categoryId = req.params.categoryId
-  const newCat = await Category.findByIdAndUpdate(
-    categoryId,
-    { name: newName },
-    {
-      new: true,
+  try {
+    const newCategoryName = req.body.categoryName
+    console.log(newCategoryName)
+    const categoryId = await Category.findById(req.params.id)
+    if (!categoryId) {
+      res.status(404).json({ message: 'Category Not Found' })
     }
-  )
-  res.json({
-    category: newCat,
-  })
+    const updatedCategory = await Category.findByIdAndUpdate(
+      categoryId,
+      {
+        $set: {
+          categoryName: newCategoryName,
+        },
+      },
+      { new: true }
+    )
+    res.status(200).json(updatedCategory)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: 'Internal Server Error' })
+  }
 }
 /**-----------------------------------------------
  * @desc Delete Category 
@@ -79,9 +78,17 @@ export const updateCategory = async (req: Request, res: Response) => {
  * @access private (Admin Only)
  -----------------------------------------------*/
 export const deleteCategory = async (req: Request, res: Response) => {
-  const { categoryId } = req.params
-  await Category.deleteOne({
-    _id: categoryId,
-  })
-  res.status(204).send()
+  const categoryId = await Category.findById(req.params.id)
+  try {
+    if (!categoryId) {
+      return res.status(404).json({ message: 'Category not found' })
+    }
+    await Category.deleteOne({
+      _id: categoryId,
+    })
+    res.status(200).json({ meassge: 'Category deleted successfuly', result: categoryId })
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: error })
+  }
 }
