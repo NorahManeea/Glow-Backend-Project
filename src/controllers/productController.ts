@@ -24,10 +24,9 @@ export const getAllProducts = async (req: Request, res: Response) => {
     products = await Product.find().sort({ price: 1 })
   } else if (newest) {
     products = await Product.find().sort({ createdAt: -1 })
-  } else if(searchText){
-    products = await Product.find({productName: {$regex: searchText}}).sort({ createdAt: -1 })
-  }
-  else {
+  } else if (searchText) {
+    products = await Product.find({ productName: { $regex: searchText } }).sort({ createdAt: -1 })
+  } else {
     products = await Product.find().sort({ createdAt: -1 })
   }
   res.status(200).json(products)
@@ -35,7 +34,7 @@ export const getAllProducts = async (req: Request, res: Response) => {
 
 /**-----------------------------------------------
  * @desc Get Product By ID
- * @route /api/products/:id
+ * @route /api/products/:productId
  * @method GET
  * @access public
  -----------------------------------------------*/
@@ -49,7 +48,7 @@ export const getProductById = async (req: Request, res: Response) => {
 
 /**-----------------------------------------------
  * @desc Delete Product by ID
- * @route /api/products/:id
+ * @route /api/products/:productId
  * @method DELETE
  * @access private (admin Only)
  -----------------------------------------------*/
@@ -66,9 +65,24 @@ export const deleteProduct = async (req: Request, res: Response) => {
   })
 }
 
+/**-----------------------------------------------
+ * @desc Create Product
+ * @route /api/products
+ * @method POST
+ * @access private (admin Only)
+ -----------------------------------------------*/
 export const createProduct = async (req: Request, res: Response) => {
   try {
-    const { productName, productDescription, productImage, quantityInStock, productPrice, category, variants, sizes } = req.body
+    const {
+      productName,
+      productDescription,
+      productImage,
+      quantityInStock,
+      productPrice,
+      category,
+      variants,
+      sizes,
+    } = req.body
     const product = await Product.create({
       productName: productName,
       productDescription: productDescription,
@@ -80,8 +94,54 @@ export const createProduct = async (req: Request, res: Response) => {
       sizes: sizes,
     })
     await product.save()
-    res.status(201).json({meassge: "Product created successfuly",product})
+    res.status(201).json({ meassge: 'Product created successfuly', product })
   } catch (error) {
     res.status(500).json({ message: error })
+  }
+}
+
+/**-----------------------------------------------
+ * @desc Update Product
+ * @route /api/products/:id
+ * @method PUT
+ * @access private (admin Only)
+ -----------------------------------------------*/
+export const updateProduct = async (req: Request, res: Response) => {
+  const {
+    productName,
+    productDescription,
+    productImage,
+    quantityInStock,
+    productPrice,
+    category,
+    variants,
+    sizes,
+  } = req.body
+
+  try {
+    const categoryId = await Product.findById(req.params.id)
+    if (!categoryId) {
+      res.status(404).json({ message: 'Category Not Found' })
+    }
+    const updatedCategory = await Product.findByIdAndUpdate(
+      categoryId,
+      {
+        $set: {
+          productName: productName,
+          productDescription: productDescription,
+          productImage: productImage,
+          quantityInStock: quantityInStock,
+          productPrice: productPrice,
+          category: category,
+          variants: variants,
+          sizes: sizes,
+        },
+      },
+      { new: true }
+    )
+    res.status(200).json(updatedCategory)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: 'Internal Server Error' })
   }
 }
