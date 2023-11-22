@@ -3,9 +3,14 @@ import ApiError from '../errors/ApiError'
 import User from '../models/user'
 import user from '../models/user'
 import { Router } from 'express'
-import { deleteUser, getAllUsers, getUserById, getUsersCount } from '../controllers/userController'
+import {
+  deleteUser,
+  getAllUsers,
+  getUserById,
+  getUsersCount,
+  updateUser,
+} from '../controllers/userController'
 const router = express.Router()
-import { getUsersCount } from '../controllers/userController'
 // router.param('userId', (req, res, next, userId) => {
 //   const user = users.find((user) => user.id === userId)
 //   if (!user) {
@@ -24,7 +29,9 @@ router.get('/count', getUsersCount)
 router.delete('/:userId', deleteUser)
 
 // Update user
+router.get('/:userId', getUserById)
 router.put('/:userId', updateUser)
+
 // router.param('userId', (req, res, next, userId) => {
 //   const user = users.find((user) => user.id === userId)
 //   if (!user) {
