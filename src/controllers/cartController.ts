@@ -100,3 +100,12 @@ export const updateCartItems = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Internal Server Error' })
   }
 }
+export const deleteCartItem = async (req: Request, res: Response) => {
+    const { productId } = req.params
+  
+    await Cart.deleteOne({
+      _id: Cart,
+    })
+  
+    res.status(204).send()
+  }
