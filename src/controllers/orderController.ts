@@ -1,6 +1,12 @@
 import { Request, Response } from 'express'
 import { Order } from '../models/orderModel'
 
+/**-----------------------------------------------
+ * @desc Get All Orders
+ * @route /api/orders
+ * @method GET
+ * @access private (admin Only)
+ -----------------------------------------------*/
 export const getAllOrders = async (req: Request, res: Response) => {
   try {
     const orders = await Order.find().populate('products')
@@ -12,6 +18,12 @@ export const getAllOrders = async (req: Request, res: Response) => {
   }
 }
 
+/**-----------------------------------------------
+ * @desc Get Order By ID
+ * @route /api/orders/:orderId
+ * @method GET
+ * @access private (admin and user)
+ -----------------------------------------------*/
 export const getOrderById = async (req: Request, res: Response) => {
   try {
     const orderId = req.params.orderId
@@ -24,7 +36,13 @@ export const getOrderById = async (req: Request, res: Response) => {
   }
 }
 
-export const addOrder = async (req: Request, res: Response) => {
+/**-----------------------------------------------
+ * @desc Create Order By ID
+ * @route /api/orders
+ * @method POST
+ * @access public
+ -----------------------------------------------*/
+export const createOrder = async (req: Request, res: Response) => {
   try {
     const { user, orderDate, products, shippingInfo, orderStatus } = req.body
     const order = await Order.create({
@@ -41,6 +59,12 @@ export const addOrder = async (req: Request, res: Response) => {
   }
 }
 
+/**-----------------------------------------------
+ * @desc Delete Order By ID
+ * @route /api/orders/:orderId
+ * @method DELETE
+ * @access private (admin Only)
+ -----------------------------------------------*/
 export const deleteOrder = async (req: Request, res: Response) => {
   try {
     const order = await Order.findById(req.params.orderId)
@@ -57,6 +81,12 @@ export const deleteOrder = async (req: Request, res: Response) => {
   }
 }
 
+/**-----------------------------------------------
+ * @desc Update Product By ID
+ * @route /api/orders/:orderId
+ * @method PUT
+ * @access private (admin Only)
+ -----------------------------------------------*/
 export const updateOrderStatus = async (req: Request, res: Response) => {
   try {
     const order = await Order.findById(req.params.orderId)
