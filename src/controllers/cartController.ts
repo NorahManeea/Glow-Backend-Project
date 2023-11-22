@@ -27,7 +27,7 @@ export const addToCart = async (req: Request, res: Response) => {
     if (!cart) {
       cart = await Cart.create({ user: user, products: [] })
     }
-    const existingCartItem = cart.products.find((p) => p.product.toString() === productId)
+    const existingCartItem = cart.products.find((p) => p.product === productId)
     if (existingCartItem) {
       existingCartItem.quantity += quantity
     } else {
