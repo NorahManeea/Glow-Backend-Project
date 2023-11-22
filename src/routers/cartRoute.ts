@@ -1,10 +1,10 @@
 import express from 'express'
-import { addToCart, updateCartItems, getCartItems } from '../controllers/cartController';
+import { addToCart, updateCartItems, getCartItems , deleteCartItem} from '../controllers/cartController';
 
 const router = express.Router()
 
 router.route("/").post(addToCart)
-router.route("/:id").get(getCartItems).put(updateCartItems)
+router.route("/:id").get(getCartItems).put(updateCartItems).delete(deleteCartItem)
 
 
 
