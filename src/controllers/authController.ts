@@ -37,6 +37,7 @@ export const registerUser = async (req: Request, res: Response) => {
     const htmlTemplate = `
     <div style="color: #333; text-align: center;">
       <h1 style="color: #1E1E1E;">Welcome to Black Tigers Team!</h1>
+      <img src=>
       <a href="http://localhost:5050/api/auth/activate/${token}" style="display: inline-block; padding: 10px 20px; background-color: #664971; color: #FFFFFF; font-size: 18px; text-decoration: none; border-radius: 5px;">Activate Now</a>
       <p style="font-size: 14px; color: #302B2E;">Black Tigers Team</p>
     </div>

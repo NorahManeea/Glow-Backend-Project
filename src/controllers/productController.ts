@@ -10,27 +10,16 @@ import { Product } from '../models/productModel'
 export const getAllProducts = async (req: Request, res: Response) => {
   const productPerPage: number = 8
   const { pageNumber, lowestPrice, highestPrice, newest, searchText, categoryId } = req.query
-  let products
 
-  if (pageNumber) {
-    const pageNum: number = +pageNumber
-    products = await Product.find()
-      .skip((pageNum - 1) * productPerPage)
-      .limit(productPerPage)
-      .sort({ createdAt: -1 })
-  } else if (highestPrice) {
-    products = await Product.find().sort({ price: -1 })
-  } else if (lowestPrice) {
-    products = await Product.find().sort({ price: 1 })
-  } else if (newest) {
-    products = await Product.find().sort({ createdAt: -1 })
-  } else if (searchText) {
-    products = await Product.find({ productName: { $regex: searchText } }).sort({ createdAt: -1 })
-  } else if (categoryId) {
-    products = await Product.find({category: {"$in": [categoryId]}})
-  } else {
-    products = await Product.find().sort({ createdAt: -1 })
-  }
+  const productQuery = Product.find()
+    .skip(pageNumber ? ((Number(pageNumber) - 1)* productPerPage) : 0)
+    .sort(highestPrice ? { price: -1 } : lowestPrice ? { price: 1 } : newest ? { createdAt: -1 } : {})
+    .find(searchText ? { productName: { $regex: searchText } } : {})
+    .find(categoryId ? { category: { "$in": [categoryId] } } : {})
+    .sort({ createdAt: -1 })
+
+  const products = await productQuery
+
   res.status(200).json(products)
 }
 

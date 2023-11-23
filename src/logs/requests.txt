@@ -269,3 +269,9 @@ Method: GET, Path: /api/products, Date: 11/23/2023, Time: 11:57:00 AM
 Method: POST, Path: /api/cart, Date: 11/23/2023, Time: 11:57:26 AM
 Method: GET, Path: /api/cart/6551d693b02415cecc13aa7b, Date: 11/23/2023, Time: 11:57:36 AM
 Method: DELETE, Path: /api/cart/655f09626a248dd206c49f90, Date: 11/23/2023, Time: 11:57:59 AM
+Method: GET, Path: /api/products, Date: 11/23/2023, Time: 1:28:28 PM
+Method: GET, Path: /api/products, Date: 11/23/2023, Time: 1:28:34 PM
+Method: GET, Path: /api/products, Date: 11/23/2023, Time: 1:28:48 PM
+Method: GET, Path: /api/products, Date: 11/23/2023, Time: 1:29:07 PM
+Method: GET, Path: /api/products, Date: 11/23/2023, Time: 1:39:10 PM
+Method: GET, Path: /api/products, Date: 11/23/2023, Time: 1:39:24 PM
