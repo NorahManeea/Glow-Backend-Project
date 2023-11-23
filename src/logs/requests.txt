@@ -275,3 +275,7 @@ Method: GET, Path: /api/products, Date: 11/23/2023, Time: 1:28:48 PM
 Method: GET, Path: /api/products, Date: 11/23/2023, Time: 1:29:07 PM
 Method: GET, Path: /api/products, Date: 11/23/2023, Time: 1:39:10 PM
 Method: GET, Path: /api/products, Date: 11/23/2023, Time: 1:39:24 PM
+Method: POST, Path: /api/auth/register, Date: 11/23/2023, Time: 3:41:31 PM
+Method: POST, Path: /api/auth/register, Date: 11/23/2023, Time: 3:41:50 PM
+Method: POST, Path: /api/auth/register, Date: 11/23/2023, Time: 3:41:59 PM
+Method: POST, Path: /api/auth/register, Date: 11/23/2023, Time: 3:44:12 PM
