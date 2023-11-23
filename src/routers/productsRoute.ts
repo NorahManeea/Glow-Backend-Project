@@ -3,10 +3,11 @@ const router = express.Router()
 
 import { createProduct, deleteProduct, getAllProducts, getProductById, updateProduct } from '../controllers/productController'
 import { validateObjectId } from '../middlewares/validateObjectId'
+import { validateProduct } from '../validation/validateProduct'
 
 
 router.get("/",getAllProducts )
-router.post("/", createProduct)
+router.post("/",validateProduct, createProduct)
 router.get("/:id", validateObjectId,getProductById )
 router.delete("/:id",validateObjectId,deleteProduct )
 router.put("/:id",validateObjectId,updateProduct )

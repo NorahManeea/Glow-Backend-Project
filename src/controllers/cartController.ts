@@ -125,7 +125,6 @@ export const deleteCartItem = async (req: Request, res: Response) => {
   if(!deletedItem){
     return res.status(404).json({ error: 'Product not found in the cart' })
   }
-
   res.status(200).json({
     message: 'Product has been deleted from youre cart Successfully',
     cartItem: deletedItem,

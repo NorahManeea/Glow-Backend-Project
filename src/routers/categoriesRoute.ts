@@ -1,5 +1,5 @@
 import express from 'express'
-import { validateCategory } from '../validations/validateCategory'
+import {validateCategory} from '../validation/validateCategory'
 const router = express.Router()
 
 import {
