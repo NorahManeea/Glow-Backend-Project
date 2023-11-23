@@ -9,7 +9,7 @@ import { Product } from '../models/productModel'
  -----------------------------------------------*/
 export const getAllProducts = async (req: Request, res: Response) => {
   const productPerPage: number = 8
-  const { pageNumber, lowestPrice, highestPrice, newest, searchText } = req.query
+  const { pageNumber, lowestPrice, highestPrice, newest, searchText, categoryId } = req.query
   let products
 
   if (pageNumber) {
@@ -26,6 +26,8 @@ export const getAllProducts = async (req: Request, res: Response) => {
     products = await Product.find().sort({ createdAt: -1 })
   } else if (searchText) {
     products = await Product.find({ productName: { $regex: searchText } }).sort({ createdAt: -1 })
+  } else if (categoryId) {
+    products = await Product.find({category: {"$in": [categoryId]}})
   } else {
     products = await Product.find().sort({ createdAt: -1 })
   }
