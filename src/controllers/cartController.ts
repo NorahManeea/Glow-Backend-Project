@@ -13,15 +13,15 @@ export const addToCart = async (req: Request, res: Response) => {
   try {
     const product = await Product.findById(productId)
     if (!product) {
-      return res.status(404).json({ error: 'Product not found' })
+      return res.status(404).json({ message: 'Product not found' })
     }
     if (product.quantityInStock === 0) {
-      return res.status(400).json({ error: 'Product is currently unavailable' })
+      return res.status(400).json({ message: 'Product is currently unavailable' })
     }
     if (quantity > product.quantityInStock) {
       return res
         .status(400)
-        .json({ error: 'Quantity requested exceeds quantity available in stock.' })
+        .json({ message: 'Quantity requested exceeds quantity available in stock.' })
     }
     let cart = await Cart.findOne({ user: user })
     if (!cart) {
@@ -41,6 +41,8 @@ export const addToCart = async (req: Request, res: Response) => {
     })
 
     await cart.save()
+    const updataQuantityInStock = product.quantityInStock -= quantity
+    await Product.findByIdAndUpdate(productId, {$set:{quantityInStock: updataQuantityInStock}},{new: true})
 
     res.json({ cart, total })
   } catch (error) {
