@@ -7,10 +7,4 @@ export function validateUser (req: Request, res: Response, next: NextFunction){
         email: zod.string().email(),
         password: zod.string().min(8)
     }
-    try{
-        next()
-    }catch(error){
-        console.log({'error': error})
-        next(ApiError.badRequest("Invalid User Data"))
-    }
 }
