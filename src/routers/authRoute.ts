@@ -1,6 +1,6 @@
 import express from 'express'
 import { createrUser, loginUser, registerUser } from '../controllers/authController'
-import { validateUser } from '../middlewares/validateUser';
+import { validateUser } from '../validation/validateUser';
 
 const router = express.Router()
 
