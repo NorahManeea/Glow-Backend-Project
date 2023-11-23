@@ -233,3 +233,12 @@ Method: GET, Path: /api/products, Date: 11/23/2023, Time: 9:54:27 AM
 Method: POST, Path: /api/cart, Date: 11/23/2023, Time: 9:54:44 AM
 Method: POST, Path: /api/cart, Date: 11/23/2023, Time: 9:54:47 AM
 Method: GET, Path: /api/products, Date: 11/23/2023, Time: 9:54:51 AM
+Method: GET, Path: /api/cart/6551d693b02415cecc13aa7b, Date: 11/23/2023, Time: 11:17:59 AM
+Method: GET, Path: /api/cart/655ef71cd62e29b2d7378000, Date: 11/23/2023, Time: 11:18:19 AM
+Method: GET, Path: /api/cart/655eed479eee0671a55df2ba, Date: 11/23/2023, Time: 11:18:58 AM
+Method: PUT, Path: /api/cart/6551d693b02415cecc13aa7b, Date: 11/23/2023, Time: 11:19:42 AM
+Method: POST, Path: /api/cart, Date: 11/23/2023, Time: 11:21:34 AM
+Method: GET, Path: /api/cart/655eed479eee0671a55df2ba, Date: 11/23/2023, Time: 11:21:40 AM
+Method: GET, Path: /api/cart/655eed479eee0671a55df2ba, Date: 11/23/2023, Time: 11:31:14 AM
+Method: GET, Path: /api/cart/655eed479eee0671a55df2ba, Date: 11/23/2023, Time: 11:32:02 AM
+Method: GET, Path: /api/cart/655eed479eee0671a55df2ba, Date: 11/23/2023, Time: 11:32:18 AM

@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/local/bin/node /usr/local/bin/yarn add @types/nodemailer
+  /usr/local/bin/node /usr/local/bin/yarn add zod
 
 PATH: 
   /Users/nouram/opt/anaconda3/bin:/Library/Frameworks/Python.framework/Versions/3.9/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/nouram/dev/flutter/bin:/usr/local/share/dotnet:~/.dotnet/tools:/Library/Apple/usr/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Applications/Xamarin Workbooks.app/Contents/SharedSupport/path-bin:/Users/nouram/opt/anaconda3/bin:/Library/Frameworks/Python.framework/Versions/3.9/bin
@@ -45,6 +45,7 @@ npm manifest:
       "express": "^4.17.3",
       "jsonwebtoken": "^9.0.2",
       "mongoose": "^6.0.9",
+      "nodemailer": "^6.9.7",
       "nodemon": "^2.0.13",
       "typescript": "^4.4.3"
     },
@@ -1453,6 +1454,11 @@ Lockfile:
     version "0.1.0"
     resolved "https://registry.npmjs.org/node-walker/-/node-walker-0.1.0.tgz"
     integrity sha512-oC1skUd/BuOroGKhTnUJn1B20ETn9SFaHjRRfS911XcdQxTlzDEWTaK0KJpgluI66tHvFBC3QnN5x7YlZb5SeQ==
+  
+  nodemailer@^6.9.7:
+    version "6.9.7"
+    resolved "https://registry.npmjs.org/nodemailer/-/nodemailer-6.9.7.tgz"
+    integrity sha512-rUtR77ksqex/eZRLmQ21LKVH5nAAsVicAtAYudK7JgwenEDZ0UIQ1adUGqErz7sMkWYxWTTU1aeP2Jga6WQyJw==
   
   nodemon@^2.0.13:
     version "2.0.16"
