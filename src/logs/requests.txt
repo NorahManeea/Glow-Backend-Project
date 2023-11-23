@@ -279,3 +279,5 @@ Method: POST, Path: /api/auth/register, Date: 11/23/2023, Time: 3:41:31 PM
 Method: POST, Path: /api/auth/register, Date: 11/23/2023, Time: 3:41:50 PM
 Method: POST, Path: /api/auth/register, Date: 11/23/2023, Time: 3:41:59 PM
 Method: POST, Path: /api/auth/register, Date: 11/23/2023, Time: 3:44:12 PM
+Method: POST, Path: /api/products/, Date: 11/23/2023, Time: 4:11:10 PM
+Method: POST, Path: /api/products/, Date: 11/23/2023, Time: 4:11:33 PM
