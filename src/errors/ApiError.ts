@@ -1,4 +1,4 @@
-import { ZodError } from 'zod'
+import { ZodError } from "zod"
 
 class ApiError {
   constructor(public code: number, public message: string | ZodError['errors']) {
