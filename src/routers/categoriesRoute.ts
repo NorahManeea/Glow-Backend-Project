@@ -1,5 +1,5 @@
 import express from 'express'
-
+import { validateCategory } from '../validations/validateCategory'
 const router = express.Router()
 
 import {
@@ -11,9 +11,9 @@ import {
 } from '../controllers/categoryController'
 
 router.get('/', getAllCategory)
-router.post("/", createCategory)
-router.get("/:id", getCategoryById)
-router.put("/:id", updateCategory)
-router.delete("/:id", deleteCategory)
+router.post('/', validateCategory, createCategory)
+router.get('/:id', getCategoryById)
+router.put('/:id', updateCategory)
+router.delete('/:id', deleteCategory)
 
 export default router
