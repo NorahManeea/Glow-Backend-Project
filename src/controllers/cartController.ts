@@ -1,6 +1,6 @@
+import { Product } from './../models/productModel';
 import { Request, Response } from 'express'
 import { Cart } from '../models/cartModel'
-import { Product } from '../models/productModel'
 
 /** -----------------------------------------------
  * @desc Add to cart
@@ -61,14 +61,14 @@ export const getCartItems = async (req: Request, res: Response) => {
   const { id } = req.params
 
   try {
-    const cart = await Cart.findOne({ user: id }).populate('products.product')
+    const cart = await Cart.findOne({ user: id }).select('-user').populate('products.product')
 
     if (!cart) {
       return res.status(404).json({ error: 'Cart not found' })
     }
     const itemsCount = cart.products.reduce((total, item) => total + item.quantity, 0)
 
-    res.json({ cart, itemsCount })
+    res.json({ cart , itemsCount })
   } catch (error) {
     console.error(error)
     res.status(500).json({ error: 'Internal Server Error' })
@@ -109,9 +109,25 @@ export const updateCartItems = async (req: Request, res: Response) => {
  * @access private (user himself only)
   -----------------------------------------------*/
 export const deleteCartItem = async (req: Request, res: Response) => {
-  // const { productId } = req.params
-  // await Cart.deleteOne({
-  //   _id: Cart,
-  // })
-  // res.status(204).send()
+  const { id } = req.params
+  const cart = await Cart.findById(id)
+  if (!cart) {
+    return res.status(404).json({ error: 'Cart not found' })
+  }
+
+  const { productId } = req.body
+  const deletedItem = await Cart.findByIdAndUpdate(
+    id,
+    { $pull: { products: productId } },
+    { new: true }
+  );
+
+  if(!deletedItem){
+    return res.status(404).json({ error: 'Product not found in the cart' })
+  }
+
+  res.status(200).json({
+    message: 'Product has been deleted from youre cart Successfully',
+    cartItem: deletedItem,
+  })
 }
