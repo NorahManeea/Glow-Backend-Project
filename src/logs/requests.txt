@@ -677,3 +677,17 @@ Method: PUT, Path: /api/categories/6560c43d6d2d4653d82e92c0, Date: 11/24/2023, T
 Method: PUT, Path: /api/categories/6560c43d6d2d4653d82e92c0, Date: 11/24/2023, Time: 7:19:56 PM
 Method: PUT, Path: /api/categories/6560c978b279bddee7861099, Date: 11/24/2023, Time: 7:20:11 PM
 Method: PUT, Path: /api/categories/6560c978b279bddee7861099, Date: 11/24/2023, Time: 7:20:17 PM
+Method: GET, Path: /api/categories, Date: 11/24/2023, Time: 8:36:42 PM
+Method: POST, Path: /api/categories, Date: 11/24/2023, Time: 8:36:49 PM
+Method: PUT, Path: /api/categories/6560cf5b04334d73f8cbf84e, Date: 11/24/2023, Time: 8:36:55 PM
+Method: PUT, Path: /api/categories/6560cf5b04334d73f8cbf84e, Date: 11/24/2023, Time: 8:37:03 PM
+Method: GET, Path: /api/categories/6560cf152f07cc801a79f094, Date: 11/24/2023, Time: 8:37:08 PM
+Method: GET, Path: /api/categories/6560df312677f3a40d53d2da, Date: 11/24/2023, Time: 8:37:12 PM
+Method: DELETE, Path: /api/categories/6560df312677f3a40d53d2da, Date: 11/24/2023, Time: 8:37:18 PM
+Method: DELETE, Path: /api/categories/6560df312677f3a40d53d2da, Date: 11/24/2023, Time: 8:37:47 PM
+Method: POST, Path: /api/categories, Date: 11/24/2023, Time: 8:37:55 PM
+Method: GET, Path: /api/categories/6560df738af9a39a11ccbe9f, Date: 11/24/2023, Time: 8:38:03 PM
+Method: PUT, Path: /api/categories/6560df738af9a39a11ccbe9f, Date: 11/24/2023, Time: 8:38:17 PM
+Method: PUT, Path: /api/categories/6560df738af9a39a11ccbe9f, Date: 11/24/2023, Time: 8:38:21 PM
+Method: DELETE, Path: /api/categories/6560df738af9a39a11ccbe9f, Date: 11/24/2023, Time: 8:38:29 PM
+Method: GET, Path: /api/categories, Date: 11/24/2023, Time: 8:38:34 PM
