@@ -3,6 +3,7 @@ import { Request, Response } from 'express'
 import bcrypt from 'bcrypt'
 
 import { User } from '../models/userModel'
+import { findAUser, findAllUser, removeUser, userCount } from '../services/userService'
 
 /** -----------------------------------------------
  * @desc Get All User
@@ -12,10 +13,9 @@ import { User } from '../models/userModel'
   -----------------------------------------------*/
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
-    const users = await User.find()
-    res.status(200).json(users)
+    const users = await findAllUser()
+    res.status(200).json({ message: 'All users returned successfully', payload: users })
   } catch (error) {
-    console.error(error)
     res.status(500).json({ error: 'Internal Server Error' })
   }
 }
@@ -26,8 +26,8 @@ export const getAllUsers = async (req: Request, res: Response) => {
  * @access private (Admin Only)
   -----------------------------------------------*/
 export const getUsersCount = async (req: Request, res: Response) => {
-  let usersCount = await User.countDocuments()
-  res.status(200).json(usersCount)
+  const usersCount = await userCount()
+  res.status(200).json({ meassge: 'Users Count', usersCount })
 }
 /** -----------------------------------------------
  * @desc Update user profile
@@ -35,7 +35,7 @@ export const getUsersCount = async (req: Request, res: Response) => {
  * @method PUT
  * @access private (User himself)
   -----------------------------------------------*/
-export const updateUser = async (req: Request, res: Response) => {
+export const updateUserById = async (req: Request, res: Response) => {
   try {
     const user = await User.findById(req.params.userId)
     if (!user) {
@@ -59,13 +59,12 @@ export const updateUser = async (req: Request, res: Response) => {
     }
 
     await user.save()
-
     res.status(200).json({
       message: 'User updated successfully',
-      updatedUser: user,
+      payload: user,
     })
   } catch (error) {
-    res.status(500).json({ message: 'Internal Server Error' })
+    res.status(500).json({ error: 'Internal Server Error' })
   }
 }
 /** -----------------------------------------------
@@ -76,39 +75,26 @@ export const updateUser = async (req: Request, res: Response) => {
   -----------------------------------------------*/
 export const deleteUser = async (req: Request, res: Response) => {
   try {
-    const user = await User.findById(req.params.id)
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' })
-    }
-    await User.findByIdAndDelete(req.params.userId)
+    const user = await removeUser(req.params.userId)
     res.status(200).json({
       message: 'User has been deleted successfully',
-      userId: user._id,
+      payload: user,
     })
   } catch (error) {
-    res.status(500).json({ message: 'Internal Server Error' })
+    res.status(500).json({ error: 'Internal Server Error' })
   }
 }
 /** -----------------------------------------------
- * @desc get all user
- * @route /api/users/
+ * @desc get user by Id
+ * @route /api/users/:id
  * @method GET
  * @access private (Admin Only)
   -----------------------------------------------*/
 export const getUserById = async (req: Request, res: Response) => {
   try {
-    const userId = req.params.id
-
-    const user = await User.findById(userId)
-
-    if (!user) {
-      res.status(404).json({ error: 'User not found' })
-      return
-    }
-
-    res.status(200).json(user)
+    const user = await findAUser(req.params.userId)
+    res.status(200).json({ message: 'Single user returned successfully', payload: user })
   } catch (error) {
-    console.error(error)
-    res.status(500).json({ error: 'Server Error' })
+    res.status(500).json({ error: 'Internal Server Error' })
   }
 }

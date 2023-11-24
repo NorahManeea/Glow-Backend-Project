@@ -5,14 +5,14 @@ import {
   getAllUsers,
   getUserById,
   getUsersCount,
-  updateUser,
+  updateUserById,
 } from '../controllers/userController'
 const router = express.Router()
 
 router.get('/', getAllUsers)
 router.get('/count', getUsersCount)
 router.delete('/:userId', deleteUser)
-router.put('/:userId', updateUser)
+router.put('/:userId', updateUserById)
 router.get('/:userId', getUserById)
 
 
