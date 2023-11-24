@@ -9,7 +9,6 @@ export const findAllCategories = async () => {
 
 export const findCategory = async (categoryId: string) => {
   const category = await Category.findById(categoryId)
-  console.log(category)
   if (!category) {
     const error = createHttpError(404, 'Category not found with the entered ID')
     throw error
