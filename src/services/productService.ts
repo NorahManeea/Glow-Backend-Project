@@ -19,6 +19,8 @@ export const getProducts = async (pageNumber = 1, limit = 8) => {
     //   )
     //   .find(searchText ? { productName: { $regex: searchText } } : {})
     //   .find(categoryId ? { category: { $in: [categoryId] } } : {})
+
+
     .sort({ createdAt: -1 })
   return { products, totalPages, currentPage: pageNumber }
 }

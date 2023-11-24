@@ -2,10 +2,10 @@ import slugify from 'slugify'
 import { Request, Response } from 'express'
 import {
   removeProduct,
-  findProduct,
   getProducts,
   updateProduct,
   createNewProduct,
+  findProduct,
 } from '../services/productService'
 
 /**-----------------------------------------------
