@@ -24,7 +24,7 @@ export const getAllProducts = async (req: Request, res: Response) => {
       .status(200)
       .json({ message: 'All products returned', payload: products, totalPages, currentPage })
   } catch (error) {
-    res.status(500).json({ message: error })
+    res.status(500).json({ error: error })
   }
 }
 
@@ -39,7 +39,7 @@ export const getProductById = async (req: Request, res: Response) => {
     const product = await findProduct(req.params.id)
     res.status(200).json({ message: 'Single product returned', payload: product })
   } catch (error) {
-    res.status(500).json({ message: error })
+    res.status(500).json({ error: error })
   }
 }
 
@@ -57,7 +57,7 @@ export const deleteProductById = async (req: Request, res: Response) => {
       payload: product,
     })
   } catch (error) {
-    res.status(500).json({ message: error })
+    res.status(500).json({ error: error })
   }
 }
 
@@ -72,7 +72,7 @@ export const createProduct = async (req: Request, res: Response) => {
     const product = await createNewProduct(req.body)
     res.status(201).json({ meassge: 'Product created successfuly', payload: product })
   } catch (error) {
-    res.status(500).json({ message: error })
+    res.status(500).json({ error: error })
   }
 }
 
@@ -91,6 +91,6 @@ export const updateProductById = async (req: Request, res: Response) => {
     const updatedProduct = await updateProduct(productId, req.body)
     res.status(200).json({ message: 'Product updated successfully', payload: updatedProduct })
   } catch (error) {
-    res.status(500).json({ message: error })
+    res.status(500).json({ error: error })
   }
 }
