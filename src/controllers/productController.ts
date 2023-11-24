@@ -1,5 +1,12 @@
+import slugify from 'slugify'
 import { Request, Response } from 'express'
-import { Product } from '../models/productModel'
+import {
+  removeProduct,
+  getProducts,
+  updateProduct,
+  createNewProduct,
+  findProduct,
+} from '../services/productService'
 
 /**-----------------------------------------------
  * @desc Get All Products
@@ -8,19 +15,17 @@ import { Product } from '../models/productModel'
  * @access public
  -----------------------------------------------*/
 export const getAllProducts = async (req: Request, res: Response) => {
-  const productPerPage: number = 8
-  const { pageNumber, lowestPrice, highestPrice, newest, searchText, categoryId } = req.query
-
-  const productQuery = Product.find()
-    .skip(pageNumber ? ((Number(pageNumber) - 1)* productPerPage) : 0)
-    .sort(highestPrice ? { price: -1 } : lowestPrice ? { price: 1 } : newest ? { createdAt: -1 } : {})
-    .find(searchText ? { productName: { $regex: searchText } } : {})
-    .find(categoryId ? { category: { "$in": [categoryId] } } : {})
-    .sort({ createdAt: -1 })
-
-  const products = await productQuery
-
-  res.status(200).json(products)
+  try {
+    // const { lowestPrice, highestPrice, newest, searchText, categoryId } = req.query
+    let pageNumber = Number(req.query.pageNumber)
+    const limit = Number(req.query.limit)
+    const { products, totalPages, currentPage } = await getProducts(pageNumber, limit)
+    res
+      .status(200)
+      .json({ message: 'All products returned', payload: products, totalPages, currentPage })
+  } catch (error) {
+    res.status(500).json({ message: error })
+  }
 }
 
 /**-----------------------------------------------
@@ -30,11 +35,12 @@ export const getAllProducts = async (req: Request, res: Response) => {
  * @access public
  -----------------------------------------------*/
 export const getProductById = async (req: Request, res: Response) => {
-  const product = await Product.findById(req.params.id)
-  if (!product) {
-    return res.status(404).json({ message: 'product not found' })
+  try {
+    const product = await findProduct(req.params.id)
+    res.status(200).json({ message: 'Single product returned', payload: product })
+  } catch (error) {
+    res.status(500).json({ message: error })
   }
-  res.status(200).json({ product })
 }
 
 /**-----------------------------------------------
@@ -43,17 +49,16 @@ export const getProductById = async (req: Request, res: Response) => {
  * @method DELETE
  * @access private (admin Only)
  -----------------------------------------------*/
-export const deleteProduct = async (req: Request, res: Response) => {
-  const product = await Product.findById(req.params.id)
-  if (!product) {
-    return res.status(404).json({ message: 'Product not found' })
+export const deleteProductById = async (req: Request, res: Response) => {
+  try {
+    const product = await removeProduct(req.params.id)
+    res.status(200).json({
+      message: 'Product has been deleted Successfully',
+      payload: product,
+    })
+  } catch (error) {
+    res.status(500).json({ message: error })
   }
-  await Product.findByIdAndDelete(req.params.id)
-
-  res.status(200).json({
-    message: 'Product has been deleted Successfully',
-    productID: product._id,
-  })
 }
 
 /**-----------------------------------------------
@@ -64,28 +69,8 @@ export const deleteProduct = async (req: Request, res: Response) => {
  -----------------------------------------------*/
 export const createProduct = async (req: Request, res: Response) => {
   try {
-    const {
-      productName,
-      productDescription,
-      productImage,
-      quantityInStock,
-      productPrice,
-      category,
-      variants,
-      sizes,
-    } = req.body
-    const product = await Product.create({
-      productName: productName,
-      productDescription: productDescription,
-      productImage: productImage,
-      quantityInStock: quantityInStock,
-      productPrice: productPrice,
-      category: category,
-      variants: variants,
-      sizes: sizes,
-    })
-    await product.save()
-    res.status(201).json({ meassge: 'Product created successfuly', product })
+    const product = await createNewProduct(req.body)
+    res.status(201).json({ meassge: 'Product created successfuly', payload: product })
   } catch (error) {
     res.status(500).json({ message: error })
   }
@@ -97,42 +82,15 @@ export const createProduct = async (req: Request, res: Response) => {
  * @method PUT
  * @access private (admin Only)
  -----------------------------------------------*/
-export const updateProduct = async (req: Request, res: Response) => {
-  const {
-    productName,
-    productDescription,
-    productImage,
-    quantityInStock,
-    productPrice,
-    category,
-    variants,
-    sizes,
-  } = req.body
-
+export const updateProductById = async (req: Request, res: Response) => {
   try {
-    const categoryId = await Product.findById(req.params.id)
-    if (!categoryId) {
-      res.status(404).json({ message: 'Category Not Found' })
+    const productId = req.params.id
+    if (req.body.productName) {
+      req.body.slug = slugify(req.body.productName)
     }
-    const updatedCategory = await Product.findByIdAndUpdate(
-      categoryId,
-      {
-        $set: {
-          productName: productName,
-          productDescription: productDescription,
-          productImage: productImage,
-          quantityInStock: quantityInStock,
-          productPrice: productPrice,
-          category: category,
-          variants: variants,
-          sizes: sizes,
-        },
-      },
-      { new: true }
-    )
-    res.status(200).json(updatedCategory)
+    const updatedProduct = await updateProduct(productId, req.body)
+    res.status(200).json({ message: 'Product updated successfully', payload: updatedProduct })
   } catch (error) {
-    console.error(error)
-    res.status(500).json({ message: 'Internal Server Error' })
+    res.status(500).json({ message: error })
   }
 }

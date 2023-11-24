@@ -6,11 +6,11 @@ export function validateProduct(req: Request, res: Response, next: NextFunction)
   const schema = zod.object({
     productName: zod
       .string()
-      .min(3, { message: 'Product name is required' })
+      .min(3, { message: 'Product name must at least 3 characters' })
       .max(100, { message: 'Product name must be 100 characters or less' }),
     productDescription: zod
       .string()
-      .min(10, { message: 'Product description is required' })
+      .min(10, { message: 'Product description must at least 3 characters' })
       .max(100, { message: 'Product description must be 100 characters or less' }),
     productImage: zod.string().min(1, { message: 'Product image is required' }),
     quantityInStock: zod

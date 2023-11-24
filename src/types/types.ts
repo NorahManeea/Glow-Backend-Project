@@ -17,6 +17,7 @@ export type ProductDocument = Document & {
   category: mongoose.Types.ObjectId[]
   variants: string[]
   sizes: string[]
+  slug: string
 }
 
 export type CategoryDocument = Document & {
