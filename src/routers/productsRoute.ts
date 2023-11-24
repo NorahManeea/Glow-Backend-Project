@@ -8,7 +8,7 @@ import {
   getProductById,
   updateProduct,
 } from '../controllers/productController'
-import { validateObjectId } from '../validation/validateObjectId'
+import { validateObjectId } from '../middlewares/validateObjectId'
 import { validateProduct } from '../validation/validateProduct'
 
 router.get('/', getAllProducts)
