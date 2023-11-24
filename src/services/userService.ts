@@ -1,6 +1,7 @@
 import { User } from '../models/userModel'
 import createHttpError from 'http-errors'
 import { UserDocument } from '../types/types'
+import bcrypt from 'bcrypt'
 
 export const findAllUser = async () => {
   const users = await User.find()
@@ -26,11 +27,21 @@ export const removeUser = async (userId: string) => {
 }
 
 export const updateUser = async (userId: string, updatedUser: UserDocument) => {
+  const { password } = updatedUser
+
   const user = await User.findByIdAndUpdate(userId, updatedUser, { new: true })
   if (!user) {
     const error = createHttpError(404, 'User not found with the entered ID')
     throw error
   }
+
+  if (password !== undefined) {
+    // Hash Password
+    const salt = await bcrypt.genSalt(10)
+    user.password = await bcrypt.hash(password, salt)
+    await user.save()
+  }
+
   return user
 }
 

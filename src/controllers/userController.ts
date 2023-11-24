@@ -1,9 +1,6 @@
 // userController.ts
 import { Request, Response } from 'express'
-import bcrypt from 'bcrypt'
-
-import { User } from '../models/userModel'
-import { findAUser, findAllUser, removeUser, userCount } from '../services/userService'
+import { findAUser, findAllUser, removeUser, updateUser, userCount } from '../services/userService'
 
 /** -----------------------------------------------
  * @desc Get All User
@@ -16,7 +13,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
     const users = await findAllUser()
     res.status(200).json({ message: 'All users returned successfully', payload: users })
   } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' })
+    res.status(500).json({ error: error })
   }
 }
 /** -----------------------------------------------
@@ -26,8 +23,12 @@ export const getAllUsers = async (req: Request, res: Response) => {
  * @access private (Admin Only)
   -----------------------------------------------*/
 export const getUsersCount = async (req: Request, res: Response) => {
-  const usersCount = await userCount()
+  try {
+    const usersCount = await userCount()
   res.status(200).json({ meassge: 'Users Count', usersCount })
+  } catch (error) {
+    res.status(500).json({ error: error })
+  }
 }
 /** -----------------------------------------------
  * @desc Update user profile
@@ -37,34 +38,13 @@ export const getUsersCount = async (req: Request, res: Response) => {
   -----------------------------------------------*/
 export const updateUserById = async (req: Request, res: Response) => {
   try {
-    const user = await User.findById(req.params.userId)
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' })
-    }
-
-    const { firstName, lastName, email, password } = req.body
-    if (firstName !== undefined) {
-      user.firstName = firstName
-    }
-    if (lastName !== undefined) {
-      user.lastName = lastName
-    }
-    if (email !== undefined) {
-      user.email = email
-    }
-    if (password !== undefined) {
-      // Hash Pasword
-      const salt = await bcrypt.genSalt(10)
-      user.password = await bcrypt.hash(req.body.password, salt)
-    }
-
-    await user.save()
+    const user = await updateUser(req.params.userId, req.body);
     res.status(200).json({
-      message: 'User updated successfully',
+      message: 'User has been updated successfully',
       payload: user,
-    })
+    });
   } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' })
+    res.status(500).json({ error: error })
   }
 }
 /** -----------------------------------------------
@@ -81,7 +61,7 @@ export const deleteUser = async (req: Request, res: Response) => {
       payload: user,
     })
   } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' })
+    res.status(500).json({ error: error })
   }
 }
 /** -----------------------------------------------
@@ -95,6 +75,6 @@ export const getUserById = async (req: Request, res: Response) => {
     const user = await findAUser(req.params.userId)
     res.status(200).json({ message: 'Single user returned successfully', payload: user })
   } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' })
+    res.status(500).json({ error: error })
   }
 }
