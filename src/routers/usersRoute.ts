@@ -7,15 +7,14 @@ import {
   getUsersCount,
   updateUser,
 } from '../controllers/userController'
+import { validateUser } from '../validation/validateUser'
 const router = express.Router()
 
 router.get('/', getAllUsers)
 router.get('/count', getUsersCount)
 router.delete('/:userId', deleteUser)
-router.put('/:userId', updateUser)
+router.put('/:userId', validateUser, updateUser)
 router.get('/:userId', getUserById)
-
-
 
 export default router
 
