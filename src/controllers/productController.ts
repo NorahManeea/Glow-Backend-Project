@@ -2,7 +2,7 @@ import slugify from 'slugify'
 import { Request, Response } from 'express'
 import {
   removeProduct,
-  getProducts,
+  findAllProducts,
   updateProduct,
   createNewProduct,
   findProduct,
@@ -19,7 +19,7 @@ export const getAllProducts = async (req: Request, res: Response) => {
     // const { lowestPrice, highestPrice, newest, searchText, categoryId } = req.query
     let pageNumber = Number(req.query.pageNumber)
     const limit = Number(req.query.limit)
-    const { products, totalPages, currentPage } = await getProducts(pageNumber, limit)
+    const { products, totalPages, currentPage } = await findAllProducts(pageNumber, limit)
     res
       .status(200)
       .json({ message: 'All products returned', payload: products, totalPages, currentPage })
@@ -70,7 +70,7 @@ export const deleteProductById = async (req: Request, res: Response) => {
 export const createProduct = async (req: Request, res: Response) => {
   try {
     const product = await createNewProduct(req.body)
-    res.status(201).json({ meassge: 'Product created successfuly', payload: product })
+    res.status(201).json({ meassge: 'Product has been created successfuly', payload: product })
   } catch (error) {
     res.status(500).json({ message: error })
   }
@@ -89,7 +89,7 @@ export const updateProductById = async (req: Request, res: Response) => {
       req.body.slug = slugify(req.body.productName)
     }
     const updatedProduct = await updateProduct(productId, req.body)
-    res.status(200).json({ message: 'Product updated successfully', payload: updatedProduct })
+    res.status(200).json({ message: 'Product has been updated successfully', payload: updatedProduct })
   } catch (error) {
     res.status(500).json({ message: error })
   }
