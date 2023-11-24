@@ -623,3 +623,7 @@ Method: PUT, Path: /api/products/6560b67d809961bf102705af, Date: 11/24/2023, Tim
 Method: DELETE, Path: /api/products/6560b67d809961bf102705af, Date: 11/24/2023, Time: 8:41:16 PM
 Method: GET, Path: /api/products/6560b67d809961bf102705af, Date: 11/24/2023, Time: 8:41:20 PM
 Method: GET, Path: /api/products, Date: 11/24/2023, Time: 8:41:25 PM
+Method: POST, Path: /api/cart, Date: 11/25/2023, Time: 1:15:48 AM
+Method: POST, Path: /api/cart, Date: 11/25/2023, Time: 1:16:05 AM
+Method: GET, Path: /api/products, Date: 11/25/2023, Time: 1:16:11 AM
+Method: POST, Path: /api/cart, Date: 11/25/2023, Time: 1:16:21 AM
