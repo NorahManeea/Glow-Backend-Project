@@ -1,6 +1,4 @@
 import { Request, Response } from 'express'
-import { Category } from '../models/categoryModel'
-import ApiError from '../errors/ApiError'
 import { createNewCategory, findAllCategories, findCategory, removeCategory, updateCategory } from '../services/categoryService'
 
 /**-----------------------------------------------
