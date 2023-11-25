@@ -16,10 +16,18 @@ import {
  -----------------------------------------------*/
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
-    // const { lowestPrice, highestPrice, newest, searchText, categoryId } = req.query
     let pageNumber = Number(req.query.pageNumber)
     const limit = Number(req.query.limit)
-    const { products, totalPages, currentPage } = await findAllProducts(pageNumber, limit)
+    const sortBy = req.query.sortBy?.toString()
+    const searchText = req.query.searchText?.toString()
+    const category = req.query.category?.toString()
+    const { products, totalPages, currentPage } = await findAllProducts(
+      pageNumber,
+      limit,
+      sortBy,
+      searchText,
+      category
+    )
     res
       .status(200)
       .json({ message: 'All products returned', payload: products, totalPages, currentPage })
@@ -89,7 +97,9 @@ export const updateProductById = async (req: Request, res: Response) => {
       req.body.slug = slugify(req.body.productName)
     }
     const updatedProduct = await updateProduct(productId, req.body)
-    res.status(200).json({ message: 'Product has been updated successfully', payload: updatedProduct })
+    res
+      .status(200)
+      .json({ message: 'Product has been updated successfully', payload: updatedProduct })
   } catch (error) {
     res.status(500).json({ error: error })
   }
