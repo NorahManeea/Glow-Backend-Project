@@ -1,8 +1,14 @@
 import { Request, Response } from 'express'
 
-import { Product } from './../models/productModel'
-import { Cart } from '../models/cartModel'
-import { addItem, calculateTotalPrice, checkStock, createCart, findCart, updateCart, updateQuantityInStock } from '../services/cartService'
+import {
+  addItem,
+  calculateTotalPrice,
+  checkStock,
+  createCart,
+  findCart,
+  updateCart,
+  updateQuantityInStock,
+} from '../services/cartService'
 import { findProduct } from '../services/productService'
 
 /** -----------------------------------------------
@@ -11,34 +17,38 @@ import { findProduct } from '../services/productService'
  * @method POST
  * @access public
   -----------------------------------------------*/
-  export const addToCart = async (req: Request, res: Response) => {
-    try {
-      const { user, productId, quantity } = req.body;
-  
-      // Check if the product exists
-      const product = await findProduct(productId);
-  
-      // Check if the product is in stock
-      checkStock(product, quantity);
-  
-      // Create cart if the user doesn't have one
-      let cart = await createCart(user);
-  
-      // Add the item to the cart
-      cart = await addItem(cart, quantity, product);
-  
-      // Calculate the total price
-      const totalPrice = calculateTotalPrice(cart);
-  
-      // Update the product stock
-      await updateQuantityInStock(productId, product.quantityInStock);
-  
-      res.json({ message: 'Product has been added to the cart successfully', cart, Price: totalPrice});
-    } catch (error) {
-      // Handle specific errors with different status codes if needed
-      res.status(500).json({ error: error || 'Internal Server Error' });
-    }
-  };
+export const addToCart = async (req: Request, res: Response) => {
+  try {
+    const { user, productId, quantity } = req.body
+
+    // Check if the product exists
+    const product = await findProduct(productId)
+
+    // Check if the product is in stock
+    checkStock(product, quantity)
+
+    // Create cart if the user doesn't have one
+    let cart = await createCart(user)
+
+    // Add the item to the cart
+    cart = await addItem(cart, quantity, product)
+
+    // Calculate the total price
+    const totalPrice = calculateTotalPrice(cart)
+
+    // Update the product stock
+    await updateQuantityInStock(productId, product.quantityInStock)
+
+    res.json({
+      message: 'Product has been added to the cart successfully',
+      cart,
+      Price: totalPrice,
+    })
+  } catch (error) {
+    // Handle specific errors with different status codes if needed
+    res.status(500).json({ error: error || 'Internal Server Error' })
+  }
+}
 
 /** -----------------------------------------------
  * @desc Get cart items
