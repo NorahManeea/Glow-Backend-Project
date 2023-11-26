@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+
 import { CartDocument } from '../types/types'
 
 const cartSchema = new mongoose.Schema(
@@ -7,17 +8,19 @@ const cartSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
-    products: [{
-      product: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product',
+    products: [
+      {
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Product',
+        },
+        quantity: {
+          type: Number,
+          default: 1,
+        },
       },
-      quantity: {
-        type: Number,
-        default: 1
-      }
-    }],
+    ],
   },
   { timestamps: true }
 )
-export const Cart =  mongoose.model<CartDocument>('Cart', cartSchema)
+export const Cart = mongoose.model<CartDocument>('Cart', cartSchema)

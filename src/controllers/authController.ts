@@ -29,7 +29,7 @@ export const registerUser = async (req: Request, res: Response) => {
         firstName: firstName,
         lastName: lastName,
         password: hashPassword,
-        role: role
+        role: role,
       },
       authConfig.jwt.accessToken
     )
@@ -67,7 +67,6 @@ export const createrUser = async (req: Request, res: Response) => {
     const verifiedToken = jwt.verify(token, authConfig.jwt.accessToken) as JwtPayload
 
     if (!verifiedToken) {
-
       return res.status(400).json({ message: 'Invalid token' })
     }
     const { email, firstName, lastName, password, role } = verifiedToken
@@ -76,8 +75,7 @@ export const createrUser = async (req: Request, res: Response) => {
       firstName: firstName,
       lastName: lastName,
       password: password,
-      role: role
-      
+      role: role,
     })
 
     await user.save()
@@ -95,7 +93,6 @@ export const createrUser = async (req: Request, res: Response) => {
  * @method POST
  * @access public
   -----------------------------------------------*/
-
 export const loginUser = async (req: Request, res: Response) => {
   const { email, password } = req.body
   if (!email || !password) {
@@ -115,6 +112,6 @@ export const loginUser = async (req: Request, res: Response) => {
     email: user.email,
     firstName: user.firstName,
     lastName: user.lastName,
-    role: user.role
+    role: user.role,
   })
 }

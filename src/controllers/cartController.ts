@@ -1,5 +1,6 @@
-import { Product } from './../models/productModel'
 import { Request, Response } from 'express'
+
+import { Product } from './../models/productModel'
 import { Cart } from '../models/cartModel'
 import { findCart, updateCart } from '../services/cartService'
 
@@ -95,6 +96,7 @@ export const updateCartItems = async (req: Request, res: Response) => {
     res.status(500).json({ error: error })
   }
 }
+
 /** -----------------------------------------------
  * @desc Delete cart item
  * @route /api/cart/:id

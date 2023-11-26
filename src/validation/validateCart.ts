@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from 'express'
 import zod, { ZodError } from 'zod'
+
 import ApiError from '../errors/ApiError'
+
 export function validateCart(req: Request, res: Response, next: NextFunction) {
   const productSchema = zod.object({
     product: zod

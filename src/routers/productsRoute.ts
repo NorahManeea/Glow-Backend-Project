@@ -1,5 +1,4 @@
 import express from 'express'
-const router = express.Router()
 
 import {
   createProduct,
@@ -10,6 +9,8 @@ import {
 } from '../controllers/productController'
 import { validateObjectId } from '../middlewares/validateObjectId'
 import { checkAuth } from '../middlewares/verifyToken'
+
+const router = express.Router()
 
 router.get('/',getAllProducts)
 router.post('/',checkAuth('USER'), createProduct)

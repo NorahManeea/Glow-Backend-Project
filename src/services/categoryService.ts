@@ -1,5 +1,6 @@
-import { Category } from '../models/categoryModel'
 import createHttpError from 'http-errors'
+
+import { Category } from '../models/categoryModel'
 import { CategoryDocument } from '../types/types'
 
 export const findAllCategories = async () => {
@@ -30,6 +31,7 @@ export const updateCategory = async (categoryId: string, updatedCategory: Catego
   }
   return category
 }
+
 export const removeCategory = async (categoryId: string) => {
   const category = await Category.findByIdAndDelete(categoryId)
   if (!category) {
@@ -38,6 +40,7 @@ export const removeCategory = async (categoryId: string) => {
   }
   return category
 }
+
 export const createNewCategory = async (newCategory: CategoryDocument) => {
   const { categoryName } = newCategory
   const categoryExist = await Category.exists({ categoryName: categoryName })

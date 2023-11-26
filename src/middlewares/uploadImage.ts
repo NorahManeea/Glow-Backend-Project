@@ -1,5 +1,5 @@
-import { Request } from 'express';
-import multer from 'multer';
+import { Request } from 'express'
+import multer from 'multer'
 
 //interface MulterFile extends Express.Multer.File {}
 

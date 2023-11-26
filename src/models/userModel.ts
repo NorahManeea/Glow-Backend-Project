@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+
 import { UserDocument } from '../types/types'
 import { Role } from '../enums/enums'
 
@@ -22,11 +23,11 @@ const userSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       validate: {
-        validator: function (email: string){
+        validator: function (email: string) {
           return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)
         },
-        message: 'Please enter a valid email address'
-      }
+        message: 'Please enter a valid email address',
+      },
     },
     password: {
       type: String,

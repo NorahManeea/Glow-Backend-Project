@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import jwt, { JwtPayload } from 'jsonwebtoken'
+
 import { authConfig } from '../config/auth.config'
 import { DecodedUser, Role } from '../types/types'
 import ApiError from '../errors/ApiError'
@@ -29,6 +30,7 @@ export function checkAuth(expectedRole: Role) {
     next(ApiError.forbidden('Token is required'))
   }
 }
+
 export function checkRole(expectedRole: Role) {
   return (req: Request, res: Response, next: NextFunction) => {
     const decodedUser = req.decodedUser

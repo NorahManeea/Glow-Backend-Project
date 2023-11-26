@@ -1,5 +1,6 @@
 import slugify from 'slugify'
 import { Request, Response } from 'express'
+
 import {
   removeProduct,
   findAllProducts,

@@ -1,8 +1,6 @@
-import { Category } from '../models/categoryModel'
 import createHttpError from 'http-errors'
-import { CartDocument } from '../types/types'
+
 import { Cart } from '../models/cartModel'
-import { Product } from '../models/productModel'
 
 export const findCart = async (userId: string) => {
   const cart = await Cart.findOne({ user: userId }).populate('products.product')
@@ -12,6 +10,7 @@ export const findCart = async (userId: string) => {
   }
   return cart.products
 }
+
 export const updateCart = async (userId: string, cartItemId: string, quantity: number) => {
   try {
     const updatedCart = await Cart.findOneAndUpdate(

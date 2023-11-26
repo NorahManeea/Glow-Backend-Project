@@ -1,6 +1,5 @@
 import express from 'express'
 import { validateOrder } from '../validation/validateOrder'
-const router = express.Router()
 
 import {
   createOrder,
@@ -9,6 +8,8 @@ import {
   getOrderById,
   updateOrderStatus,
 } from '../controllers/orderController'
+
+const router = express.Router()
 
 // Get all orders route
 router.get('/', getAllOrders)

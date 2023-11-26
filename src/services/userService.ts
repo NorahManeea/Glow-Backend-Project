@@ -1,7 +1,9 @@
-import { User } from '../models/userModel'
 import createHttpError from 'http-errors'
-import { UserDocument } from '../types/types'
 import bcrypt from 'bcrypt'
+
+import { User } from '../models/userModel'
+import { UserDocument } from '../types/types'
+
 
 export const findAllUser = async () => {
   const users = await User.find()

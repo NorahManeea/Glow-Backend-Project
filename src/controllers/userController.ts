@@ -1,5 +1,5 @@
-// userController.ts
 import { Request, Response } from 'express'
+
 import { findAUser, findAllUser, removeUser, updateUser, userCount } from '../services/userService'
 
 /** -----------------------------------------------
@@ -16,6 +16,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
     res.status(500).json({ error: error })
   }
 }
+
 /** -----------------------------------------------
  * @desc Get User Count
  * @route /api/users/count
@@ -30,6 +31,7 @@ export const getUsersCount = async (req: Request, res: Response) => {
     res.status(500).json({ error: error })
   }
 }
+
 /** -----------------------------------------------
  * @desc Update user profile
  * @route /api/users/:userId
@@ -47,6 +49,7 @@ export const updateUserById = async (req: Request, res: Response) => {
     res.status(500).json({ error: error })
   }
 }
+
 /** -----------------------------------------------
  * @desc Delete user by ID
  * @route /api/users/:id
@@ -64,6 +67,7 @@ export const deleteUser = async (req: Request, res: Response) => {
     res.status(500).json({ error: error })
   }
 }
+
 /** -----------------------------------------------
  * @desc get user by Id
  * @route /api/users/:id

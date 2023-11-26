@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import zod, { ZodError } from 'zod'
-import ApiError from '../errors/ApiError'
 
+import ApiError from '../errors/ApiError'
 
 const productSchema = zod.object({
   product: zod.string(), 
@@ -9,6 +9,7 @@ const productSchema = zod.object({
   .number()
   .nonnegative({ message: 'Quantity in stock must be nonnegative number' }),
 });
+
 export function validateOrder(req: Request, res: Response, next: NextFunction) {
 const orderSchema = zod.object({
   user: zod.string(), 

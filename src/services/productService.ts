@@ -1,7 +1,8 @@
-import { Product } from '../models/productModel'
 import createHttpError from 'http-errors'
-import { ProductDocument } from '../types/types'
 import slugify from 'slugify'
+
+import { Product } from '../models/productModel'
+import { ProductDocument } from '../types/types'
 
 export const findAllProducts = async (
   pageNumber = 1,

@@ -8,6 +8,7 @@ import {
   updateUserById,
 } from '../controllers/userController'
 import { validateUser } from '../validation/validateUser'
+
 const router = express.Router()
 
 router.get('/', getAllUsers)
