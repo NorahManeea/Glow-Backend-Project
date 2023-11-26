@@ -3,11 +3,22 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import { authConfig } from '../config/auth.config';
 
 
-export const verifyToken = (res: Response, req: Request, next: NextFunction) => {
-    const token = req.headers['authorization'];
-    if (!token){
-        return res.status(403).json({message: 'No token, access denied'})
+export function verifyToken(req: Request, res:Response, next: NextFunction) {
+    const authenticationToken = req.headers.authorization;
+    if (authenticationToken) {
+      const token = authenticationToken;
+      try {
+        const decodedPayload = jwt.verify(token, authConfig.jwt.accessToken);
+        console.log(decodedPayload)
+        next();
+      } catch (error) {
+        res.status(401).json({ message: "Invalid token, access denied" });
+      }
+    } else {
+      res.status(401).json({ message: "No token, access denied" });
     }
-    next();
+  };
 
-}
+  export function verifyAdmin(req:Request, res:Response, next: NextFunction){
+    
+  }
