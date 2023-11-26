@@ -766,3 +766,7 @@ Method: GET, Path: /api/categories, Date: 11/25/2023, Time: 5:07:42 PM
 Method: POST, Path: /api/products, Date: 11/25/2023, Time: 5:07:58 PM
 Method: GET, Path: /api/products, Date: 11/25/2023, Time: 5:08:02 PM
 Method: GET, Path: /api/products, Date: 11/25/2023, Time: 5:08:13 PM
+Method: POST, Path: /api/cart, Date: 11/26/2023, Time: 10:44:48 AM
+Method: POST, Path: /api/cart, Date: 11/26/2023, Time: 10:45:02 AM
+Method: POST, Path: /api/cart, Date: 11/26/2023, Time: 10:45:11 AM
+Method: POST, Path: /api/cart, Date: 11/26/2023, Time: 10:45:27 AM
