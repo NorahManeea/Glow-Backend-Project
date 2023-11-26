@@ -1,8 +1,6 @@
 // userController.ts
 import { Request, Response } from 'express'
-import bcrypt from 'bcrypt'
-
-import { User } from '../models/userModel'
+import { findAUser, findAllUser, removeUser, updateUser, userCount } from '../services/userService'
 
 /** -----------------------------------------------
  * @desc Get All User
@@ -12,11 +10,10 @@ import { User } from '../models/userModel'
   -----------------------------------------------*/
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
-    const users = await User.find()
-    res.status(200).json(users)
+    const users = await findAllUser()
+    res.status(200).json({ message: 'All users returned successfully', payload: users })
   } catch (error) {
-    console.error(error)
-    res.status(500).json({ error: 'Internal Server Error' })
+    res.status(500).json({ error: error })
   }
 }
 /** -----------------------------------------------
@@ -26,8 +23,12 @@ export const getAllUsers = async (req: Request, res: Response) => {
  * @access private (Admin Only)
   -----------------------------------------------*/
 export const getUsersCount = async (req: Request, res: Response) => {
-  let usersCount = await User.countDocuments()
-  res.status(200).json(usersCount)
+  try {
+    const usersCount = await userCount()
+  res.status(200).json({ meassge: 'Users Count', usersCount })
+  } catch (error) {
+    res.status(500).json({ error: error })
+  }
 }
 /** -----------------------------------------------
  * @desc Update user profile
@@ -35,37 +36,15 @@ export const getUsersCount = async (req: Request, res: Response) => {
  * @method PUT
  * @access private (User himself)
   -----------------------------------------------*/
-export const updateUser = async (req: Request, res: Response) => {
+export const updateUserById = async (req: Request, res: Response) => {
   try {
-    const user = await User.findById(req.params.userId)
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' })
-    }
-
-    const { firstName, lastName, email, password } = req.body
-    if (firstName !== undefined) {
-      user.firstName = firstName
-    }
-    if (lastName !== undefined) {
-      user.lastName = lastName
-    }
-    if (email !== undefined) {
-      user.email = email
-    }
-    if (password !== undefined) {
-      // Hash Pasword
-      const salt = await bcrypt.genSalt(10)
-      user.password = await bcrypt.hash(req.body.password, salt)
-    }
-
-    await user.save()
-
+    const user = await updateUser(req.params.userId, req.body);
     res.status(200).json({
-      message: 'User updated successfully',
-      updatedUser: user,
-    })
+      message: 'User has been updated successfully',
+      payload: user,
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Internal Server Error' })
+    res.status(500).json({ error: error })
   }
 }
 /** -----------------------------------------------
@@ -76,39 +55,26 @@ export const updateUser = async (req: Request, res: Response) => {
   -----------------------------------------------*/
 export const deleteUser = async (req: Request, res: Response) => {
   try {
-    const user = await User.findById(req.params.id)
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' })
-    }
-    await User.findByIdAndDelete(req.params.userId)
+    const user = await removeUser(req.params.userId)
     res.status(200).json({
       message: 'User has been deleted successfully',
-      userId: user._id,
+      payload: user,
     })
   } catch (error) {
-    res.status(500).json({ message: 'Internal Server Error' })
+    res.status(500).json({ error: error })
   }
 }
 /** -----------------------------------------------
- * @desc get all user
- * @route /api/users/
+ * @desc get user by Id
+ * @route /api/users/:id
  * @method GET
  * @access private (Admin Only)
   -----------------------------------------------*/
 export const getUserById = async (req: Request, res: Response) => {
   try {
-    const userId = req.params.id
-
-    const user = await User.findById(userId)
-
-    if (!user) {
-      res.status(404).json({ error: 'User not found' })
-      return
-    }
-
-    res.status(200).json(user)
+    const user = await findAUser(req.params.userId)
+    res.status(200).json({ message: 'Single user returned successfully', payload: user })
   } catch (error) {
-    console.error(error)
-    res.status(500).json({ error: 'Server Error' })
+    res.status(500).json({ error: error })
   }
 }

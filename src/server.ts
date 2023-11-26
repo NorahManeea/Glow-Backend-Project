@@ -1,9 +1,8 @@
-import express from 'express'
+import express, { NextFunction, Request, Response } from 'express'
 import mongoose from 'mongoose'
 import { config } from 'dotenv'
 
 import usersRouter from './routers/usersRoute'
-
 import authRouter from './routers/authRoute'
 import categoryRouter from './routers/categoriesRoute'
 import cartRouter from './routers/cartRoute'
@@ -11,11 +10,11 @@ import productsRouter from './routers/productsRoute'
 import ordersRouter from './routers/ordersRoute'
 import apiErrorHandler from './middlewares/errorHandler'
 import myLogger from './middlewares/logger'
+import { databseConnection } from './database/db'
 
 config()
 const app = express()
 const PORT = 5050
-const URL = process.env.ATLAS_URL as string
 
 app.use(myLogger)
 app.use(express.urlencoded({ extended: true }))
@@ -30,14 +29,7 @@ app.use('/api/products', productsRouter)
 
 app.use(apiErrorHandler)
 
-mongoose
-  .connect(URL)
-  .then(() => {
-    console.log('Database connected')
-  })
-  .catch((err) => {
-    console.log('MongoDB connection error, ', err)
-  })
+databseConnection()
 
 app.listen(PORT, () => {
   console.log('Server running http://localhost:' + PORT)

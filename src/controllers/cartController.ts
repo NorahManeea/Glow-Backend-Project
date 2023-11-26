@@ -1,6 +1,7 @@
 import { Product } from './../models/productModel'
 import { Request, Response } from 'express'
 import { Cart } from '../models/cartModel'
+import { findCart, updateCart } from '../services/cartService'
 
 /** -----------------------------------------------
  * @desc Add to cart
@@ -9,8 +10,8 @@ import { Cart } from '../models/cartModel'
  * @access public
   -----------------------------------------------*/
 export const addToCart = async (req: Request, res: Response) => {
-  const { user, productId, quantity } = req.body
   try {
+    const { user, productId, quantity } = req.body
     const product = await Product.findById(productId)
     if (!product) {
       return res.status(404).json({ message: 'Product not found' })
@@ -47,10 +48,9 @@ export const addToCart = async (req: Request, res: Response) => {
       { $set: { quantityInStock: updataQuantityInStock } },
       { new: true }
     )
-    res.json({ cart, total })
+    res.json({ message: 'Product has been added to cart successfully', cart, total })
   } catch (error) {
-    console.error(error)
-    res.status(500).json({ error: 'Internal Server Error' })
+    res.status(500).json({ error: error })
   }
 }
 
@@ -61,21 +61,20 @@ export const addToCart = async (req: Request, res: Response) => {
  * @access private (user himself only)
   -----------------------------------------------*/
 export const getCartItems = async (req: Request, res: Response) => {
-  const { cartId } = req.params
-  try {
-    const cart = await Cart.findById(cartId)
-    console.log(cartId)
-    if (!cart) {
-      return res.status(404).json({ error: 'Cart not found' })
+  {
+    try {
+      const { id } = req.params
+      const cartItems = await findCart(id)
+      const itemsCount = cartItems.reduce((count, product) => count + product.quantity, 0)
+
+      res.status(200).json({
+        message: 'All cart items returned',
+        cartItems: cartItems,
+        itemsCount: itemsCount,
+      })
+    } catch (error) {
+      res.status(500).json({ error: error })
     }
-    const itemsCount = cart.products.reduce((count, product) => count + product.quantity, 0)
-    res.status(200).json({
-      cartItems: cart.products,
-      itemsCount: itemsCount,
-    })
-  } catch (error) {
-    console.error(error)
-    res.status(500).json({ error: 'Internal server error' })
   }
 }
 
@@ -86,25 +85,14 @@ export const getCartItems = async (req: Request, res: Response) => {
  * @access private (user himself only)
   -----------------------------------------------*/
 export const updateCartItems = async (req: Request, res: Response) => {
-  const { cartItem } = req.body
-  const { id } = req.params
   try {
-    const updatedItem = await Cart.findOneAndUpdate(
-      {_id: id,
-        'products.product': cartItem._id,
-      },
-      {$set: {
-          'products.$.quantity': cartItem.quantity,
-        },
-      },{ new: true }
-    )
-    if (!updatedItem) {
-      return res.status(404).json({ error: 'Cart or product not found' })
-    }
-    res.status(200).json(updatedItem)
+    const { cartItem } = req.body
+    const { userId } = req.params
+    const { cart, itemsCount } = await updateCart(userId, cartItem._id, cartItem.quantity)
+
+    res.status(200).json({ message: 'Cart item has been updated successfully', cart, itemsCount })
   } catch (error) {
-    console.error(error)
-    res.status(500).json({ error: 'Internal Server Error' })
+    res.status(500).json({ error: error })
   }
 }
 /** -----------------------------------------------
@@ -113,51 +101,4 @@ export const updateCartItems = async (req: Request, res: Response) => {
  * @method DELETE
  * @access private (user himself only)
   -----------------------------------------------*/
-export const deleteCartItem = async (req: Request, res: Response) => {
-  const { id } = req.params
-  const { productId } = req.body
-  console.log(req.params.id)
-  try {
-    const cart = await Cart.findById(id)
-    if (!cart) {
-      return res.status(404).json({ error: 'Cart not found' })
-    }
-    const deletedItem = cart.products.find((p) => p.product.toString() === productId)
-
-    if (!deletedItem) {
-      return res.status(404).json({ error: 'Product not found in the cart' })
-    }
-    const updatedCart = await Cart.findOneAndUpdate(
-      { _id: id, 'products.product': productId },
-      { $pull: { products: { product: productId } } },
-      { new: true }
-    );
-    
-    if (!updatedCart) {
-      return res.status(404).json({ error: 'error'});
-    }
-    if (!updatedCart) {
-      return res.status(404).json({ error: 'error' })
-    }
-    const product = await Product.findById(productId)
-
-    if (!product) {
-      return res.status(404).json({ error: 'Product not found' })
-    }
-
-    const updatedQuantityInStock = product.quantityInStock + deletedItem.quantity
-
-    await Product.findByIdAndUpdate(
-      productId,
-      { $set: { quantityInStock: updatedQuantityInStock } },
-      { new: true }
-    )
-    res.status(200).json({
-      message: 'Product has been deleted successfully',
-      cartItem: deletedItem,
-    })
-  } catch (error) {
-    console.error(error)
-    res.status(500).json({ error: 'Internal server error' })
-  }
-}
+export const deleteCartItem = async (req: Request, res: Response) => {}

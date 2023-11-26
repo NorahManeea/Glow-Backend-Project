@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { User } from '../models/userModel'
 
-import jwt, { JwtPayload } from 'jsonwebtoken'
+import jwt, { JwtPayload, TokenExpiredError } from 'jsonwebtoken'
 
 import bcrypt from 'bcrypt'
 import { authConfig } from '../config/auth.config'
@@ -22,16 +22,13 @@ export const registerUser = async (req: Request, res: Response) => {
     }
     const salt = await bcrypt.genSalt(10)
     const hashPassword = await bcrypt.hash(password, salt)
-
-    const token = jwt.sign(
-      {
-        email: email,
-        firstName: firstName,
-        lastName: lastName,
-        password: hashPassword,
-      },
-      authConfig.jwt.accessToken
-    )
+    const tokenPayload = {
+      email: email,
+      firstName: firstName,
+      lastName: lastName,
+      password: hashPassword,
+    }
+    const token = jwt.sign(tokenPayload, authConfig.jwt.accessToken, {expiresIn: '10m'})
 
     const subject = 'Welcome to Black Tigers Team!'
     const htmlTemplate = `
@@ -49,7 +46,11 @@ export const registerUser = async (req: Request, res: Response) => {
     })
   } catch (error) {
     console.error(error)
-    res.status(500).json({ message: 'Internal Server Error' })
+    if(error instanceof TokenExpiredError){
+      return res.status(401).json({ error: 'Token has expired' });
+    } else{
+      res.status(500).json({ error: error })
+    }
   }
 }
 
@@ -74,14 +75,14 @@ export const createrUser = async (req: Request, res: Response) => {
       firstName: firstName,
       lastName: lastName,
       password: password,
+      token
     })
 
     await user.save()
-
     res.status(200).json({ message: 'Your Account has been activated successfully' })
   } catch (error) {
     console.error(error)
-    res.status(500).json({ message: 'Internal Server Error' })
+    res.status(500).json({ error: error })
   }
 }
 
