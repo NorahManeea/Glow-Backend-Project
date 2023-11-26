@@ -23,6 +23,6 @@ router.post('/', validateOrder, createOrder)
 router.delete('/:orderId', deleteOrder)
 
 // Update order status route
-router.put('/:orderId', validateOrder, updateOrderStatus)
+router.put('/:orderId', updateOrderStatus)
 
 export default router

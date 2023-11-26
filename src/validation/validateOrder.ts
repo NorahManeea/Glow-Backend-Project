@@ -5,9 +5,9 @@ import ApiError from '../errors/ApiError'
 
 const productSchema = zod.object({
   product: zod.string(), 
-  quantityInStock: zod
+  quantity: zod
   .number()
-  .nonnegative({ message: 'Quantity in stock must be nonnegative number' }),
+  .nonnegative({ message: 'Quantity must be nonnegative number' }).optional(),
 });
 
 export function validateOrder(req: Request, res: Response, next: NextFunction) {
@@ -16,11 +16,11 @@ const orderSchema = zod.object({
   orderDate: zod.date().default(() => new Date()),
   products: zod.array(productSchema),
   shippingInfo: zod.object({
-    country: zod.string().nonempty(),
-    city: zod.string().nonempty(),
-    address: zod.string().nonempty(),
+    country: zod.string(),
+    city: zod.string(),
+    address: zod.string()
   }),
-  orderStatus: zod.enum(['PENDING', 'PROCESSING', 'SHIPPED']), 
+  orderStatus: zod.enum(['PENDING', 'PROCESSING', 'SHIPPED']).optional(), 
 });
 
 try {

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 
 import { Order } from '../models/orderModel'
+import { changeOrderStatus, createNewOrder, findAllOrders, findOrder, removeOrder } from '../services/orderService'
 
 /**-----------------------------------------------
  * @desc Get All Orders
@@ -10,15 +11,10 @@ import { Order } from '../models/orderModel'
  -----------------------------------------------*/
 export const getAllOrders = async (req: Request, res: Response) => {
   try {
-    const orders = await Order.find().populate('products')
-    res.status(200).json({
-      message: 'All orders returned',
-      payload: orders,
-    })
+    const orders = await findAllOrders()
+    res.status(200).json({ message: 'All orders returned successfully', payload: orders })
   } catch (error) {
-    res.status(500).json({
-      message: error,
-    })
+    res.status(500).json({ error: error })
   }
 }
 
@@ -30,19 +26,10 @@ export const getAllOrders = async (req: Request, res: Response) => {
  -----------------------------------------------*/
 export const getOrderById = async (req: Request, res: Response) => {
   try {
-    const orderId = req.params.orderId
-    const order = await Order.findById(orderId).populate('products')
-    if (!order) {
-      return res.status(404).json({ message: `no order with id: ${orderId}` })
-    }
-    res.status(200).json({
-      message: 'Order found and returned',
-      payload: order,
-    })
+    const order = await findOrder(req.params.orderId)
+    res.status(200).json({ message: 'Single order returned successfully', payload: order })
   } catch (error) {
-    res.status(500).json({
-      message: error,
-    })
+    res.status(500).json({ error: error })
   }
 }
 
@@ -54,21 +41,10 @@ export const getOrderById = async (req: Request, res: Response) => {
  -----------------------------------------------*/
 export const createOrder = async (req: Request, res: Response) => {
   try {
-    const { user, orderDate, products, shippingInfo, orderStatus } = req.body
-    const order = await Order.create({
-      user: user,
-      orderDate: orderDate,
-      products: products,
-      shippingInfo: shippingInfo,
-      orderStatus: orderStatus,
-    })
-    await order.save()
-    res.status(201).json({
-      message: 'Order has been created successfully',
-      payload: order,
-    })
+    const order = await createNewOrder(req.body)
+    res.status(201).json({ meassge: 'Order has been created successfuly', payload: order })
   } catch (error) {
-    res.status(500).json({ message: error })
+    res.status(500).json({ error: error })
   }
 }
 
@@ -80,18 +56,10 @@ export const createOrder = async (req: Request, res: Response) => {
  -----------------------------------------------*/
 export const deleteOrder = async (req: Request, res: Response) => {
   try {
-    const orderId = req.params.orderId
-    const order = await Order.findById(orderId)
-    if (!order) {
-      return res.status(404).json({ message: `no order with id: ${orderId}` })
-    }
-    await Order.findByIdAndDelete(orderId)
-    res.status(200).json({
-      message: 'Order has been deleted successfully',
-      orderId: order._id,
-    })
+    const order = await removeOrder(req.params.orderId)
+    res.status(200).json({ meassge: 'Order has been deleted Successfully', result: order })
   } catch (error) {
-    res.status(500).json({ message: error })
+    res.status(500).json({ error: error })
   }
 }
 
@@ -103,23 +71,10 @@ export const deleteOrder = async (req: Request, res: Response) => {
  -----------------------------------------------*/
 export const updateOrderStatus = async (req: Request, res: Response) => {
   try {
-    const orderId = req.params.orderId
-    const order = await Order.findById(orderId)
-    if (!order) {
-      return res.status(404).json({ message: `no order with id: ${orderId}` })
-    }
-
     const { orderStatus } = req.body
-    const updatedOrder = await Order.findByIdAndUpdate(
-      orderId,
-      { $set: { orderStatus: orderStatus } },
-      { new: true }
-    )
-
+    const updatedOrder = await changeOrderStatus(req.params.orderId ,orderStatus)
     res.status(200).json({
-      message: 'Order status updated successfully',
-      updatedOrder: updatedOrder,
-    })
+      message: 'Category has been updated successfully', payload: updatedOrder})
   } catch (error) {
     res.status(500).json({ message: 'Internal Server Error' })
   }
