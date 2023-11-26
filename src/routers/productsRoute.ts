@@ -1,4 +1,5 @@
 import express from 'express'
+import {uploadImage} from '../middlewares/uploadImage'
 const router = express.Router()
 
 import {
@@ -11,8 +12,8 @@ import {
 import { validateProduct } from '../validation/validateProduct'
 import { validateObjectId } from '../middlewares/validateObjectId'
 
-router.get('/', getAllProducts)
-router.post('/', validateProduct, createProduct)
+router.get('/',getAllProducts)
+router.post('/',uploadImage.single('productImage'),createProduct)
 router.get('/:id', validateObjectId, getProductById)
 router.delete('/:id',validateObjectId, deleteProductById)
 router.put('/:id', validateObjectId,updateProductById)
