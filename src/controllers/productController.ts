@@ -77,7 +77,16 @@ export const deleteProductById = async (req: Request, res: Response) => {
  -----------------------------------------------*/
 export const createProduct = async (req: Request, res: Response) => {
   try {
-    const product = await createNewProduct(req.body)
+    const product = await createNewProduct({
+      productName: req.body.productName,
+      productDescription: req.body.productDescription,
+      productImage: req.file?.path,
+      quantityInStock: req.body.quantityInStock,
+      productPrice: req.body.productPrice,
+      category: req.body.category,
+      variants: req.body.variants,
+      sizes: req.body.sizes,
+    })
     res.status(201).json({ meassge: 'Product has been created successfuly', payload: product })
   } catch (error) {
     res.status(500).json({ error: error })

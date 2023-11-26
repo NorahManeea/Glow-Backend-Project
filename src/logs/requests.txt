@@ -850,3 +850,12 @@ Method: DELETE, Path: /api/cart/655f7aaa9c9dbd3aa29c6076, Date: 11/25/2023, Time
 Method: DELETE, Path: /api/cart/655f7aaa9c9dbd3aa29c6076, Date: 11/25/2023, Time: 11:45:13 PM
 Method: DELETE, Path: /api/cart/655f7aaa9c9dbd3aa29c6076, Date: 11/25/2023, Time: 11:45:24 PM
 Method: POST, Path: /api/cart, Date: 11/26/2023, Time: 12:04:50 AM
+Method: POST, Path: /api/products, Date: 11/26/2023, Time: 2:45:24 PM
+Method: POST, Path: /api/products, Date: 11/26/2023, Time: 2:45:42 PM
+Method: POST, Path: /api/products, Date: 11/26/2023, Time: 2:49:20 PM
+Method: POST, Path: /api/products, Date: 11/26/2023, Time: 2:49:44 PM
+Method: POST, Path: /api/products, Date: 11/26/2023, Time: 2:51:10 PM
+Method: POST, Path: /api/products, Date: 11/26/2023, Time: 2:51:40 PM
+Method: POST, Path: /api/products, Date: 11/26/2023, Time: 2:52:22 PM
+Method: POST, Path: /api/products, Date: 11/26/2023, Time: 2:52:31 PM
+Method: POST, Path: /api/products, Date: 11/26/2023, Time: 2:52:36 PM
