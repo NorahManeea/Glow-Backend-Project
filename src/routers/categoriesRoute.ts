@@ -10,11 +10,12 @@ import {
   deleteCategory,
 } from '../controllers/categoryController'
 import { validateObjectId } from '../middlewares/validateObjectId'
+import { checkAuth, checkRole } from '../middlewares/verifyToken'
 
 router.get('/', getAllCategory)
-router.post('/', validateCategory, createCategory)
+router.post('/', validateCategory,checkAuth,checkRole('ADMIN'), createCategory)
 router.get('/:id', validateObjectId,getCategoryById)
-router.put('/:id', validateObjectId,updateCategoryById)
-router.delete('/:id', validateObjectId,deleteCategory)
+router.put('/:id', validateObjectId,checkAuth,checkRole('ADMIN'),updateCategoryById)
+router.delete('/:id', validateObjectId,checkAuth,checkRole('ADMIN'),deleteCategory)
 
 export default router
