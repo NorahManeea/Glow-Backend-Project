@@ -1,12 +1,15 @@
-
 declare namespace Express {
   interface Request {
-    msg: string
-    user: {
-      id: string
+    validatedUser: {
       email: string
-      password:string
-      role: 'user'| 'admin'
+      password: string
+    }
+    decodedUser: {
+      userId: string
+      email: string
+      role: 'USER' | 'ADMIN'
+      iat: number
+      exp: number
     }
   }
 }

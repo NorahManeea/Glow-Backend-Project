@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { User } from '../models/userModel'
 
-import jwt, { JwtPayload, TokenExpiredError } from 'jsonwebtoken'
+import jwt, { JwtPayload } from 'jsonwebtoken'
 
 import bcrypt from 'bcrypt'
 import { authConfig } from '../config/auth.config'
@@ -15,20 +15,24 @@ import { sendEmail } from '../utils/sendEmail'
   -----------------------------------------------*/
 export const registerUser = async (req: Request, res: Response) => {
   try {
-    const { email, firstName, lastName, password } = req.body
+    const { email, firstName, lastName, password, role } = req.body
     let user = await User.findOne({ email })
     if (user) {
       return res.status(400).json({ message: 'This email is already registered' })
     }
     const salt = await bcrypt.genSalt(10)
     const hashPassword = await bcrypt.hash(password, salt)
-    const tokenPayload = {
-      email: email,
-      firstName: firstName,
-      lastName: lastName,
-      password: hashPassword,
-    }
-    const token = jwt.sign(tokenPayload, authConfig.jwt.accessToken, {expiresIn: '10m'})
+
+    const token = jwt.sign(
+      {
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+        password: hashPassword,
+        role: role
+      },
+      authConfig.jwt.accessToken
+    )
 
     const subject = 'Welcome to Black Tigers Team!'
     const htmlTemplate = `
@@ -46,11 +50,7 @@ export const registerUser = async (req: Request, res: Response) => {
     })
   } catch (error) {
     console.error(error)
-    if(error instanceof TokenExpiredError){
-      return res.status(401).json({ error: 'Token has expired' });
-    } else{
-      res.status(500).json({ error: error })
-    }
+    res.status(500).json({ message: 'Internal Server Error' })
   }
 }
 
@@ -67,22 +67,25 @@ export const createrUser = async (req: Request, res: Response) => {
     const verifiedToken = jwt.verify(token, authConfig.jwt.accessToken) as JwtPayload
 
     if (!verifiedToken) {
+
       return res.status(400).json({ message: 'Invalid token' })
     }
-    const { email, firstName, lastName, password } = verifiedToken
+    const { email, firstName, lastName, password, role } = verifiedToken
     const user = new User({
       email: email,
       firstName: firstName,
       lastName: lastName,
       password: password,
-      token
+      role: role
+      
     })
 
     await user.save()
+
     res.status(200).json({ message: 'Your Account has been activated successfully' })
   } catch (error) {
     console.error(error)
-    res.status(500).json({ error: error })
+    res.status(500).json({ message: 'Internal Server Error' })
   }
 }
 
@@ -112,5 +115,6 @@ export const loginUser = async (req: Request, res: Response) => {
     email: user.email,
     firstName: user.firstName,
     lastName: user.lastName,
+    role: user.role
   })
 }

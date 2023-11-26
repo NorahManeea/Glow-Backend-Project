@@ -8,14 +8,13 @@ import {
   getProductById,
   updateProductById,
 } from '../controllers/productController'
-import { validateProduct } from '../validation/validateProduct'
 import { validateObjectId } from '../middlewares/validateObjectId'
-import { upload } from '../middlewares/uploadImage'
+import { checkAuth } from '../middlewares/verifyToken'
 
-router.get('/', getAllProducts)
-router.post('/', upload.single('productImage'), createProduct)
+router.get('/',getAllProducts)
+router.post('/',checkAuth('USER'), createProduct)
 router.get('/:id', validateObjectId, getProductById)
 router.delete('/:id',validateObjectId, deleteProductById)
-router.put('/:id', validateObjectId, updateProductById)
+router.put('/:id', validateObjectId,updateProductById)
 
 export default router
