@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { authConfig } from '../config/auth.config';
+import { UserDocument } from '../types/types';
 
 
 export function verifyToken(req: Request, res:Response, next: NextFunction) {
@@ -19,6 +20,13 @@ export function verifyToken(req: Request, res:Response, next: NextFunction) {
     }
   };
 
-  export function verifyAdmin(req:Request, res:Response, next: NextFunction){
-    
-  }
+
+  export function verifyTokenAndAdmin(req:Request, res:Response, next: NextFunction){
+    verifyToken(req,res, ()=> {
+        if(req.user.email === 'nouraalmanea0@gmail.com') {
+            next();
+        }else{
+            return res.status(403).json({message: "Not allowed Only Admin"});
+        }
+    });
+};
