@@ -15,7 +15,7 @@ import { sendEmail } from '../utils/sendEmail'
   -----------------------------------------------*/
 export const registerUser = async (req: Request, res: Response) => {
   try {
-    const { email, firstName, lastName, password } = req.body
+    const { email, firstName, lastName, password, role } = req.body
     let user = await User.findOne({ email })
     if (user) {
       return res.status(400).json({ message: 'This email is already registered' })
@@ -29,6 +29,7 @@ export const registerUser = async (req: Request, res: Response) => {
         firstName: firstName,
         lastName: lastName,
         password: hashPassword,
+        role: role
       },
       authConfig.jwt.accessToken
     )
@@ -66,14 +67,17 @@ export const createrUser = async (req: Request, res: Response) => {
     const verifiedToken = jwt.verify(token, authConfig.jwt.accessToken) as JwtPayload
 
     if (!verifiedToken) {
+
       return res.status(400).json({ message: 'Invalid token' })
     }
-    const { email, firstName, lastName, password } = verifiedToken
+    const { email, firstName, lastName, password, role } = verifiedToken
     const user = new User({
       email: email,
       firstName: firstName,
       lastName: lastName,
       password: password,
+      role: role
+      
     })
 
     await user.save()
@@ -111,5 +115,6 @@ export const loginUser = async (req: Request, res: Response) => {
     email: user.email,
     firstName: user.firstName,
     lastName: user.lastName,
+    role: user.role
   })
 }

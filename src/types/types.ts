@@ -23,6 +23,15 @@ export type ProductDocument = Document & {
 export type CategoryDocument = Document & {
   categoryName: string
 }
+export type DecodedUser = {
+  userId: string
+  email: string
+  role: Role
+  iat: number
+  exp: number
+}
+
+export type Role = 'USER' | 'ADMIN'
 
 export type OrderDocument = Document & {
   user: string
