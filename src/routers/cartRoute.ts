@@ -6,10 +6,12 @@ import {
   deleteCartItem,
 } from '../controllers/cartController'
 import { validateObjectId } from '../middlewares/validateObjectId'
+import { validateCart } from '../validation/validateCart'
+
 
 const router = express.Router()
 
-router.post('/', addToCart)
+router.post('/',addToCart)
 router.put('/:id', validateObjectId, updateCartItems)
 router.get('/:id', validateObjectId, getCartItems)
 router.delete('/:id', deleteCartItem)

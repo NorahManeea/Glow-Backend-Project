@@ -16,10 +16,18 @@ import {
  -----------------------------------------------*/
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
-    // const { lowestPrice, highestPrice, newest, searchText, categoryId } = req.query
     let pageNumber = Number(req.query.pageNumber)
     const limit = Number(req.query.limit)
-    const { products, totalPages, currentPage } = await findAllProducts(pageNumber, limit)
+    const sortBy = req.query.sortBy?.toString()
+    const searchText = req.query.searchText?.toString()
+    const category = req.query.category?.toString()
+    const { products, totalPages, currentPage } = await findAllProducts(
+      pageNumber,
+      limit,
+      sortBy,
+      searchText,
+      category
+    )
     res
       .status(200)
       .json({ message: 'All products returned', payload: products, totalPages, currentPage })
@@ -69,7 +77,16 @@ export const deleteProductById = async (req: Request, res: Response) => {
  -----------------------------------------------*/
 export const createProduct = async (req: Request, res: Response) => {
   try {
-    const product = await createNewProduct(req.body)
+    const product = await createNewProduct({
+      productName: req.body.productName,
+      productDescription: req.body.productDescription,
+      productImage: req.file?.path,
+      quantityInStock: req.body.quantityInStock,
+      productPrice: req.body.productPrice,
+      category: req.body.category,
+      variants: req.body.variants,
+      sizes: req.body.sizes,
+    })
     res.status(201).json({ meassge: 'Product has been created successfuly', payload: product })
   } catch (error) {
     res.status(500).json({ error: error })
@@ -89,7 +106,9 @@ export const updateProductById = async (req: Request, res: Response) => {
       req.body.slug = slugify(req.body.productName)
     }
     const updatedProduct = await updateProduct(productId, req.body)
-    res.status(200).json({ message: 'Product has been updated successfully', payload: updatedProduct })
+    res
+      .status(200)
+      .json({ message: 'Product has been updated successfully', payload: updatedProduct })
   } catch (error) {
     res.status(500).json({ error: error })
   }

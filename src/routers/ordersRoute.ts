@@ -1,4 +1,5 @@
 import express from 'express'
+import { validateOrder } from '../validation/validateOrder'
 const router = express.Router()
 
 import {
@@ -15,12 +16,12 @@ router.get('/', getAllOrders)
 router.get('/:orderId', getOrderById)
 
 // Create new order route
-router.post('/', createOrder)
+router.post('/', validateOrder, createOrder)
 
 // Delete order by id route
 router.delete('/:orderId', deleteOrder)
 
 // Update order status route
-router.put('/:orderId', updateOrderStatus)
+router.put('/:orderId', validateOrder, updateOrderStatus)
 
 export default router
