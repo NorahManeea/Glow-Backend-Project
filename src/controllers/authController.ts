@@ -16,7 +16,7 @@ import { User } from '../models/userModel'
 export const registerUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, firstName, lastName, password } = req.body
-    
+    const avatar = req.file?.path || '';
     let user = await User.findOne({ email })
     if (user) {
       return res.status(400).json({ message: 'This email is already registered' })
@@ -31,6 +31,7 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
       password: hashPassword,
       token,
       role: 'USER',
+      avatar
     })
 
     await newUser.save()
@@ -111,7 +112,7 @@ export const loginUser = async (req: Request, res: Response) => {
     },
     authConfig.jwt.accessToken as string,
     {
-      expiresIn: '24h',
+      expiresIn: '10m',
     }
   )
   res.status(200).json({ message: 'Login successful', token })

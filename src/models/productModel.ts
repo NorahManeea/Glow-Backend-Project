@@ -43,6 +43,9 @@ const productSchema = new mongoose.Schema(
       type: String,
       unique: true,
       lowercase: true,
+    },
+    itemsSold:{
+      type: Number
     }
   },
   { timestamps: true }

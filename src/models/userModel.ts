@@ -44,6 +44,14 @@ const userSchema = new mongoose.Schema(
     token: {
       type: String,
     },
+    isBlocked:{
+      type: Boolean,
+      default: false
+    },
+    avatar:{
+      type: String,
+      default: ''
+    }
   },
   
   { timestamps: true }
