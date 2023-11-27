@@ -838,3 +838,6 @@ Method: GET, Path: /api/products/highest-sold, Date: 11/28/2023, Time: 12:11:17 
 Method: GET, Path: /api/products/highest-sold, Date: 11/28/2023, Time: 12:11:40 AM
 Method: GET, Path: /api/products/highest-sold, Date: 11/28/2023, Time: 12:11:44 AM
 Method: GET, Path: /api/products/highest-sold, Date: 11/28/2023, Time: 12:11:52 AM
+Method: PUT, Path: /api/users/655e4a6cfac7cdb66eb1b4f0, Date: 11/28/2023, Time: 12:57:16 AM
+Method: PUT, Path: /api/users/655e4a6cfac7cdb66eb1b4f0, Date: 11/28/2023, Time: 12:57:38 AM
+Method: PUT, Path: /api/users/655e4a6cfac7cdb66eb1b4f0, Date: 11/28/2023, Time: 12:58:20 AM

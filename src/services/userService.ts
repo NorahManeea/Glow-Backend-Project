@@ -4,7 +4,6 @@ import bcrypt from 'bcrypt'
 import { User } from '../models/userModel'
 import { UserDocument } from '../types/types'
 
-
 export const findAllUser = async () => {
   const users = await User.find()
   return users
@@ -28,7 +27,11 @@ export const removeUser = async (userId: string) => {
   return user
 }
 
-export const updateUser = async (userId: string, updatedUser: UserDocument) => {
+export const updateUser = async (
+  userId: string,
+  updatedUser: UserDocument,
+  avatar?: Express.Multer.File
+) => {
   const { password } = updatedUser
 
   const user = await User.findByIdAndUpdate(userId, updatedUser, { new: true })
@@ -41,8 +44,11 @@ export const updateUser = async (userId: string, updatedUser: UserDocument) => {
     // Hash Password
     const salt = await bcrypt.genSalt(10)
     user.password = await bcrypt.hash(password, salt)
-    await user.save()
   }
+  if (avatar) {
+    user.avatar = avatar.path
+  }
+  await user.save()
 
   return user
 }
@@ -53,10 +59,6 @@ export const userCount = async () => {
 }
 
 export const blockUser = async (userId: string) => {
-  const isBlock = await User.findByIdAndUpdate(
-    userId,
-    { $set: { isBlocked: true} },
-    { new: true }
-  )
+  const isBlock = await User.findByIdAndUpdate(userId, { $set: { isBlocked: true } }, { new: true })
   return isBlock
 }

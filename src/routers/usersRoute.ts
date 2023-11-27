@@ -8,13 +8,14 @@ import {
   updateUserById,
 } from '../controllers/userController'
 import { validateUser } from '../validation/validateUser'
+import { uploadImage } from '../middlewares/uploadImage'
 
 const router = express.Router()
 
 router.get('/', getAllUsers)
 router.get('/count', getUsersCount)
 router.delete('/:userId', deleteUser)
-router.put('/:userId', updateUserById)
+router.put('/:userId', uploadImage.single('avatar'),updateUserById)
 router.get('/:userId', getUserById)
 
 export default router

@@ -40,7 +40,8 @@ export const getUsersCount = async (req: Request, res: Response) => {
   -----------------------------------------------*/
 export const updateUserById = async (req: Request, res: Response) => {
   try {
-    const user = await updateUser(req.params.userId, req.body)
+    const avatar = req.file;
+    const user = await updateUser(req.params.userId, req.body, avatar)
     res.status(200).json({
       message: 'User has been updated successfully',
       payload: user,
