@@ -15,7 +15,8 @@ import { User } from '../models/userModel'
   -----------------------------------------------*/
 export const registerUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { email, firstName, lastName, password, role } = req.body
+    const { email, firstName, lastName, password } = req.body
+    
     let user = await User.findOne({ email })
     if (user) {
       return res.status(400).json({ message: 'This email is already registered' })
