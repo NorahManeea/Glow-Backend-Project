@@ -83,8 +83,6 @@ export const deleteProductById = async (req: Request, res: Response) => {
   console.log(JSON.stringify(req.body));
 
   try {
-  
-
     const newProduct = new Product({
       productName: productName,
       productDescription: productDescription,
