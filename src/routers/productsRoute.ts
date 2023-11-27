@@ -11,9 +11,10 @@ import {
 } from '../controllers/productController'
 import { validateProduct } from '../validation/validateProduct'
 import { validateObjectId } from '../middlewares/validateObjectId'
+import { checkAuth, checkRole } from '../middlewares/verifyToken'
 
 router.get('/',getAllProducts)
-router.post('/',uploadImage.single('productImage'),createProduct)
+router.post('/',checkAuth, checkRole('ADMIN'),createProduct)
 router.get('/:id', validateObjectId, getProductById)
 router.delete('/:id',validateObjectId, deleteProductById)
 router.put('/:id', validateObjectId,updateProductById)
