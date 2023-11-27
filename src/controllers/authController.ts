@@ -31,7 +31,8 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
       password: hashPassword,
       token,
       role: 'USER',
-      avatar
+      avatar,
+      isBlocked: true
     })
 
     await newUser.save()
@@ -109,6 +110,7 @@ export const loginUser = async (req: Request, res: Response) => {
       lastName: user.lastName,
       email: user.email,
       role: user.role,
+      isBlocked: user.isBlocked,
     },
     authConfig.jwt.accessToken as string,
     {

@@ -47,6 +47,16 @@ export const findProduct = async (productId: string) => {
   return product
 }
 
+export const findHighestSoldProducts = async (limit = 8) => {
+  const highestSoldProducts = await Product.find()
+    .sort({ itemsSold: -1 })
+    .limit(limit)
+    .populate('category')
+
+  return { highestSoldProducts }
+}
+
+
 export const removeProduct = async (id: string) => {
   const product = await Product.findByIdAndDelete(id)
   if (!product) {

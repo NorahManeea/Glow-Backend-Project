@@ -33,6 +33,7 @@ export type DecodedUser = {
   userId: string
   email: string
   role: Role
+  isBlocked: boolean
   iat: number
   exp: number
 }

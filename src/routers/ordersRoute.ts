@@ -8,6 +8,7 @@ import {
   getOrderById,
   updateOrderStatus,
 } from '../controllers/orderController'
+import { checkAuth, checkBlock } from '../middlewares/verifyToken'
 
 const router = express.Router()
 
@@ -17,7 +18,7 @@ router.get('/', getAllOrders)
 router.get('/:orderId', getOrderById)
 
 // Create new order route
-router.post('/', validateOrder, createOrder)
+router.post('/', validateOrder,checkAuth,checkBlock, createOrder)
 
 // Delete order by id route
 router.delete('/:orderId', deleteOrder)

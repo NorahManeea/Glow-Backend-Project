@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 
-import { findAUser, findAllUser, removeUser, updateUser, userCount } from '../services/userService'
+import { blockUser, findAUser, findAllUser, removeUser, updateUser, userCount } from '../services/userService'
 
 /** -----------------------------------------------
  * @desc Get All User
@@ -82,3 +82,18 @@ export const getUserById = async (req: Request, res: Response) => {
     res.status(500).json({ error: error })
   }
 }
+
+/** -----------------------------------------------
+ * @desc Block User
+ * @route /api/users/block/:id
+ * @method PUT
+ * @access private (Admin Only)
+  -----------------------------------------------*/
+  export const blockUserById = async (req: Request, res: Response) => {
+    try {
+      const user = await blockUser(req.params.userId)
+      res.status(200).json({ message: 'User has been block successfully', payload: user })
+    } catch (error) {
+      res.status(500).json({ error: error })
+    }
+  }

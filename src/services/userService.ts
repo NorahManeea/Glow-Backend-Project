@@ -51,3 +51,12 @@ export const userCount = async () => {
   let usersCount = await User.countDocuments()
   return usersCount
 }
+
+export const blockUser = async (userId: string) => {
+  const isBlock = await User.findByIdAndUpdate(
+    userId,
+    { $set: { isBlocked: true} },
+    { new: true }
+  )
+  return isBlock
+}

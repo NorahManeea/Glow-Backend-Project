@@ -2,6 +2,7 @@ import createHttpError from 'http-errors'
 
 import { Order } from '../models/orderModel'
 import { OrderDocument } from '../types/types'
+import { Product } from '../models/productModel'
 
 export const findAllOrders = async () => {
   const orders = await Order.find()
@@ -35,7 +36,14 @@ export const createNewOrder = async (newOrder: OrderDocument) => {
     shippingInfo: shippingInfo,
     orderStatus: orderStatus,
   })
+  for (const product of products) {
+    const productId = product.product.toString()
+    await updateItemsSold(productId)
+  }
   return order
+}
+export const updateItemsSold = async (productId: string) => {
+  await Product.findByIdAndUpdate(productId, { $inc: { itemsSold: 1 } }, { new: true })
 }
 
 export const changeOrderStatus = async (orderId: string, newStatus: string) => {

@@ -32,3 +32,12 @@ export function checkRole(expectedRole: Role) {
     next()
   }
 }
+
+export function checkBlock(req: Request, res: Response, next: NextFunction) {
+  const decodedUser = req.decodedUser;
+  console.log(decodedUser)
+  if (decodedUser.isBlocked) {
+    return next(ApiError.forbidden('User is blocked'));
+  }
+  next();
+}

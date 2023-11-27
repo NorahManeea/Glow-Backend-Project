@@ -7,6 +7,8 @@ import {
   updateProduct,
   createNewProduct,
   findProduct,
+  findHighestSoldProducts,
+  
 } from '../services/productService'
 import { ProductDocument } from '../types/types'
 import { Product } from '../models/productModel'
@@ -116,6 +118,27 @@ export const updateProductById = async (req: Request, res: Response) => {
     res
       .status(200)
       .json({ message: 'Product has been updated successfully', payload: updatedProduct })
+  } catch (error) {
+    res.status(500).json({ error: error })
+  }
+}
+
+/**-----------------------------------------------
+ * @desc Get HighestSold Product
+ * @route /api/products/highest-sold
+ * @method GET
+ * @access public
+ -----------------------------------------------*/
+ export const getHighestSoldProducts = async (req: Request, res: Response) => {
+  try {
+    const limit = Number(req.query.limit)
+    const highestSoldProducts = await findHighestSoldProducts(limit)
+    res
+      .status(200)
+      .json({
+        message: 'Highest Sold Products have been returned successfully',
+        payload: highestSoldProducts,
+      })
   } catch (error) {
     res.status(500).json({ error: error })
   }
