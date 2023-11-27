@@ -8,6 +8,8 @@ import {
   createNewProduct,
   findProduct,
 } from '../services/productService'
+import { ProductDocument } from '../types/types'
+import { Product } from '../models/productModel'
 
 /**-----------------------------------------------
  * @desc Get All Products
@@ -76,23 +78,29 @@ export const deleteProductById = async (req: Request, res: Response) => {
  * @method POST
  * @access private (admin Only)
  -----------------------------------------------*/
-export const createProduct = async (req: Request, res: Response) => {
+ export const createProduct = async (req: Request, res: Response) => {
+  const { productName, productDescription, productPrice, quantityInStock, category } = req.body;
+  console.log(JSON.stringify(req.body));
+
   try {
-    const product = await createNewProduct({
-      productName: req.body.productName,
-      productDescription: req.body.productDescription,
+  
+
+    const newProduct = new Product({
+      productName: productName,
+      productDescription: productDescription,
+      productPrice: productPrice,
       productImage: req.file?.path,
-      quantityInStock: req.body.quantityInStock,
-      productPrice: req.body.productPrice,
-      category: req.body.category,
-      variants: req.body.variants,
-      sizes: req.body.sizes,
-    })
-    res.status(201).json({ meassge: 'Product has been created successfuly', payload: product })
+      quantityInStock: quantityInStock,
+      category: category,
+      slug: slugify(productName)
+    });
+
+    await newProduct.save();
+    res.status(201).json({ message: 'Product has been created successfully', payload: newProduct });
   } catch (error) {
-    res.status(500).json({ error: error })
+    res.status(500).json({ error: error });
   }
-}
+};
 
 /**-----------------------------------------------
  * @desc Update Product
