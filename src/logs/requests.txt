@@ -808,3 +808,10 @@ Method: POST, Path: /api/products, Date: 11/27/2023, Time: 1:19:14 AM
 Method: POST, Path: /api/products, Date: 11/27/2023, Time: 1:21:04 AM
 Method: POST, Path: /api/products, Date: 11/27/2023, Time: 1:21:29 AM
 Method: POST, Path: /api/products, Date: 11/27/2023, Time: 1:22:29 AM
+Method: POST, Path: /api/products, Date: 11/27/2023, Time: 9:59:39 AM
+Method: POST, Path: /api/auth/login, Date: 11/27/2023, Time: 9:59:50 AM
+Method: POST, Path: /api/products, Date: 11/27/2023, Time: 10:00:36 AM
+Method: POST, Path: /api/auth/login, Date: 11/27/2023, Time: 10:00:48 AM
+Method: POST, Path: /api/auth/login, Date: 11/27/2023, Time: 10:00:54 AM
+Method: POST, Path: /api/auth/login, Date: 11/27/2023, Time: 10:01:01 AM
+Method: POST, Path: /api/products, Date: 11/27/2023, Time: 10:01:22 AM
