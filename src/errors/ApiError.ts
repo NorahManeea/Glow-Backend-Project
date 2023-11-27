@@ -1,9 +1,6 @@
 import { ZodError } from 'zod'
 
 class ApiError {
-  static forbidden(arg0: string): any {
-    throw new Error('Method not implemented.')
-  }
   constructor(public code: number, public message: string | ZodError['errors']) {
     this.code = code
     this.message = message
