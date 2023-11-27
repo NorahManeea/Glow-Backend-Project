@@ -34,7 +34,7 @@ export const addToCart = async (req: Request, res: Response) => {
     cart = await addItem(cart, quantity, product)
 
     // Calculate the total price
-    const totalPrice = calculateTotalPrice(cart)
+    const totalPrice = await calculateTotalPrice(cart)
 
     // Update the product stock
     await updateQuantityInStock(productId, product.quantityInStock)
