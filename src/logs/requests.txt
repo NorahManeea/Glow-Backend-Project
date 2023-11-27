@@ -815,3 +815,4 @@ Method: POST, Path: /api/auth/login, Date: 11/27/2023, Time: 10:00:48 AM
 Method: POST, Path: /api/auth/login, Date: 11/27/2023, Time: 10:00:54 AM
 Method: POST, Path: /api/auth/login, Date: 11/27/2023, Time: 10:01:01 AM
 Method: POST, Path: /api/products, Date: 11/27/2023, Time: 10:01:22 AM
+Method: POST, Path: /api/auth/register, Date: 11/27/2023, Time: 8:11:12 PM
