@@ -55,3 +55,13 @@ export type CartDocument = Document & {
     quantity: number
   }[]
 }
+export type CommentDocument  = {
+  userId: string
+  products: {
+    product: mongoose.Schema.Types.ObjectId
+    
+  }[]
+  content: string
+  comentDate: Date
+ 
+}
