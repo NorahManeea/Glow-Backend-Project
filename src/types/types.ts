@@ -7,7 +7,9 @@ export type UserDocument = Document & {
   password: string
   role: string
   isAccountVerified: boolean
-  token: string
+  token: string,
+  isBlocked: boolean,
+  avatar: string
 }
 
 export type ProductDocument = Document & {
@@ -20,6 +22,7 @@ export type ProductDocument = Document & {
   variants: string[]
   sizes: string[]
   slug: string
+  itemsSold: number
 }
 
 export type CategoryDocument = Document & {
