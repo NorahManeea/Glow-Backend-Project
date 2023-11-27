@@ -830,3 +830,11 @@ Method: POST, Path: /api/auth/login, Date: 11/28/2023, Time: 12:05:41 AM
 Method: POST, Path: /api/orders/, Date: 11/28/2023, Time: 12:05:55 AM
 Method: POST, Path: /api/auth/login, Date: 11/28/2023, Time: 12:07:24 AM
 Method: POST, Path: /api/orders/, Date: 11/28/2023, Time: 12:07:37 AM
+Method: POST, Path: /api/auth/login, Date: 11/28/2023, Time: 12:09:57 AM
+Method: POST, Path: /api/orders/, Date: 11/28/2023, Time: 12:10:10 AM
+Method: GET, Path: /api/products/highest-sold, Date: 11/28/2023, Time: 12:10:17 AM
+Method: GET, Path: /api/products/highest-sold, Date: 11/28/2023, Time: 12:11:15 AM
+Method: GET, Path: /api/products/highest-sold, Date: 11/28/2023, Time: 12:11:17 AM
+Method: GET, Path: /api/products/highest-sold, Date: 11/28/2023, Time: 12:11:40 AM
+Method: GET, Path: /api/products/highest-sold, Date: 11/28/2023, Time: 12:11:44 AM
+Method: GET, Path: /api/products/highest-sold, Date: 11/28/2023, Time: 12:11:52 AM

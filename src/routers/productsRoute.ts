@@ -6,6 +6,7 @@ import {
   createProduct,
   deleteProductById,
   getAllProducts,
+  getHighestSoldProducts,
   getProductById,
   updateProductById,
 } from '../controllers/productController'
@@ -14,7 +15,9 @@ import { checkAuth, checkRole } from '../middlewares/verifyToken'
 
 router.get('/',getAllProducts)
 router.post('/', checkAuth, checkRole('ADMIN'), uploadImage.single('productImage'), createProduct)
+router.get('/highest-sold', getHighestSoldProducts)
 router.get('/:id', validateObjectId, getProductById)
+
 router.delete('/:id',validateObjectId, deleteProductById)
 router.put('/:id', validateObjectId,updateProductById)
 
