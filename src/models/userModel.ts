@@ -2,6 +2,13 @@ import mongoose from 'mongoose'
 import { UserDocument } from '../types/types'
 import { Role } from '../enums/enums'
 
+
+function validateRole(role: string) {
+  if (role === 'USER' || role === 'ADMIN') {
+    return true
+  }
+  return false
+}
 const userSchema = new mongoose.Schema(
   {
     firstName: {
@@ -20,13 +27,6 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      lowercase: true,
-      validate: {
-        validator: function (email: string){
-          return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)
-        },
-        message: 'Please enter a valid email address'
-      }
     },
     password: {
       type: String,
@@ -34,12 +34,18 @@ const userSchema = new mongoose.Schema(
       minlength: 8,
       maxlength: 100,
     },
-    role: {
+   role:{ type: String,
+    default: 'USER',
+    validate: [validateRole, 'Role has to be either USER or ADMIN'],},
+    isAccountVerified: {
+      type: Boolean,
+      default: false,
+    },
+    token: {
       type: String,
-      enum: Role,
-      default: Role.USER,
     },
   },
+  
   { timestamps: true }
 )
 
