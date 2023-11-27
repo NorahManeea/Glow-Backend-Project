@@ -10,7 +10,7 @@ import productsRouter from './routers/productsRoute'
 import ordersRouter from './routers/ordersRoute'
 import apiErrorHandler from './middlewares/errorHandler'
 import myLogger from './middlewares/logger'
-import { databseConnection } from './database/db'
+import { databaseConnection } from './database/db'
 
 config()
 const app = express()
@@ -29,7 +29,7 @@ app.use('/api/products', productsRouter)
 
 app.use(apiErrorHandler)
 
-databseConnection()
+databaseConnection()
 
 app.listen(PORT, () => {
   console.log('Server running http://localhost:' + PORT)
