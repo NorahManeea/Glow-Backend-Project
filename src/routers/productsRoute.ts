@@ -1,4 +1,5 @@
 import express from 'express'
+import {uploadImage} from '../middlewares/uploadImage'
 const router = express.Router()
 
 import {
@@ -12,9 +13,9 @@ import { validateObjectId } from '../middlewares/validateObjectId'
 import { checkAuth, checkRole } from '../middlewares/verifyToken'
 
 router.get('/',getAllProducts)
-router.post('/',checkAuth,checkRole('ADMIN'), createProduct)
+router.post('/', checkAuth, checkRole('ADMIN'), uploadImage.single('productImage'), createProduct)
 router.get('/:id', validateObjectId, getProductById)
-router.delete('/:id',validateObjectId,checkAuth,checkRole('ADMIN'), deleteProductById)
-router.put('/:id', validateObjectId,checkAuth,checkRole('ADMIN'),updateProductById)
+router.delete('/:id',validateObjectId, deleteProductById)
+router.put('/:id', validateObjectId,updateProductById)
 
 export default router

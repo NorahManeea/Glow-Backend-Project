@@ -1,5 +1,5 @@
-// userController.ts
 import { Request, Response } from 'express'
+
 import { findAUser, findAllUser, removeUser, updateUser, userCount } from '../services/userService'
 
 /** -----------------------------------------------
@@ -16,6 +16,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
     res.status(500).json({ error: error })
   }
 }
+
 /** -----------------------------------------------
  * @desc Get User Count
  * @route /api/users/count
@@ -25,11 +26,12 @@ export const getAllUsers = async (req: Request, res: Response) => {
 export const getUsersCount = async (req: Request, res: Response) => {
   try {
     const usersCount = await userCount()
-  res.status(200).json({ meassge: 'Users Count', usersCount })
+    res.status(200).json({ meassge: 'Users Count', usersCount })
   } catch (error) {
     res.status(500).json({ error: error })
   }
 }
+
 /** -----------------------------------------------
  * @desc Update user profile
  * @route /api/users/:userId
@@ -38,15 +40,16 @@ export const getUsersCount = async (req: Request, res: Response) => {
   -----------------------------------------------*/
 export const updateUserById = async (req: Request, res: Response) => {
   try {
-    const user = await updateUser(req.params.userId, req.body);
+    const user = await updateUser(req.params.userId, req.body)
     res.status(200).json({
       message: 'User has been updated successfully',
       payload: user,
-    });
+    })
   } catch (error) {
     res.status(500).json({ error: error })
   }
 }
+
 /** -----------------------------------------------
  * @desc Delete user by ID
  * @route /api/users/:id
@@ -64,6 +67,7 @@ export const deleteUser = async (req: Request, res: Response) => {
     res.status(500).json({ error: error })
   }
 }
+
 /** -----------------------------------------------
  * @desc get user by Id
  * @route /api/users/:id

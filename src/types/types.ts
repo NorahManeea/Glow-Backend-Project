@@ -25,6 +25,7 @@ export type ProductDocument = Document & {
 export type CategoryDocument = Document & {
   categoryName: string
 }
+
 export type DecodedUser = {
   userId: string
   email: string
@@ -56,4 +57,14 @@ export type CartDocument = Document & {
     product: mongoose.Schema.Types.ObjectId
     quantity: number
   }[]
+}
+export type CommentDocument  = {
+  userId: string
+  products: {
+    product: mongoose.Schema.Types.ObjectId
+    
+  }[]
+  content: string
+  comentDate: Date
+ 
 }

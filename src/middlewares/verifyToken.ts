@@ -4,7 +4,7 @@ import { authConfig } from '../config/auth.config'
 import { DecodedUser, Role } from '../types/types'
 import ApiError from '../errors/ApiError'
 
-
+     
 export function checkAuth(req: Request, res: Response, next: NextFunction) {
   const token = req.headers.authorization?.split(' ')[1]
 

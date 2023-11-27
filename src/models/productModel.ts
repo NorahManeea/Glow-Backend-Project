@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+
 import { ProductDocument } from '../types/types'
 
 const productSchema = new mongoose.Schema(
@@ -17,7 +18,7 @@ const productSchema = new mongoose.Schema(
     },
     productImage: {
       type: String,
-      required: true,
+      default: ''
     },
     quantityInStock: {
       type: Number,

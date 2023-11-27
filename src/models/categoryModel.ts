@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
-import { CategoryDocument } from '../types/types';
+import mongoose from 'mongoose'
 
+import { CategoryDocument } from '../types/types'
 
 const categorySchema = new mongoose.Schema({
   categoryName: {

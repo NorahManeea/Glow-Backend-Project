@@ -1,4 +1,5 @@
 import express from 'express'
+
 import {
   addToCart,
   updateCartItems,
@@ -6,13 +7,13 @@ import {
   deleteCartItem,
 } from '../controllers/cartController'
 import { validateObjectId } from '../middlewares/validateObjectId'
-import { checkAuth } from '../middlewares/verifyToken'
+import { validateCart } from '../validation/validateCart'
 
 const router = express.Router()
 
-router.post('/', checkAuth,addToCart)
+router.post('/', addToCart)
 router.put('/:id', validateObjectId, updateCartItems)
 router.get('/:id', validateObjectId, getCartItems)
-router.delete('/:id',checkAuth, deleteCartItem)
+router.delete('/:id', deleteCartItem)
 
 export default router

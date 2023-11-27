@@ -1,5 +1,5 @@
 import express from 'express'
-const router = express.Router()
+import { validateOrder } from '../validation/validateOrder'
 
 import {
   createOrder,
@@ -8,20 +8,21 @@ import {
   getOrderById,
   updateOrderStatus,
 } from '../controllers/orderController'
-import { checkAuth, checkRole } from '../middlewares/verifyToken'
+
+const router = express.Router()
 
 // Get all orders route
-router.get('/', checkAuth, getAllOrders)
+router.get('/', getAllOrders)
 // Get order by id route
 router.get('/:orderId', getOrderById)
 
 // Create new order route
-router.post('/', checkAuth, createOrder)
+router.post('/', validateOrder, createOrder)
 
 // Delete order by id route
-router.delete('/:orderId', checkAuth, checkRole('ADMIN'), deleteOrder)
+router.delete('/:orderId', deleteOrder)
 
 // Update order status route
-router.put('/:orderId', checkAuth, checkRole('ADMIN'), updateOrderStatus)
+router.put('/:orderId', updateOrderStatus)
 
 export default router

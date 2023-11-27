@@ -2,12 +2,10 @@ import { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 
-
 import ApiError from '../errors/ApiError'
 import { authConfig } from '../config/auth.config'
 import { generateActivationToken, sendEmail } from '../utils/sendEmail'
 import { User } from '../models/userModel'
-
 
 /** -----------------------------------------------
  * @desc Register User
@@ -17,7 +15,7 @@ import { User } from '../models/userModel'
   -----------------------------------------------*/
 export const registerUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { email, firstName, lastName, password } = req.body
+    const { email, firstName, lastName, password, role } = req.body
     let user = await User.findOne({ email })
     if (user) {
       return res.status(400).json({ message: 'This email is already registered' })

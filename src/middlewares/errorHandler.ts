@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
+
 import ApiError from '../errors/ApiError'
 
 const apiErrorHandler = (err: typeof ApiError, req: Request, res: Response, next: NextFunction) => {

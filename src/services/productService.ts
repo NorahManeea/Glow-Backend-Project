@@ -1,9 +1,16 @@
-import { Product } from '../models/productModel'
 import createHttpError from 'http-errors'
-import { ProductDocument } from '../types/types'
 import slugify from 'slugify'
 
-export const findAllProducts = async (pageNumber = 1, limit = 8) => {
+import { Product } from '../models/productModel'
+import { ProductDocument } from '../types/types'
+
+export const findAllProducts = async (
+  pageNumber = 1,
+  limit = 8,
+  sortBy = '',
+  searchText = '',
+  category = ''
+) => {
   const productCount = await Product.countDocuments()
   const totalPages = Math.ceil(productCount / limit)
 
@@ -11,17 +18,23 @@ export const findAllProducts = async (pageNumber = 1, limit = 8) => {
     pageNumber = totalPages
   }
   const skip = (pageNumber - 1) * limit
+  let sortQuery = {}
+
+  if (sortBy === 'newest') {
+    sortQuery = { createdAt: -1 }
+  } else if (sortBy === 'lowestPrice') {
+    sortQuery = { productPrice: 1 }
+  } else if (sortBy === 'highestPrice') {
+    sortQuery = { productPrice: -1 }
+  }
   const products = await Product.find()
     .populate('category')
     .skip(skip)
     .limit(limit)
-    //   .sort(
-    //     highestPrice ? { price: -1 } : lowestPrice ? { price: 1 } : newest ? { createdAt: -1 } : {}
-    //   )
-    //   .find(searchText ? { productName: { $regex: searchText } } : {})
-    //   .find(categoryId ? { category: { $in: [categoryId] } } : {})
+    .sort(sortQuery)
+    .find(searchText ? { productName: { $regex: searchText, $options: 'i' } } : {})
+    .find(category ? { category: { $in: [category] } } : {})
 
-    .sort({ createdAt: -1 })
   return { products, totalPages, currentPage: pageNumber }
 }
 
@@ -56,7 +69,10 @@ export const createNewProduct = async (newProduct: ProductDocument) => {
   const { productName } = newProduct
   const productExist = await Product.exists({ productName: productName })
   if (productExist) {
-    const error = createHttpError(409, `Product already exists with this product name ${productName}`)
+    const error = createHttpError(
+      409,
+      `Product already exists with this product name ${productName}`
+    )
     throw error
   }
   const product = await Product.create({

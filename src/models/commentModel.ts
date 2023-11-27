@@ -1,8 +1,7 @@
 import mongoose from 'mongoose'
+import { CommentDocument } from '../types/types'
 
-import { CartDocument } from '../types/types'
-
-const cartSchema = new mongoose.Schema(
+const commentSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -14,13 +13,16 @@ const cartSchema = new mongoose.Schema(
           type: mongoose.Schema.Types.ObjectId,
           ref: 'Product',
         },
-        quantity: {
-          type: Number,
-          default: 1,
-        },
       },
     ],
+    content: {
+      type: String,
+      required: true,
+      minlength: 10,
+      maxlength: 100,
+    },
   },
   { timestamps: true }
 )
-export const Cart = mongoose.model<CartDocument>('Cart', cartSchema)
+
+export const Comment = mongoose.model<CommentDocument>('Comment', commentSchema)

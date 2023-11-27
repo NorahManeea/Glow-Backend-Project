@@ -1,5 +1,6 @@
 import slugify from 'slugify'
 import { Request, Response } from 'express'
+
 import {
   removeProduct,
   findAllProducts,
@@ -7,6 +8,8 @@ import {
   createNewProduct,
   findProduct,
 } from '../services/productService'
+import { ProductDocument } from '../types/types'
+import { Product } from '../models/productModel'
 
 /**-----------------------------------------------
  * @desc Get All Products
@@ -16,10 +19,18 @@ import {
  -----------------------------------------------*/
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
-    // const { lowestPrice, highestPrice, newest, searchText, categoryId } = req.query
     let pageNumber = Number(req.query.pageNumber)
     const limit = Number(req.query.limit)
-    const { products, totalPages, currentPage } = await findAllProducts(pageNumber, limit)
+    const sortBy = req.query.sortBy?.toString()
+    const searchText = req.query.searchText?.toString()
+    const category = req.query.category?.toString()
+    const { products, totalPages, currentPage } = await findAllProducts(
+      pageNumber,
+      limit,
+      sortBy,
+      searchText,
+      category
+    )
     res
       .status(200)
       .json({ message: 'All products returned', payload: products, totalPages, currentPage })
@@ -67,14 +78,29 @@ export const deleteProductById = async (req: Request, res: Response) => {
  * @method POST
  * @access private (admin Only)
  -----------------------------------------------*/
-export const createProduct = async (req: Request, res: Response) => {
+ export const createProduct = async (req: Request, res: Response) => {
+  const { productName, productDescription, productPrice, quantityInStock, category } = req.body;
+  console.log(JSON.stringify(req.body));
+
   try {
-    const product = await createNewProduct(req.body)
-    res.status(201).json({ meassge: 'Product has been created successfuly', payload: product })
+  
+
+    const newProduct = new Product({
+      productName: productName,
+      productDescription: productDescription,
+      productPrice: productPrice,
+      productImage: req.file?.path,
+      quantityInStock: quantityInStock,
+      category: category,
+      slug: slugify(productName)
+    });
+
+    await newProduct.save();
+    res.status(201).json({ message: 'Product has been created successfully', payload: newProduct });
   } catch (error) {
-    res.status(500).json({ error: error })
+    res.status(500).json({ error: error });
   }
-}
+};
 
 /**-----------------------------------------------
  * @desc Update Product
@@ -89,7 +115,9 @@ export const updateProductById = async (req: Request, res: Response) => {
       req.body.slug = slugify(req.body.productName)
     }
     const updatedProduct = await updateProduct(productId, req.body)
-    res.status(200).json({ message: 'Product has been updated successfully', payload: updatedProduct })
+    res
+      .status(200)
+      .json({ message: 'Product has been updated successfully', payload: updatedProduct })
   } catch (error) {
     res.status(500).json({ error: error })
   }

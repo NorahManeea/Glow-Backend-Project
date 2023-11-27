@@ -8,5 +8,4 @@ router.post("/register",validateUser, registerUser);
 router.post("/login", loginUser);
 router.get("/activate/:token",activateUser)
 
-
-export default router;
+export default router

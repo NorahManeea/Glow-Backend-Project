@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import zod, { ZodError } from 'zod'
+
 import ApiError from '../errors/ApiError'
 
 export function validateProduct(req: Request, res: Response, next: NextFunction) {

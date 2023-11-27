@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer'
+
 import { emailConfig } from '../config/email.config'
 import crypto from 'crypto'
 
@@ -6,7 +7,6 @@ import crypto from 'crypto'
 export function generateActivationToken() {
   return crypto.randomBytes(32).toString('hex')
 }
-
 
 export const sendEmail = async (email: string, subject: string, htmlTemplate: string) => {
   try {
