@@ -3,8 +3,6 @@ import { dbConfig } from '../config/db.config'
 
 const URL = dbConfig.db.url
 
-mongoose.set("strictQuery", false);
-
 export const databaseConnection = () => {
   mongoose
     .connect(URL)
