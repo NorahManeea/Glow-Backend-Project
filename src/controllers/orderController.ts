@@ -5,6 +5,7 @@ import {
   createNewOrder,
   findAllOrders,
   findOrder,
+  findOrderHistory,
   removeOrder,
 } from '../services/orderService'
 import ApiError from '../errors/ApiError'
@@ -70,7 +71,7 @@ export const deleteOrder = async (req: Request, res: Response, next: NextFunctio
 }
 
 /**-----------------------------------------------
- * @desc Update Product By ID
+ * @desc Update Order By ID
  * @route /api/orders/:orderId
  * @method PUT
  * @access private (admin Only)
@@ -83,6 +84,23 @@ export const updateOrderStatus = async (req: Request, res: Response, next: NextF
       message: 'Category has been updated successfully',
       payload: updatedOrder,
     })
+  } catch (error) {
+    next(ApiError.badRequest('Something went wrong'))
+  }
+}
+
+/**-----------------------------------------------
+ * @desc Get Order History
+ * @route /api/orders/history
+ * @method GET
+ * @access private (admin Only)
+ -----------------------------------------------*/
+ export const getOrderHistory = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId } = req.decodedUser
+    const orderHistory = await findOrderHistory(userId)
+
+    res.json({message: 'Order History returned successfully',payload:orderHistory})
   } catch (error) {
     next(ApiError.badRequest('Something went wrong'))
   }
