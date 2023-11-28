@@ -25,27 +25,20 @@ export const addItem = async (
   quantity: number,
   product: ProductDocument
 ): Promise<CartDocument> => {
-  // Check if the product is already in the cart
   const existingCartItem = cart.products.find(
     (p) => p.product.toString() === product._id.toString()
   )
-
-  // If the product is already in the cart, increment the quantity
   if (existingCartItem) {
     existingCartItem.quantity += quantity
   } else {
-    // If the product is not in the cart, add a new entry
     cart.products.push({ product: product._id, quantity: quantity })
   }
-
-  // Save the cart to the database asynchronously
   await cart.save()
 
-  // Return the updated cart
   return cart
 }
 
-export const calculateTotalPrice = async (cart: CartDocument): Promise<number> => {
+export const calculateTotalPrice = async (cart: CartDocument, discountCode: string): Promise<number> => {
   const total = await Promise.all(
     cart.products.map(async (product) => {
       try {
@@ -54,14 +47,31 @@ export const calculateTotalPrice = async (cart: CartDocument): Promise<number> =
         return productPrice * product.quantity
       } catch (error) {
         console.error(`Error fetching product: ${error}`)
-        return 0 // Default to 0 in case of an error
+        return 0 
       }
     })
   )
-  const totalPrice = total.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+
+  let totalPrice = total.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+  if (discountCode) {
+    const discountAmount = calculateDiscountAmount(totalPrice, discountCode);
+    totalPrice -= discountAmount;
+  }
+
   console.log(totalPrice)
   return totalPrice
 }
+
+export const calculateDiscountAmount = (totalPrice: number, discountCode: string): number => {
+  let discountPercentage = 0;
+    const discountValue = parseInt(discountCode);
+  if (discountValue) {
+    discountPercentage = discountValue / 100;
+  }
+
+  const discountAmount = totalPrice * discountPercentage;
+  return discountAmount;
+};
 
 export const updateQuantityInStock = async (productId: string, quantityInStock: number) => {
   await Product.findByIdAndUpdate(
