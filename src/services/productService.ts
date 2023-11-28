@@ -51,7 +51,7 @@ export const findAllProducts = async (
 export const findProduct = async (productId: string) => {
   const product = await Product.findById(productId)
   if (!product) {
-    return ApiError.notFound('Product not found with the entered ID')
+    throw ApiError.notFound('Product not found with the entered ID')
   }
   return product
 }

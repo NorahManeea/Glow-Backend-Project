@@ -12,7 +12,6 @@ import {
 } from '../services/cartService'
 import { findProduct } from '../services/productService'
 import ApiError from '../errors/ApiError'
-import { Cart } from '../models/cartModel'
 
 /** -----------------------------------------------
  * @desc Add to cart
@@ -22,8 +21,8 @@ import { Cart } from '../models/cartModel'
   -----------------------------------------------*/
 export const addToCart = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { user, productId, quantity, discountCode } = req.body
-    console.log(req.body)
+    const userId = req.params.id
+    const { productId, quantity, discountCode } = req.body
 
     const product = await findProduct(productId)
 
@@ -31,7 +30,7 @@ export const addToCart = async (req: Request, res: Response, next: NextFunction)
       throw new Error(error.message)
     })
 
-    let cart = await createCart(user)
+    let cart = await createCart(userId)
 
     cart = await addItem(cart, quantity, product)
 
@@ -60,8 +59,9 @@ export const addToCart = async (req: Request, res: Response, next: NextFunction)
 export const getCartItems = async (req: Request, res: Response, next: NextFunction) => {
   {
     try {
-      const { id } = req.params
-      const cartItems = await findCart(id)
+      const userId = req.params.id
+
+      const cartItems = await findCart(userId)
       const itemsCount = cartItems.reduce((count, product) => count + product.quantity, 0)
 
       res.status(200).json({
@@ -81,17 +81,19 @@ export const getCartItems = async (req: Request, res: Response, next: NextFuncti
  * @method PUT
  * @access private (user himself only)
   -----------------------------------------------*/
-export const updateCartItems = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { cartItem } = req.body
-    const { userId } = req.params
-    const { cart, itemsCount } = await updateCart(userId, cartItem._id, cartItem.quantity)
-
-    res.status(200).json({ message: 'Cart item has been updated successfully', cart, itemsCount })
-  } catch (error) {
-    next(ApiError.badRequest('Something went wrong'))
-  }
-}
+  export const updateCartItems = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = req.params.id;
+      const { cartItems } = req.body;
+  
+      const { cart, itemsCount } = await updateCart(userId, cartItems.productId, cartItems.quantity);
+  
+      res.status(200).json({ message: 'Cart item has been updated successfully', cart, itemsCount });
+    } catch (error) {
+      console.error(error);
+      next(ApiError.badRequest('Something went wrong'));
+    }
+  };
 
 /** -----------------------------------------------
  * @desc Delete cart item

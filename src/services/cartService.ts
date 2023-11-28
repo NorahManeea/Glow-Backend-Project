@@ -1,13 +1,13 @@
 import { Cart } from '../models/cartModel'
-import { CartDocument, UserDocument, ProductDocument, DiscountCodeDocument } from '../types/types'
+import { CartDocument, ProductDocument, DiscountCodeDocument } from '../types/types'
 import { Product } from '../models/productModel'
 import ApiError from '../errors/ApiError'
 import { DiscountCode } from '../models/discountCodeModel'
 
-export const createCart = async (user: UserDocument): Promise<CartDocument> => {
-  let cart = await Cart.findOne({ user: user })
+export const createCart = async (userId: string): Promise<CartDocument> => {
+  let cart = await Cart.findOne({ user: userId })
   if (!cart) {
-    cart = await Cart.create({ user: user, products: [] })
+    cart = await Cart.create({ user: userId, products: [] })
   }
   return cart
 }
@@ -95,14 +95,16 @@ export const findCart = async (userId: string) => {
 
 export const updateCart = async (userId: string, cartItemId: string, quantity: number) => {
   try {
+    console.log(`cart`)
     const updatedCart = await Cart.findOneAndUpdate(
       { userId, 'products._id': cartItemId },
       { $set: { 'products.$.quantity': quantity } },
       { new: true }
     )
+    console.log(`cart: ${updatedCart}`)
 
     if (!updatedCart) {
-      throw ApiError.notFound(`Cart or product now found`)
+      throw ApiError.notFound(`Cart or product not found`)
     }
 
     const itemsCount = updatedCart.products.reduce((count, product) => count + product.quantity, 0)
@@ -112,7 +114,7 @@ export const updateCart = async (userId: string, cartItemId: string, quantity: n
   }
 }
 
-export const deleteItemFromCart = async (userId: string, productId: string) => {
+export const deleteItemFromCart = async (userId: string, carttItemId: string) => {
   //check if the cart exist
   const cart = await Cart.findOne({ user: userId })
   if (!cart) {
@@ -120,15 +122,15 @@ export const deleteItemFromCart = async (userId: string, productId: string) => {
   }
 
   // check if the product in the cart
-  const deletedItem = cart.products.find((p) => p.product.toString() === productId)
+  const deletedItem = cart.products.find((p) => p.product.toString() === carttItemId)
   if (!deletedItem) {
     return ApiError.notFound(`Product with id: ${userId} not found in the cart`)
   }
 
-   //delete the product from the cart
-   const updatedCart = await Cart.findOneAndUpdate(
-    { user: userId, 'products.product': productId },
-    { $pull: { products: { product: productId } } },
+  //delete the product from the cart
+  const updatedCart = await Cart.findOneAndUpdate(
+    { user: userId, 'products.product': carttItemId },
+    { $pull: { products: { product: carttItemId } } },
     { new: true }
   )
 
