@@ -17,6 +17,12 @@ class ApiError {
   static forbidden(msg: string) {
     return new ApiError(403, msg)
   }
+  static unauthorized(msg: string) {
+    return new ApiError(401, msg);
+  }
+  static notFound(msg: string) {
+    return new ApiError(404, msg);
+  }
 }
 
 export default ApiError

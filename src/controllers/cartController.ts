@@ -1,4 +1,4 @@
-import { Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 
 import {
   addItem,
@@ -10,6 +10,7 @@ import {
   updateQuantityInStock,
 } from '../services/cartService'
 import { findProduct } from '../services/productService'
+import ApiError from '../errors/ApiError'
 
 /** -----------------------------------------------
  * @desc Add to cart
@@ -17,7 +18,7 @@ import { findProduct } from '../services/productService'
  * @method POST
  * @access public
   -----------------------------------------------*/
-export const addToCart = async (req: Request, res: Response) => {
+export const addToCart = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { user, productId, quantity } = req.body
 
@@ -45,8 +46,7 @@ export const addToCart = async (req: Request, res: Response) => {
       Price: totalPrice,
     })
   } catch (error) {
-    // Handle specific errors with different status codes if needed
-    res.status(500).json({ error: error || 'Internal Server Error' })
+    next(ApiError.badRequest('Something went wrong'))
   }
 }
 
@@ -56,7 +56,7 @@ export const addToCart = async (req: Request, res: Response) => {
  * @method GET
  * @access private (user himself only)
   -----------------------------------------------*/
-export const getCartItems = async (req: Request, res: Response) => {
+export const getCartItems = async (req: Request, res: Response, next: NextFunction) => {
   {
     try {
       const { id } = req.params
@@ -69,7 +69,7 @@ export const getCartItems = async (req: Request, res: Response) => {
         itemsCount: itemsCount,
       })
     } catch (error) {
-      res.status(500).json({ error: error })
+      next(ApiError.badRequest('Something went wrong'))
     }
   }
 }
@@ -80,7 +80,7 @@ export const getCartItems = async (req: Request, res: Response) => {
  * @method PUT
  * @access private (user himself only)
   -----------------------------------------------*/
-export const updateCartItems = async (req: Request, res: Response) => {
+export const updateCartItems = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { cartItem } = req.body
     const { userId } = req.params
@@ -88,7 +88,7 @@ export const updateCartItems = async (req: Request, res: Response) => {
 
     res.status(200).json({ message: 'Cart item has been updated successfully', cart, itemsCount })
   } catch (error) {
-    res.status(500).json({ error: error })
+    next(ApiError.badRequest('Something went wrong'))
   }
 }
 
@@ -98,4 +98,4 @@ export const updateCartItems = async (req: Request, res: Response) => {
  * @method DELETE
  * @access private (user himself only)
   -----------------------------------------------*/
-export const deleteCartItem = async (req: Request, res: Response) => {}
+export const deleteCartItem = async (req: Request, res: Response, next: NextFunction) => {}

@@ -1,5 +1,5 @@
 import slugify from 'slugify'
-import { Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 
 import {
   removeProduct,
@@ -8,10 +8,9 @@ import {
   createNewProduct,
   findProduct,
   findHighestSoldProducts,
-  
 } from '../services/productService'
-import { ProductDocument } from '../types/types'
 import { Product } from '../models/productModel'
+import ApiError from '../errors/ApiError'
 
 /**-----------------------------------------------
  * @desc Get All Products
@@ -19,7 +18,7 @@ import { Product } from '../models/productModel'
  * @method GET
  * @access public
  -----------------------------------------------*/
-export const getAllProducts = async (req: Request, res: Response) => {
+export const getAllProducts = async (req: Request, res: Response, next: NextFunction) => {
   try {
     let pageNumber = Number(req.query.pageNumber)
     const limit = Number(req.query.limit)
@@ -37,7 +36,7 @@ export const getAllProducts = async (req: Request, res: Response) => {
       .status(200)
       .json({ message: 'All products returned', payload: products, totalPages, currentPage })
   } catch (error) {
-    res.status(500).json({ error: error })
+    next(ApiError.badRequest('Something went wrong'))
   }
 }
 
@@ -47,12 +46,12 @@ export const getAllProducts = async (req: Request, res: Response) => {
  * @method GET
  * @access public
  -----------------------------------------------*/
-export const getProductById = async (req: Request, res: Response) => {
+export const getProductById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const product = await findProduct(req.params.id)
     res.status(200).json({ message: 'Single product returned', payload: product })
   } catch (error) {
-    res.status(500).json({ error: error })
+    next(ApiError.badRequest('Something went wrong'))
   }
 }
 
@@ -62,7 +61,7 @@ export const getProductById = async (req: Request, res: Response) => {
  * @method DELETE
  * @access private (admin Only)
  -----------------------------------------------*/
-export const deleteProductById = async (req: Request, res: Response) => {
+export const deleteProductById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const product = await removeProduct(req.params.id)
     res.status(200).json({
@@ -70,7 +69,7 @@ export const deleteProductById = async (req: Request, res: Response) => {
       payload: product,
     })
   } catch (error) {
-    res.status(500).json({ error: error })
+    next(ApiError.badRequest('Something went wrong'))
   }
 }
 
@@ -80,9 +79,9 @@ export const deleteProductById = async (req: Request, res: Response) => {
  * @method POST
  * @access private (admin Only)
  -----------------------------------------------*/
- export const createProduct = async (req: Request, res: Response) => {
-  const { productName, productDescription, productPrice, quantityInStock, category } = req.body;
-  console.log(JSON.stringify(req.body));
+export const createProduct = async (req: Request, res: Response, next: NextFunction) => {
+  const { productName, productDescription, productPrice, quantityInStock, category } = req.body
+  console.log(JSON.stringify(req.body))
 
   try {
     const newProduct = new Product({
@@ -92,15 +91,15 @@ export const deleteProductById = async (req: Request, res: Response) => {
       productImage: req.file?.path,
       quantityInStock: quantityInStock,
       category: category,
-      slug: slugify(productName)
-    });
+      slug: slugify(productName),
+    })
 
-    await newProduct.save();
-    res.status(201).json({ message: 'Product has been created successfully', payload: newProduct });
+    await newProduct.save()
+    res.status(201).json({ message: 'Product has been created successfully', payload: newProduct })
   } catch (error) {
-    res.status(500).json({ error: error });
+    next(ApiError.badRequest('Something went wrong'))
   }
-};
+}
 
 /**-----------------------------------------------
  * @desc Update Product
@@ -108,7 +107,7 @@ export const deleteProductById = async (req: Request, res: Response) => {
  * @method PUT
  * @access private (admin Only)
  -----------------------------------------------*/
-export const updateProductById = async (req: Request, res: Response) => {
+export const updateProductById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const productId = req.params.id
     if (req.body.productName) {
@@ -119,7 +118,7 @@ export const updateProductById = async (req: Request, res: Response) => {
       .status(200)
       .json({ message: 'Product has been updated successfully', payload: updatedProduct })
   } catch (error) {
-    res.status(500).json({ error: error })
+    next(ApiError.badRequest('Something went wrong'))
   }
 }
 
@@ -129,17 +128,15 @@ export const updateProductById = async (req: Request, res: Response) => {
  * @method GET
  * @access public
  -----------------------------------------------*/
- export const getHighestSoldProducts = async (req: Request, res: Response) => {
+export const getHighestSoldProducts = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const limit = Number(req.query.limit)
     const highestSoldProducts = await findHighestSoldProducts(limit)
-    res
-      .status(200)
-      .json({
-        message: 'Highest Sold Products have been returned successfully',
-        payload: highestSoldProducts,
-      })
+    res.status(200).json({
+      message: 'Highest Sold Products have been returned successfully',
+      payload: highestSoldProducts,
+    })
   } catch (error) {
-    res.status(500).json({ error: error })
+    next(ApiError.badRequest('Something went wrong'))
   }
 }

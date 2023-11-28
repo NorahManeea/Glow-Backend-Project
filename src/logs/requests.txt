@@ -954,3 +954,11 @@ Method: POST, Path: /api/auth/login, Date: 11/28/2023, Time: 1:24:04 AM
 Method: POST, Path: /api/auth/login, Date: 11/28/2023, Time: 1:24:05 AM
 Method: POST, Path: /api/auth/login, Date: 11/28/2023, Time: 1:24:06 AM
 Method: POST, Path: /api/auth/login, Date: 11/28/2023, Time: 1:24:07 AM
+Method: POST, Path: /api/auth/login, Date: 11/28/2023, Time: 9:31:48 AM
+Method: POST, Path: /api/auth/login, Date: 11/28/2023, Time: 9:31:57 AM
+Method: POST, Path: /api/auth/login, Date: 11/28/2023, Time: 9:32:06 AM
+Method: POST, Path: /api/auth/login, Date: 11/28/2023, Time: 9:32:21 AM
+Method: POST, Path: /api/products, Date: 11/28/2023, Time: 9:32:46 AM
+Method: POST, Path: /api/auth/login, Date: 11/28/2023, Time: 9:33:02 AM
+Method: POST, Path: /api/auth/login, Date: 11/28/2023, Time: 9:33:15 AM
+Method: POST, Path: /api/products, Date: 11/28/2023, Time: 9:33:38 AM

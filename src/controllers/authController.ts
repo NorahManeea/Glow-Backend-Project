@@ -16,10 +16,10 @@ import { User } from '../models/userModel'
 export const registerUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, firstName, lastName, password } = req.body
-    const avatar = req.file?.path || '';
+    const avatar = req.file?.path || ''
     let user = await User.findOne({ email })
     if (user) {
-      return res.status(400).json({ message: 'This email is already registered' })
+      return next(ApiError.badRequest('This email is already registered'))
     }
     const token = generateActivationToken()
     const hashPassword = await bcrypt.hash(password, 10)
@@ -32,7 +32,7 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
       token,
       role: 'USER',
       avatar,
-      isBlocked: true
+      isBlocked: true,
     })
 
     await newUser.save()
@@ -72,14 +72,13 @@ export const activateUser = async (req: Request, res: Response, next: NextFuncti
       { new: true }
     )
     if (!user) {
-      next(ApiError.badRequest('Invalid token'))
-      return
+      return next(ApiError.badRequest('Invalid token'))
     }
     res.status(200).json({
       message: 'Your Account has been activated successfull',
     })
   } catch (error) {
-    res.status(500).json({ error: error })
+    next(ApiError.badRequest('Something went wrong'))
   }
 }
 
@@ -89,33 +88,35 @@ export const activateUser = async (req: Request, res: Response, next: NextFuncti
  * @method POST
  * @access public
   -----------------------------------------------*/
-export const loginUser = async (req: Request, res: Response) => {
-  const { email, password } = req.body
-  if (!email || !password) {
-    return res.status(400).json({ message: 'Email and password are required' })
-  }
-  const user = await User.findOne({ email: email })
-
-  if (!user) {
-    return res.status(404).json({ message: 'User not found' })
-  }
-  const isPasswordMatch = await bcrypt.compare(password, user.password)
-  if (!isPasswordMatch) {
-    return res.status(400).json({ message: 'The email or password you entered is invalid' })
-  }
-
-  const token = jwt.sign(
-    {
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      role: user.role,
-      isBlocked: user.isBlocked,
-    },
-    authConfig.jwt.accessToken as string,
-    {
-      expiresIn: '10m',
+export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email, password } = req.body
+    const user = await User.findOne({ email: email })
+    if (!user || !user.isAccountVerified) {
+      return next(ApiError.badRequest('Invalid email or account not activated'))
     }
-  )
-  res.status(200).json({ message: 'Login successful', token })
+    if (!user) {
+      return next(ApiError.notFound('User not found'))
+    }
+    const isPasswordMatch = await bcrypt.compare(password, user.password)
+    if (!isPasswordMatch) {
+      return next(ApiError.badRequest('The email or password you entered is invalid'))
+    }
+    const token = jwt.sign(
+      {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role,
+        isBlocked: user.isBlocked,
+      },
+      authConfig.jwt.accessToken as string,
+      {
+        expiresIn: '10m',
+      }
+    )
+    res.status(200).json({ message: 'Login successful', token })
+  } catch (error) {
+    next(ApiError.badRequest('Something went wrong'))
+  }
 }
