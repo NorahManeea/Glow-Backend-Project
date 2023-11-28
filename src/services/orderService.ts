@@ -3,6 +3,7 @@ import createHttpError from 'http-errors'
 import { Order } from '../models/orderModel'
 import { OrderDocument } from '../types/types'
 import { Product } from '../models/productModel'
+import ApiError from '../errors/ApiError'
 
 export const findAllOrders = async () => {
   const orders = await Order.find()
@@ -12,8 +13,7 @@ export const findAllOrders = async () => {
 export const findOrder = async (orderId: string) => {
   const order = await Order.findById(orderId)
   if (!order) {
-    const error = createHttpError(404, `Order not found with the ID: ${orderId}`)
-    throw error
+    throw ApiError.notFound(`Order not found with the ID: ${orderId}`)
   }
   return order
 }
@@ -21,8 +21,7 @@ export const findOrder = async (orderId: string) => {
 export const removeOrder = async (orderId: string) => {
   const order = await Order.findByIdAndDelete(orderId)
   if (!order) {
-    const error = createHttpError(404, 'Order not found with the entered ID')
-    throw error
+    throw ApiError.notFound(`Order not found with the ID: ${orderId}`)
   }
   return order
 }

@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt'
 
 import { User } from '../models/userModel'
 import { UserDocument } from '../types/types'
+import ApiError from '../errors/ApiError'
 
 export const findAllUser = async () => {
   const users = await User.find()
@@ -12,8 +13,7 @@ export const findAllUser = async () => {
 export const findAUser = async (userId: string) => {
   const user = await User.findById(userId)
   if (!user) {
-    const error = createHttpError(404, 'User not found with the entered ID')
-    throw error
+    throw ApiError.notFound('User not found with the entered ID')
   }
   return user
 }
@@ -21,8 +21,7 @@ export const findAUser = async (userId: string) => {
 export const removeUser = async (userId: string) => {
   const user = await User.findByIdAndDelete(userId)
   if (!user) {
-    const error = createHttpError(404, 'User not found with the entered ID')
-    throw error
+    throw ApiError.notFound('User not found with the entered ID')
   }
   return user
 }
@@ -36,8 +35,7 @@ export const updateUser = async (
 
   const user = await User.findByIdAndUpdate(userId, updatedUser, { new: true })
   if (!user) {
-    const error = createHttpError(404, 'User not found with the entered ID')
-    throw error
+    throw ApiError.notFound('User not found with the entered ID')
   }
 
   if (password !== undefined) {

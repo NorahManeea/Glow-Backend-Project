@@ -962,3 +962,8 @@ Method: POST, Path: /api/products, Date: 11/28/2023, Time: 9:32:46 AM
 Method: POST, Path: /api/auth/login, Date: 11/28/2023, Time: 9:33:02 AM
 Method: POST, Path: /api/auth/login, Date: 11/28/2023, Time: 9:33:15 AM
 Method: POST, Path: /api/products, Date: 11/28/2023, Time: 9:33:38 AM
+Method: GET, Path: /api/products/65608f71922478c7778ba9b7, Date: 11/28/2023, Time: 10:10:31 AM
+Method: GET, Path: /api/products/65608f71922478c7778ba9b78, Date: 11/28/2023, Time: 10:10:37 AM
+Method: GET, Path: /api/users, Date: 11/28/2023, Time: 10:10:51 AM
+Method: GET, Path: /api/users/655e4a6cfac7cdb66eb1b4f0, Date: 11/28/2023, Time: 10:10:59 AM
+Method: GET, Path: /api/users/655e4a6cfac7cdb66eb1b4f1, Date: 11/28/2023, Time: 10:11:02 AM
