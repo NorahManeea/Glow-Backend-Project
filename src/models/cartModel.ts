@@ -20,6 +20,10 @@ const cartSchema = new mongoose.Schema(
         },
       },
     ],
+    discountCode:{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'DiscountCode',
+    }
   },
   { timestamps: true }
 )

@@ -1,7 +1,8 @@
 import { Cart } from '../models/cartModel'
-import { CartDocument, UserDocument, ProductDocument } from '../types/types'
+import { CartDocument, UserDocument, ProductDocument, DiscountCodeDocument } from '../types/types'
 import { Product } from '../models/productModel'
 import ApiError from '../errors/ApiError'
+import { DiscountCode } from '../models/discountCodeModel'
 
 export const createCart = async (user: UserDocument): Promise<CartDocument> => {
   let cart = await Cart.findOne({ user: user })
@@ -38,7 +39,7 @@ export const addItem = async (
   return cart
 }
 
-export const calculateTotalPrice = async (cart: CartDocument, discountCode: string): Promise<number> => {
+export const calculateTotalPrice = async (cart: CartDocument): Promise<number> => {
   const total = await Promise.all(
     cart.products.map(async (product) => {
       try {
@@ -47,31 +48,34 @@ export const calculateTotalPrice = async (cart: CartDocument, discountCode: stri
         return productPrice * product.quantity
       } catch (error) {
         console.error(`Error fetching product: ${error}`)
-        return 0 
+        return 0
       }
     })
   )
 
   let totalPrice = total.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
-  if (discountCode) {
-    const discountAmount = calculateDiscountAmount(totalPrice, discountCode);
-    totalPrice -= discountAmount;
+
+  console.log('Total Price before discount:', totalPrice)
+
+  if (cart.discountCode) {
+    const discountCode = await DiscountCode.findById(cart.discountCode)
+    if (discountCode) {
+      console.log('Discount Code found:', discountCode)
+
+      const discountPercentage = discountCode.discountPercentage
+      console.log('Discount Percentage:', discountPercentage)
+
+      const discountAmount = (totalPrice * discountPercentage) / 100
+      console.log('Discount Amount:', discountAmount)
+
+      totalPrice -= discountAmount
+      totalPrice = Math.ceil(totalPrice)
+    }
   }
 
-  console.log(totalPrice)
+  console.log('Total Price after discount:', totalPrice)
   return totalPrice
 }
-
-export const calculateDiscountAmount = (totalPrice: number, discountCode: string): number => {
-  let discountPercentage = 0;
-    const discountValue = parseInt(discountCode);
-  if (discountValue) {
-    discountPercentage = discountValue / 100;
-  }
-
-  const discountAmount = totalPrice * discountPercentage;
-  return discountAmount;
-};
 
 export const updateQuantityInStock = async (productId: string, quantityInStock: number) => {
   await Product.findByIdAndUpdate(

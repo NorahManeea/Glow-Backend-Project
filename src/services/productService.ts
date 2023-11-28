@@ -4,6 +4,7 @@ import { Product } from '../models/productModel'
 import { ProductDocument } from '../types/types'
 import ApiError from '../errors/ApiError'
 
+
 export const findAllProducts = async (
   pageNumber = 1,
   limit = 8,

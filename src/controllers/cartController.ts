@@ -20,22 +20,20 @@ import ApiError from '../errors/ApiError'
   -----------------------------------------------*/
 export const addToCart = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { user, productId, quantity } = req.body
+    const { user, productId, quantity, discountCode } = req.body
+    console.log(req.body)
 
-    // Check if the product exists
     const product = await findProduct(productId)
 
-    // Check if the product is in stock
-    checkStock(product, quantity)
+    await checkStock(product, quantity).catch((error) => {
+      throw new Error(error.message)
+    })
 
-    // Create cart if the user doesn't have one
     let cart = await createCart(user)
 
-    // Add the item to the cart
     cart = await addItem(cart, quantity, product)
 
-    // Calculate the total price
-    const totalPrice = await calculateTotalPrice(cart)
+    const totalPrice = await calculateTotalPrice(cart);
 
     // Update the product stock
     await updateQuantityInStock(productId, product.quantityInStock)
@@ -46,6 +44,7 @@ export const addToCart = async (req: Request, res: Response, next: NextFunction)
       Price: totalPrice,
     })
   } catch (error) {
+    console.error(error) 
     next(ApiError.badRequest('Something went wrong'))
   }
 }
