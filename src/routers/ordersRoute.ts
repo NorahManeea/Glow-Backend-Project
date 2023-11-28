@@ -7,6 +7,7 @@ import {
   getAllOrders,
   getOrderById,
   getOrderHistory,
+  returnOrder,
   updateOrderStatus,
 } from '../controllers/orderController'
 import { checkAuth, checkBlock } from '../middlewares/verifyToken'
@@ -32,6 +33,6 @@ router.delete('/:orderId', deleteOrder)
 // Update order status route
 router.put('/:orderId', updateOrderStatus)
 
-
+router.post('/:orderId/return',checkAuth, returnOrder)
 
 export default router
