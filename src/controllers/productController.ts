@@ -80,11 +80,10 @@ export const deleteProductById = async (req: Request, res: Response, next: NextF
  * @access private (admin Only)
  -----------------------------------------------*/
 export const createProduct = async (req: Request, res: Response, next: NextFunction) => {
-  const { productName, productDescription, productPrice, quantityInStock, category, discount } =
-    req.body
+  const { productName, productDescription, productPrice, quantityInStock, category, discount } = req.body
 
   try {
-    const newProduct = new Product({
+    const product = new Product({
       productName: productName,
       productDescription: productDescription,
       productPrice: productPrice,
@@ -92,12 +91,13 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
       quantityInStock: quantityInStock,
       category: category,
       slug: slugify(productName),
-      discount: discount,
+      discount: discount
     })
-
-    await newProduct.save()
+    await product.save()
+    const newProduct = await createNewProduct(product)
     res.status(201).json({ message: 'Product has been created successfully', payload: newProduct })
   } catch (error) {
+    console.log(error)
     next(ApiError.badRequest('Something went wrong'))
   }
 }
