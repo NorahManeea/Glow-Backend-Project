@@ -1,4 +1,3 @@
-import createHttpError from 'http-errors'
 
 import { Category } from '../models/categoryModel'
 import { CategoryDocument } from '../types/types'

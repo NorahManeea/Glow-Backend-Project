@@ -1,4 +1,3 @@
-import createHttpError from 'http-errors'
 import slugify from 'slugify'
 
 import { Product } from '../models/productModel'

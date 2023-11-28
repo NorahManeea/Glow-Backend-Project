@@ -1,5 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express'
-import mongoose from 'mongoose'
+import express from 'express'
 import { config } from 'dotenv'
 
 import usersRouter from './routers/usersRoute'
@@ -7,6 +6,7 @@ import authRouter from './routers/authRoute'
 import categoryRouter from './routers/categoriesRoute'
 import cartRouter from './routers/cartRoute'
 import productsRouter from './routers/productsRoute'
+import wishListRouter from './routers/wishListRoute'
 import ordersRouter from './routers/ordersRoute'
 import apiErrorHandler from './middlewares/errorHandler'
 import myLogger from './middlewares/logger'
@@ -22,6 +22,7 @@ app.use(express.json())
 
 app.use('/api/auth', authRouter)
 app.use('/api/users', usersRouter)
+app.use('/api/wishlist', wishListRouter)
 app.use('/api/cart', cartRouter)
 app.use('/api/orders', ordersRouter)
 app.use('/api/categories', categoryRouter)
