@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
-import { CommentDocument } from '../types/types'
+import { ReviewDocument } from '../types/types'
 
-const commentSchema = new mongoose.Schema(
+const reviewSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -25,4 +25,4 @@ const commentSchema = new mongoose.Schema(
   { timestamps: true }
 )
 
-export const Comment = mongoose.model<CommentDocument>('Comment', commentSchema)
+export const Review = mongoose.model<ReviewDocument>('Review', reviewSchema)

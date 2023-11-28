@@ -7,9 +7,9 @@ export type UserDocument = Document & {
   password: string
   role: string
   isAccountVerified: boolean
-  isBlocked: boolean,
-  avatar: string,
-  resetPasswordToken: string;
+  isBlocked: boolean
+  avatar: string
+  resetPasswordToken: string
 }
 
 export type ProductDocument = Document & {
@@ -69,13 +69,11 @@ export type WishListDocument = Document & {
     product: mongoose.Schema.Types.ObjectId
   }[]
 }
-export type CommentDocument  = {
+export type ReviewDocument = {
   userId: string
   products: {
     product: mongoose.Schema.Types.ObjectId
-    
   }[]
   content: string
   comentDate: Date
- 
 }
