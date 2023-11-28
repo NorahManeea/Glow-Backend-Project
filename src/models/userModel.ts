@@ -2,7 +2,6 @@ import mongoose from 'mongoose'
 
 import { UserDocument } from '../types/types'
 
-
 function validateRole(role: string) {
   if (role === 'USER' || role === 'ADMIN') {
     return true
@@ -34,23 +33,28 @@ const userSchema = new mongoose.Schema(
       minlength: 8,
       maxlength: 100,
     },
-   role:{ type: String,
-    default: 'USER',
-    validate: [validateRole, 'Role has to be either USER or ADMIN'],},
+    role: {
+      type: String,
+      default: 'USER',
+      validate: [validateRole, 'Role has to be either USER or ADMIN'],
+    },
     isAccountVerified: {
       type: Boolean,
       default: false,
     },
-    isBlocked:{
+    isBlocked: {
       type: Boolean,
-      default: false
+      default: false,
     },
-    avatar:{
+    avatar: {
       type: String,
-      default: ''
+      default: '',
+    },
+    resetPasswordToken: {
+      type: String,
     }
   },
-  
+
   { timestamps: true }
 )
 

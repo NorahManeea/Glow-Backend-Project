@@ -7,6 +7,7 @@ import categoryRouter from './routers/categoriesRoute'
 import cartRouter from './routers/cartRoute'
 import productsRouter from './routers/productsRoute'
 import wishListRouter from './routers/wishListRoute'
+import passwordRouter from './routers/passwordRoute'
 import ordersRouter from './routers/ordersRoute'
 import apiErrorHandler from './middlewares/errorHandler'
 import myLogger from './middlewares/logger'
@@ -26,6 +27,7 @@ app.use('/api/wishlist', wishListRouter)
 app.use('/api/cart', cartRouter)
 app.use('/api/orders', ordersRouter)
 app.use('/api/categories', categoryRouter)
+app.use('/api/reset-password', passwordRouter)
 app.use('/api/products', productsRouter)
 
 app.use(apiErrorHandler)
