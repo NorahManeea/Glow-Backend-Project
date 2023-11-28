@@ -51,7 +51,7 @@ export const findAllProducts = async (
 export const findProduct = async (productId: string) => {
   const product = await Product.findById(productId)
   if (!product) {
-    throw ApiError.notFound('Product not found with the entered ID')
+    return ApiError.notFound('Product not found with the entered ID')
   }
   return product
 }
@@ -68,7 +68,7 @@ export const findHighestSoldProducts = async (limit = 8) => {
 export const removeProduct = async (id: string) => {
   const product = await Product.findByIdAndDelete(id)
   if (!product) {
-    throw ApiError.notFound('Product not found with the entered ID')
+    return ApiError.notFound('Product not found with the entered ID')
   }
   return product
 }
@@ -84,7 +84,7 @@ export const updateProduct = async (
     { new: true }
   )
   if (!product) {
-    throw ApiError.notFound('Product not found with the entered ID')
+    return ApiError.notFound('Product not found with the entered ID')
   }
   return product
 }
@@ -93,7 +93,7 @@ export const createNewProduct = async (newProduct: ProductDocument) => {
   const { productName } = newProduct
   const productExist = await Product.exists({ productName: productName })
   if (productExist) {
-    throw ApiError.conflict(`Product already exists with this product name ${productName}`)
+    return ApiError.conflict(`Product already exists with this product name ${productName}`)
   }
   const product = await Product.create({
     ...newProduct,

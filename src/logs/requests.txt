@@ -1232,3 +1232,14 @@ Method: GET, Path: /api/products, Date: 11/28/2023, Time: 9:47:20 PM
 Method: POST, Path: /api/cart, Date: 11/28/2023, Time: 9:47:30 PM
 Method: POST, Path: /api/cart, Date: 11/28/2023, Time: 9:48:42 PM
 Method: POST, Path: /api/cart, Date: 11/28/2023, Time: 9:49:51 PM
+Method: GET, Path: /api/users/655e4a6cfac7cdb66eb1b4f0, Date: 11/28/2023, Time: 10:35:09 PM
+Method: GET, Path: /api/users/655e4a6cfac7cdb66eb1b4f0, Date: 11/28/2023, Time: 10:35:11 PM
+Method: GET, Path: /api/users/655e4a6cfac7cdb66eb1b4f0, Date: 11/28/2023, Time: 10:35:49 PM
+Method: GET, Path: /api/users/655e4a6cfac7cdb66eb1b4f0, Date: 11/28/2023, Time: 10:35:50 PM
+Method: GET, Path: /api/users/655e4a6cfac7cdb66eb1b4f0, Date: 11/28/2023, Time: 10:36:03 PM
+Method: GET, Path: /api/users/655e4a6cfac7cdb66eb1b4f0, Date: 11/28/2023, Time: 10:36:29 PM
+Method: DELETE, Path: /api/users/655e4a6cfac7cdb66eb1b4f0, Date: 11/28/2023, Time: 10:36:52 PM
+Method: PUT, Path: /api/users/655e4a6cfac7cdb66eb1b4f0, Date: 11/28/2023, Time: 10:37:12 PM
+Method: POST, Path: /api/wishlist, Date: 11/28/2023, Time: 10:37:34 PM
+Method: POST, Path: /api/auth/login, Date: 11/28/2023, Time: 10:37:41 PM
+Method: POST, Path: /api/wishlist, Date: 11/28/2023, Time: 10:37:58 PM

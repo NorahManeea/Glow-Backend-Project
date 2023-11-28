@@ -11,7 +11,7 @@ export const findAllCategories = async () => {
 export const findCategory = async (categoryId: string) => {
   const category = await Category.findById(categoryId)
   if (!category) {
-    throw ApiError.notFound(`Category not found with the ID: ${categoryId}`)
+    return ApiError.notFound(`Category not found with the ID: ${categoryId}`)
   }
   return category
 }
@@ -24,7 +24,7 @@ export const updateCategory = async (categoryId: string, updatedCategory: Catego
   }
   const category = await Category.findByIdAndUpdate(categoryId, updatedCategory, { new: true })
   if (!category) {
-    throw ApiError.notFound(`Category not found with the ID: ${categoryId}`)
+    return ApiError.notFound(`Category not found with the ID: ${categoryId}`)
   }
   return category
 }
@@ -32,7 +32,7 @@ export const updateCategory = async (categoryId: string, updatedCategory: Catego
 export const removeCategory = async (categoryId: string) => {
   const category = await Category.findByIdAndDelete(categoryId)
   if (!category) {
-    throw ApiError.notFound(`Category not found with the ID: ${categoryId}`)
+    return ApiError.notFound(`Category not found with the ID: ${categoryId}`)
   }
   return category
 }
@@ -41,7 +41,7 @@ export const createNewCategory = async (newCategory: CategoryDocument) => {
   const { categoryName } = newCategory
   const categoryExist = await Category.exists({ categoryName: categoryName })
   if (categoryExist) {
-    throw ApiError.conflict(`Category already exists with this ${categoryName}`)
+    return ApiError.conflict(`Category already exists with this ${categoryName}`)
   }
   const category = await Category.create({
     ...newCategory,

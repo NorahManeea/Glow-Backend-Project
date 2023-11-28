@@ -12,7 +12,7 @@ export const findAllUser = async () => {
 export const findAUser = async (userId: string) => {
   const user = await User.findById(userId)
   if (!user) {
-    throw ApiError.notFound('User not found with the entered ID')
+    return ApiError.notFound('User not found with the entered ID')
   }
   return user
 }
@@ -20,7 +20,7 @@ export const findAUser = async (userId: string) => {
 export const removeUser = async (userId: string) => {
   const user = await User.findByIdAndDelete(userId)
   if (!user) {
-    throw ApiError.notFound('User not found with the entered ID')
+    return ApiError.notFound('User not found with the entered ID')
   }
   return user
 }
@@ -34,7 +34,7 @@ export const updateUser = async (
 
   const user = await User.findByIdAndUpdate(userId, updatedUser, { new: true })
   if (!user) {
-    throw ApiError.notFound('User not found with the entered ID')
+    return ApiError.notFound('User not found with the entered ID')
   }
 
   if (password !== undefined) {
