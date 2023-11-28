@@ -5,12 +5,14 @@ import {
   calculateTotalPrice,
   checkStock,
   createCart,
+  deleteItemFromCart,
   findCart,
   updateCart,
   updateQuantityInStock,
 } from '../services/cartService'
 import { findProduct } from '../services/productService'
 import ApiError from '../errors/ApiError'
+import { Cart } from '../models/cartModel'
 
 /** -----------------------------------------------
  * @desc Add to cart
@@ -33,7 +35,7 @@ export const addToCart = async (req: Request, res: Response, next: NextFunction)
 
     cart = await addItem(cart, quantity, product)
 
-    const totalPrice = await calculateTotalPrice(cart);
+    const totalPrice = await calculateTotalPrice(cart)
 
     // Update the product stock
     await updateQuantityInStock(productId, product.quantityInStock)
@@ -44,7 +46,7 @@ export const addToCart = async (req: Request, res: Response, next: NextFunction)
       Price: totalPrice,
     })
   } catch (error) {
-    console.error(error) 
+    console.error(error)
     next(ApiError.badRequest('Something went wrong'))
   }
 }
@@ -97,4 +99,14 @@ export const updateCartItems = async (req: Request, res: Response, next: NextFun
  * @method DELETE
  * @access private (user himself only)
   -----------------------------------------------*/
-export const deleteCartItem = async (req: Request, res: Response, next: NextFunction) => {}
+export const deleteCartItem = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userId = req.params.id
+    const { productId } = req.body
+    const updatedCart = await deleteItemFromCart(userId, productId)
+    
+    res.status(200).json({ meassge: 'Product has been deleted from the cart successfully', result: updatedCart })
+  } catch (error) {
+    next(ApiError.badRequest('Something went wrong'))
+  }
+}
