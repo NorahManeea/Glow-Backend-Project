@@ -114,7 +114,7 @@ export const updateProductById = async (req: Request, res: Response, next: NextF
     if (req.body.productName) {
       req.body.slug = slugify(req.body.productName)
     }
-    const updatedProduct = await updateProduct(productId, req.body)
+    const updatedProduct = await updateProduct(productId, req.body, req.file?.path)
     res
       .status(200)
       .json({ message: 'Product has been updated successfully', payload: updatedProduct })
