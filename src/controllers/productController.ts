@@ -80,8 +80,8 @@ export const deleteProductById = async (req: Request, res: Response, next: NextF
  * @access private (admin Only)
  -----------------------------------------------*/
 export const createProduct = async (req: Request, res: Response, next: NextFunction) => {
-  const { productName, productDescription, productPrice, quantityInStock, category, discount } = req.body
-  console.log(JSON.stringify(req.body))
+  const { productName, productDescription, productPrice, quantityInStock, category, discount } =
+    req.body
 
   try {
     const newProduct = new Product({
@@ -92,7 +92,7 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
       quantityInStock: quantityInStock,
       category: category,
       slug: slugify(productName),
-      discount: discount
+      discount: discount,
     })
 
     await newProduct.save()
@@ -114,7 +114,7 @@ export const updateProductById = async (req: Request, res: Response, next: NextF
     if (req.body.productName) {
       req.body.slug = slugify(req.body.productName)
     }
-    const updatedProduct = await updateProduct(productId, req.body)
+    const updatedProduct = await updateProduct(productId, req.body, req.file?.path)
     res
       .status(200)
       .json({ message: 'Product has been updated successfully', payload: updatedProduct })
