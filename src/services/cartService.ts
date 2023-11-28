@@ -111,3 +111,26 @@ export const updateCart = async (userId: string, cartItemId: string, quantity: n
     throw new Error('Failed to update cart item')
   }
 }
+
+export const deleteItemFromCart = async (userId: string, productId: string) => {
+  //check if the cart exist
+  const cart = await Cart.findOne({ user: userId })
+  if (!cart) {
+    return ApiError.notFound(`Cart not found with userId: ${userId}`)
+  }
+
+  // check if the product in the cart
+  const deletedItem = cart.products.find((p) => p.product.toString() === productId)
+  if (!deletedItem) {
+    return ApiError.notFound(`Product with id: ${userId} not found in the cart`)
+  }
+
+   //delete the product from the cart
+   const updatedCart = await Cart.findOneAndUpdate(
+    { user: userId, 'products.product': productId },
+    { $pull: { products: { product: productId } } },
+    { new: true }
+  )
+
+  return updatedCart
+}
