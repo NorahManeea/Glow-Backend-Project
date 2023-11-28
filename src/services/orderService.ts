@@ -1,4 +1,3 @@
-import createHttpError from 'http-errors'
 
 import { Order } from '../models/orderModel'
 import { OrderDocument } from '../types/types'

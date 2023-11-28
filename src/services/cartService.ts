@@ -1,5 +1,3 @@
-import createHttpError from 'http-errors'
-
 import { Cart } from '../models/cartModel'
 import { CartDocument, UserDocument, ProductDocument } from '../types/types'
 import { Product } from '../models/productModel'
