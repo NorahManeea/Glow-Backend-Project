@@ -32,7 +32,16 @@ export const findAllProducts = async (
     .skip(skip)
     .limit(limit)
     .sort(sortQuery)
-    .find(searchText ? { productName: { $regex: searchText, $options: 'i' } } : {})
+    .find(
+      searchText
+        ? {
+            $or: [
+              { productName: { $regex: searchText, $options: 'i' } },
+              { productDescription: { $regex: searchText, $options: 'i' } },
+            ],
+          }
+        : {}
+    )
     .find(category ? { category: { $in: [category] } } : {})
 
   return { products, totalPages, currentPage: pageNumber }
