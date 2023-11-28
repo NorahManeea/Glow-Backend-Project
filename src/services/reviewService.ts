@@ -3,6 +3,6 @@ import { CategoryDocument } from '../types/types'
 import ApiError from '../errors/ApiError'
 
 export const findAllReviews = async () => {
-  const categories = await Review.find()
-  return categories
+  const reviews = await Review.find()
+  return reviews
 }
