@@ -80,7 +80,7 @@ export const deleteProductById = async (req: Request, res: Response, next: NextF
  * @access private (admin Only)
  -----------------------------------------------*/
 export const createProduct = async (req: Request, res: Response, next: NextFunction) => {
-  const { productName, productDescription, productPrice, quantityInStock, category } = req.body
+  const { productName, productDescription, productPrice, quantityInStock, category, discount } = req.body
   console.log(JSON.stringify(req.body))
 
   try {
@@ -92,6 +92,7 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
       quantityInStock: quantityInStock,
       category: category,
       slug: slugify(productName),
+      discount: discount
     })
 
     await newProduct.save()

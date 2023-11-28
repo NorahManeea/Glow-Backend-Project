@@ -23,6 +23,7 @@ export type ProductDocument = Document & {
   sizes: string[]
   slug: string
   itemsSold: number
+  discount: number
 }
 
 export type CategoryDocument = Document & {
