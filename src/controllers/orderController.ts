@@ -10,6 +10,7 @@ import {
 } from '../services/orderService'
 import ApiError from '../errors/ApiError'
 import { sendEmail } from '../utils/sendEmail'
+import { OrderStatus } from '../enums/enums'
 
 /**-----------------------------------------------
  * @desc Get All Orders
@@ -107,12 +108,44 @@ export const updateOrderStatus = async (req: Request, res: Response, next: NextF
  * @method GET
  * @access private (admin Only)
  -----------------------------------------------*/
- export const getOrderHistory = async (req: Request, res: Response, next: NextFunction) => {
+export const getOrderHistory = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { userId } = req.decodedUser
     const orderHistory = await findOrderHistory(userId)
 
-    res.json({message: 'Order History returned successfully',payload:orderHistory})
+    res.json({ message: 'Order History returned successfully', payload: orderHistory })
+  } catch (error) {
+    next(ApiError.badRequest('Something went wrong'))
+  }
+}
+
+/**-----------------------------------------------
+ * @desc return order
+ * @route /api/orders/:orderId/return
+ * @method POST
+ * @access private 
+ -----------------------------------------------*/
+export const returnOrder = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const orderId = req.params.orderId
+    const order = await findOrder(orderId)
+    if (order.orderStatus !== OrderStatus.DELIVERED) {
+      return next(ApiError.badRequest('Order cannot be returned as it has not been delivered yet'))
+    }
+    const returnDeadline = new Date(order.orderDate)
+    returnDeadline.setDate(returnDeadline.getDate() + 7)
+
+    const currentDate = new Date()
+    if (currentDate > returnDeadline) {
+      return next(
+        ApiError.badRequest('The order has exceeded the return time limit and cannot be returned')
+      )
+    }
+    const returnedOrder = await changeOrderStatus(orderId, OrderStatus.RETURNED)
+
+    res
+      .status(200)
+      .json({ message: 'Order has been returned successfully', payload: returnedOrder })
   } catch (error) {
     next(ApiError.badRequest('Something went wrong'))
   }
