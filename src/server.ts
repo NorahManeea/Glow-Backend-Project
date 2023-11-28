@@ -20,14 +20,13 @@ app.use(myLogger)
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
-app.use('/api/auth', authRouter);
-app.use('/api/users', usersRouter);
-app.use('/api/wishlist', wishListRouter); 
-app.use('/api/cart', cartRouter);
-app.use('/api/orders', ordersRouter);
-app.use('/api/categories', categoryRouter);
-app.use('/api/products', productsRouter);
-
+app.use('/api/auth', authRouter)
+app.use('/api/users', usersRouter)
+app.use('/api/wishlist', wishListRouter)
+app.use('/api/cart', cartRouter)
+app.use('/api/orders', ordersRouter)
+app.use('/api/categories', categoryRouter)
+app.use('/api/products', productsRouter)
 
 app.use(apiErrorHandler)
 
