@@ -52,3 +52,8 @@ export const changeOrderStatus = async (orderId: string, newStatus: string) => {
     { new: true })
   return order
 }
+
+export const findOrderHistory = async (userId: string) => {
+  const orderHistory = await Order.find({ user: userId })
+  return orderHistory
+}

@@ -1042,3 +1042,15 @@ Method: DELETE, Path: /api/wishlist/65608f71922478c7778ba9b8, Date: 11/28/2023, 
 Method: DELETE, Path: /api/wishlist/65608f71922478c7778ba9b8, Date: 11/28/2023, Time: 12:36:25 PM
 Method: DELETE, Path: /api/wishlist/65608f71922478c7778ba9b8, Date: 11/28/2023, Time: 12:38:13 PM
 Method: DELETE, Path: /api/wishlist/65608f71922478c7778ba9b8, Date: 11/28/2023, Time: 12:38:15 PM
+Method: GET, Path: /api/orders/history, Date: 11/28/2023, Time: 12:58:16 PM
+Method: GET, Path: /api/orders/history, Date: 11/28/2023, Time: 12:58:32 PM
+Method: GET, Path: /api/orders/history, Date: 11/28/2023, Time: 12:59:08 PM
+Method: POST, Path: /api/wishlist, Date: 11/28/2023, Time: 12:59:12 PM
+Method: POST, Path: /api/auth/login, Date: 11/28/2023, Time: 12:59:16 PM
+Method: GET, Path: /api/orders/history, Date: 11/28/2023, Time: 12:59:34 PM
+Method: POST, Path: /api/orders/, Date: 11/28/2023, Time: 1:00:17 PM
+Method: GET, Path: /api/orders/history, Date: 11/28/2023, Time: 1:00:22 PM
+Method: GET, Path: /api/users, Date: 11/28/2023, Time: 1:00:36 PM
+Method: POST, Path: /api/orders/, Date: 11/28/2023, Time: 1:01:07 PM
+Method: GET, Path: /api/orders/history, Date: 11/28/2023, Time: 1:01:11 PM
+Method: GET, Path: /api/orders/, Date: 11/28/2023, Time: 1:01:28 PM
