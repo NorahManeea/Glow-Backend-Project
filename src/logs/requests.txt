@@ -1054,3 +1054,6 @@ Method: GET, Path: /api/users, Date: 11/28/2023, Time: 1:00:36 PM
 Method: POST, Path: /api/orders/, Date: 11/28/2023, Time: 1:01:07 PM
 Method: GET, Path: /api/orders/history, Date: 11/28/2023, Time: 1:01:11 PM
 Method: GET, Path: /api/orders/, Date: 11/28/2023, Time: 1:01:28 PM
+Method: POST, Path: /api/auth/login, Date: 11/28/2023, Time: 2:15:37 PM
+Method: POST, Path: /api/auth/register, Date: 11/28/2023, Time: 2:15:42 PM
+Method: POST, Path: /api/auth/register, Date: 11/28/2023, Time: 2:15:46 PM

@@ -41,9 +41,6 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    token: {
-      type: String,
-    },
     isBlocked:{
       type: Boolean,
       default: false
