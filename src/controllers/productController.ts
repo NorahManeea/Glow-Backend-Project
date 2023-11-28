@@ -81,10 +81,9 @@ export const deleteProductById = async (req: Request, res: Response, next: NextF
  -----------------------------------------------*/
 export const createProduct = async (req: Request, res: Response, next: NextFunction) => {
   const { productName, productDescription, productPrice, quantityInStock, category, discount } = req.body
-  console.log(JSON.stringify(req.body))
 
   try {
-    const newProduct = new Product({
+    const product = new Product({
       productName: productName,
       productDescription: productDescription,
       productPrice: productPrice,
@@ -94,10 +93,11 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
       slug: slugify(productName),
       discount: discount
     })
-
-    await newProduct.save()
+    await product.save()
+    const newProduct = await createNewProduct(product)
     res.status(201).json({ message: 'Product has been created successfully', payload: newProduct })
   } catch (error) {
+    console.log(error)
     next(ApiError.badRequest('Something went wrong'))
   }
 }
@@ -114,7 +114,7 @@ export const updateProductById = async (req: Request, res: Response, next: NextF
     if (req.body.productName) {
       req.body.slug = slugify(req.body.productName)
     }
-    const updatedProduct = await updateProduct(productId, req.body)
+    const updatedProduct = await updateProduct(productId, req.body, req.file?.path)
     res
       .status(200)
       .json({ message: 'Product has been updated successfully', payload: updatedProduct })

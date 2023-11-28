@@ -33,7 +33,16 @@ export const findAllProducts = async (
     .skip(skip)
     .limit(limit)
     .sort(sortQuery)
-    .find(searchText ? { productName: { $regex: searchText, $options: 'i' } } : {})
+    .find(
+      searchText
+        ? {
+            $or: [
+              { productName: { $regex: searchText, $options: 'i' } },
+              { productDescription: { $regex: searchText, $options: 'i' } },
+            ],
+          }
+        : {}
+    )
     .find(category ? { category: { $in: [category] } } : {})
 
   return { products, totalPages, currentPage: pageNumber }
@@ -64,8 +73,16 @@ export const removeProduct = async (id: string) => {
   return product
 }
 
-export const updateProduct = async (productId: string, updatedProduct: ProductDocument) => {
-  const product = await Product.findByIdAndUpdate(productId, updatedProduct, { new: true })
+export const updateProduct = async (
+  productId: string,
+  updatedProduct: ProductDocument,
+  productImage: string | undefined
+) => {
+  const product = await Product.findByIdAndUpdate(
+    productId,
+    { ...updatedProduct, productImage: productImage },
+    { new: true }
+  )
   if (!product) {
     throw ApiError.notFound('Product not found with the entered ID')
   }
