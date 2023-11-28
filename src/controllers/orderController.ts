@@ -9,6 +9,7 @@ import {
   removeOrder,
 } from '../services/orderService'
 import ApiError from '../errors/ApiError'
+import { sendEmail } from '../utils/sendEmail'
 
 /**-----------------------------------------------
  * @desc Get All Orders
@@ -48,7 +49,18 @@ export const getOrderById = async (req: Request, res: Response, next: NextFuncti
  -----------------------------------------------*/
 export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const email = req.decodedUser.email
+
     const order = await createNewOrder(req.body)
+    const subject = 'We have received your order'
+    const htmlTemplate = `
+        <div style="color: #333; text-align: center;">
+          <h1 style="color: #1E1E1E;">Thanks for your purchase</h1>
+         <p>We'll prepare your order for immediate dispatch and you will recive it shortly. We'll email you the shiping confirmation once your order is on its way.</p>
+          <p style="font-size: 14px; color: #302B2E;">Black Tigers Team</p>
+        </div>
+      `
+    await sendEmail(email, subject, htmlTemplate)
     res.status(201).json({ meassge: 'Order has been created successfuly', payload: order })
   } catch (error) {
     next(ApiError.badRequest('Something went wrong'))
