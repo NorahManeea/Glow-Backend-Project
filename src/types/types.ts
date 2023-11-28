@@ -8,7 +8,8 @@ export type UserDocument = Document & {
   role: string
   isAccountVerified: boolean
   isBlocked: boolean,
-  avatar: string
+  avatar: string,
+  resetPasswordToken: string;
 }
 
 export type ProductDocument = Document & {
