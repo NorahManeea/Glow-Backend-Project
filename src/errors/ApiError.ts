@@ -23,7 +23,7 @@ class ApiError {
   static notFound(msg: string) {
     return new ApiError(404, msg);
   }
-  static conflict(msg: string) {
+  static alreadyExist(msg: string) {
     return new ApiError(409, msg);
   }
 }

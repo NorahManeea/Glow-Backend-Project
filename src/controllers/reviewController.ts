@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express'
-
 import { findAllReviews } from '../services/reviewService'
 import ApiError from '../errors/ApiError'
 import { Review } from '../models/reviewModel'
@@ -26,11 +25,13 @@ export const getAllReviews = async (req: Request, res: Response, next: NextFunct
  * @method POST
  * @access private (logged in user)
   -----------------------------------------------*/
-export const addReview = async (req: Request, res: Response, next: NextFunction) => {
+export const addNewReview = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { productId, reviewText } = req.body
+    const { userId } = req.decodedUser
+
     if (!productId || !reviewText) {
-      return next(ApiError.badRequest('ProductId and content are required.'))
+      return next(ApiError.badRequest('ProductId and review text are required.'))
     }
     const productFound = await Product.findOne({
       productId,
@@ -38,35 +39,43 @@ export const addReview = async (req: Request, res: Response, next: NextFunction)
     if (!productFound) {
       return next(ApiError.notFound('ProductId not found'))
     }
-
     const review = new Review({
+      userId,
       productId,
       reviewText,
     })
     await review.save()
     res.status(201).json({ message: 'Review added successfully', payload: review })
   } catch (error) {
+    console.log(error)
     next(ApiError.badRequest('Something went wrong'))
   }
 }
 
 /** -----------------------------------------------
  * @desc Delete Review
- * @route /api/reviews/:reviewID
+ * @route /api/reviews/:reviewId
  * @method DELETE
- * @access private (Admin orlogged in user)
+ * @access private (Admin or logged in user)
   -----------------------------------------------*/
 export const deleteReview = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { reveiwId } = req.params
+    const { reviewId } = req.params
+    console.log(reviewId)
 
-    const reveiw = await Review.findByIdAndDelete({ reveiwId })
-
-    if (!reveiw) {
-      return next(ApiError.notFound('ProductId not found'))
+    if (!reviewId) {
+      return next(ApiError.badRequest('Review ID is missing'))
     }
-    res.status(201).json({ message: 'Review added successfully', payload: reveiw })
+
+    const review = await Review.findByIdAndDelete(reviewId)
+
+    if (!review) {
+      return next(ApiError.notFound('Review not found'))
+    }
+
+    res.status(201).json({ message: 'Review has been deleted successfully', payload: review })
   } catch (error) {
+    console.log(error)
     next(ApiError.badRequest('Something went wrong'))
   }
 }

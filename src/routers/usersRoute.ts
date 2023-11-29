@@ -1,6 +1,7 @@
 import express from 'express'
 
 import {
+  blockUserById,
   deleteUser,
   getAllUsers,
   getUserById,
@@ -9,7 +10,6 @@ import {
 } from '../controllers/userController'
 import { validateUser } from '../validation/validateUser'
 import { uploadImage } from '../middlewares/uploadImage'
-import { blockUser } from '../services/userService'
 
 const router = express.Router()
 
@@ -18,7 +18,7 @@ router.get('/count', getUsersCount)
 router.delete('/:userId', deleteUser)
 router.put('/:userId', uploadImage.single('avatar'),updateUserById)
 router.get('/:userId', getUserById)
-router.put('/:userId/block', blockUser)
+router.put('/:userId/block', blockUserById)
 
 
 export default router

@@ -14,7 +14,7 @@ export function checkAuth(req: Request, res: Response, next: NextFunction) {
   try {
     const decodedUser = jwt.verify(token, authConfig.jwt.accessToken) as DecodedUser
     req.decodedUser = decodedUser
-    console.log(decodedUser)
+    console.log(decodedUser.userId)
     return next()
   } catch (error) {
     console.error('Token verification error:', error)

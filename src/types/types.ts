@@ -22,7 +22,6 @@ export type ProductDocument = Document & {
   category: mongoose.Types.ObjectId[]
   variants: string[]
   sizes: string[]
-  slug: string
   itemsSold: number
   discount: number
 }
