@@ -18,8 +18,12 @@ import ApiError from '../errors/ApiError'
   -----------------------------------------------*/
 export const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const users = await findAllUser()
-    res.status(200).json({ message: 'All users returned successfully', payload: users })
+    let pageNumber = Number(req.query.pageNumber)
+    const limit = Number(req.query.limit)
+    const searchText = req.query.searchText?.toString()
+
+    const { users, totalPages, currentPage }  = await findAllUser(pageNumber, limit, searchText)
+    res.status(200).json({ message: 'All users returned successfully', payload: users, totalPages, currentPage })
   } catch (error) {
     next(ApiError.badRequest('Something went wrong'))
   }
