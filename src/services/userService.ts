@@ -4,9 +4,30 @@ import { User } from '../models/userModel'
 import { UserDocument } from '../types/types'
 import ApiError from '../errors/ApiError'
 
-export const findAllUser = async () => {
+export const findAllUser = async (pageNumber = 1, limit = 8, searchText = '') => {
+  const userCount = await User.countDocuments()
+  const totalPages = Math.ceil(userCount / limit)
+
+  if (pageNumber > totalPages) {
+    pageNumber = totalPages
+  }
+  const skip = (pageNumber - 1) * limit
+
   const users = await User.find()
-  return users
+    .skip(skip)
+    .limit(limit)
+    .find(
+      searchText
+        ? {
+            $or: [
+              { firstName: { $regex: searchText, $options: 'i' } },
+              { lastName: { $regex: searchText, $options: 'i' } },
+            ],
+          }
+        : {}
+    )
+
+  return { users, totalPages, currentPage: pageNumber }
 }
 
 export const findAUser = async (userId: string) => {
