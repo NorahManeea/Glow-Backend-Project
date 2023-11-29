@@ -32,8 +32,17 @@ export const createCategory = async (req: Request, res: Response, next: NextFunc
  -----------------------------------------------*/
 export const getAllCategory = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const categories = await findAllCategories()
-    res.status(200).json({ message: 'All categories returned successfully', payload: categories })
+    let pageNumber = Number(req.query.pageNumber)
+    const limit = Number(req.query.limit)
+    const searchText = req.query.searchText?.toString()
+    const { categories, totalPages, currentPage } = await findAllCategories(
+      pageNumber,
+      limit,
+      searchText,
+    )
+    res
+      .status(200)
+      .json({ message: 'All products returned', payload: categories, totalPages, currentPage })
   } catch (error) {
     next(ApiError.badRequest('Something went wrong'))
   }
