@@ -7,15 +7,13 @@ const reviewSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
-    products: [
-      {
-        product: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'Product',
-        },
+    products: {
+      product: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product',
       },
-    ],
-    content: {
+    },
+    reviewText: {
       type: String,
       required: true,
       minlength: 10,

@@ -105,7 +105,7 @@ export const getUserById = async (req: Request, res: Response, next: NextFunctio
 export const blockUserById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = await blockUser(req.params.userId)
-    res.status(200).json({ message: 'User has been block successfully', payload: user })
+    res.status(200).json({ message: 'User has been blocked successfully', payload: user })
   } catch (error) {
     next(ApiError.badRequest('Something went wrong'))
   }

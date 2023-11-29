@@ -3,16 +3,11 @@ import { NextFunction, Request, Response } from 'express'
 
 import ApiError from '../errors/ApiError'
 
-const productSchema = zod.object({
-  product: zod.string(),
-})
-
 export function validateReview(req: Request, res: Response, next: NextFunction) {
   const reviewSchema = zod.object({
     userId: zod.string(),
-    content: zod.string().max(250, { message: 'Review content must be 250 characters or less' }),
-    ReviewDate: zod.date().default(() => new Date()),
-    products: zod.array(productSchema),
+    reviewText: zod.string().max(250, { message: 'Review text must be 250 characters or less' }),
+    products: zod.string(),
   })
 
   try {

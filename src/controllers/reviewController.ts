@@ -28,8 +28,8 @@ export const getAllReviews = async (req: Request, res: Response, next: NextFunct
   -----------------------------------------------*/
 export const addReview = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { productId, content } = req.body
-    if (!productId || !content) {
+    const { productId, reviewText } = req.body
+    if (!productId || !reviewText) {
       return next(ApiError.badRequest('ProductId and content are required.'))
     }
     const productFound = await Product.findOne({
@@ -41,7 +41,7 @@ export const addReview = async (req: Request, res: Response, next: NextFunction)
 
     const review = new Review({
       productId,
-      content,
+      reviewText,
     })
     await review.save()
     res.status(201).json({ message: 'Review added successfully', payload: review })

@@ -77,6 +77,7 @@ export const userCount = async () => {
 }
 
 export const blockUser = async (userId: string) => {
+  console.log('teest')
   const isBlock = await User.findByIdAndUpdate(userId, { $set: { isBlocked: true } }, { new: true })
   return isBlock
 }

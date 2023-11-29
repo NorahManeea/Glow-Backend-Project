@@ -124,9 +124,7 @@ export const deleteCartItem = async (req: Request, res: Response, next: NextFunc
  -----------------------------------------------*/
 export const deleteCartById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    console.log('tesst')
     const cart = await deleteCart(req.params.id)
-    console.log('1: ' + cart)
     res.status(200).json({
       message: 'Cart has been deleted Successfully',
       payload: cart,

@@ -32,7 +32,7 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
       token,
       role: 'USER',
       avatar,
-      isBlocked: true,
+      isBlocked: false,
     })
 
     await newUser.save()
@@ -76,6 +76,7 @@ export const activateUser = async (req: Request, res: Response, next: NextFuncti
     }
     res.status(200).json({
       message: 'Your Account has been activated successfull',
+      user
     })
   } catch (error) {
     next(ApiError.badRequest('Something went wrong'))
