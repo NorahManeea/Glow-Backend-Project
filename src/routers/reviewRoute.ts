@@ -7,3 +7,5 @@ import { getAllReviews } from '../controllers/reviewController'
 router.get('/', getAllReviews)
 router.post('/', addReview)
 router.delete('/:reveiwId', deleteReview)
+
+export default router;

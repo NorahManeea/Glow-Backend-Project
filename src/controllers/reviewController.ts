@@ -4,6 +4,13 @@ import { findAllReviews } from '../services/reviewService'
 import ApiError from '../errors/ApiError'
 import { Review } from '../models/reviewModel'
 import { Product } from '../models/productModel'
+
+/** -----------------------------------------------
+ * @desc Get All Reviews
+ * @route /api/reviews/
+ * @method GET
+ * @access puplic
+  -----------------------------------------------*/
 export const getAllReviews = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const reviews = await findAllReviews()
@@ -13,6 +20,12 @@ export const getAllReviews = async (req: Request, res: Response, next: NextFunct
   }
 }
 
+/** -----------------------------------------------
+ * @desc Add Review
+ * @route /api/reviews/
+ * @method POST
+ * @access private (logged in user)
+  -----------------------------------------------*/
 export const addReview = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { productId, content } = req.body
@@ -37,6 +50,12 @@ export const addReview = async (req: Request, res: Response, next: NextFunction)
   }
 }
 
+/** -----------------------------------------------
+ * @desc Delete Review
+ * @route /api/reviews/:reviewID
+ * @method DELETE
+ * @access private (Admin orlogged in user)
+  -----------------------------------------------*/
 export const deleteReview = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { reveiwId } = req.params
