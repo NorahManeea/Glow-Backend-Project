@@ -1457,3 +1457,5 @@ Method: GET, Path: /api/auth/activate/a52dafd8328a2edec24e0ebdad9974a7c82ae24cf0
 Method: POST, Path: /api/auth/register, Date: 11/29/2023, Time: 4:52:04 PM
 Method: POST, Path: /api/auth/register, Date: 11/29/2023, Time: 4:56:11 PM
 Method: GET, Path: /api/auth/activate/e7b5146214cd4f7aa38c9555a24cefce90ffa836420ca782ff888e802ab4e1fd, Date: 11/29/2023, Time: 4:56:58 PM
+Method: POST, Path: /api/auth/register, Date: 11/29/2023, Time: 5:50:57 PM
+Method: GET, Path: /api/auth/activate/f91a66d331643b56d40cb2236401c81f51bb38f79a4df5b5759448de519881cb, Date: 11/29/2023, Time: 5:52:43 PM

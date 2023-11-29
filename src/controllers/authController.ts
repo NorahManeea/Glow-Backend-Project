@@ -73,9 +73,6 @@ export const activateUser = async (req: Request, res: Response, next: NextFuncti
       { isAccountVerified: true, token: undefined },
       { new: true }
     )
-
-    console.log(user)
-
     if (!user) {
       return next(ApiError.badRequest('Invalid token'))
     }
