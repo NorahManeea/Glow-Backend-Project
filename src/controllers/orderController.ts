@@ -20,8 +20,22 @@ import { OrderStatus } from '../enums/enums'
  -----------------------------------------------*/
 export const getAllOrders = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const orders = await findAllOrders()
-    res.status(200).json({ message: 'All orders returned successfully', payload: orders })
+    let pageNumber = Number(req.query.pageNumber)
+    const limit = Number(req.query.limit)
+    const user = req.query.user?.toString()
+    const status = req.query.status?.toString()
+
+    const { orders, totalPages, currentPage } = await findAllOrders(
+      pageNumber,
+      limit,
+      user,
+      status
+    )
+    console.log(orders)
+
+    res
+      .status(200)
+      .json({ message: 'All orders returned', payload: orders, totalPages, currentPage })
   } catch (error) {
     next(ApiError.badRequest('Something went wrong'))
   }
