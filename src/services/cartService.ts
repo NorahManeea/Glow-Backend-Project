@@ -90,21 +90,25 @@ export const findCart = async (userId: string) => {
 
 export const updateCart = async (userId: string, cartItemId: string, quantity: number) => {
   try {
-    console.log(`cart`)
-    const updatedCart = await Cart.findOneAndUpdate(
-      { userId, 'products._id': cartItemId },
-      { $set: { 'products.$.quantity': quantity } },
-      { new: true }
-    )
-    console.log(`cart: ${updatedCart}`)
-
-    if (!updatedCart) {
-      throw ApiError.notFound(`Cart or product not found`)
+    const cart = await Cart.findOne({ user: userId })
+    if (!cart) {
+      throw ApiError.notFound(`Cart not found`)
     }
 
+    const CartItemIndex = cart.products.findIndex(
+      (product) => product.product.toString() === cartItemId
+    )
+    if (CartItemIndex === -1) {
+      throw ApiError.notFound('Product not found in the cart')
+    }
+
+    cart.products[CartItemIndex].quantity = quantity
+    const updatedCart = await cart.save()
     const itemsCount = updatedCart.products.reduce((count, product) => count + product.quantity, 0)
+
     return { cart: updatedCart, itemsCount }
   } catch (error) {
+    console.log(error)
     throw new Error('Failed to update cart item')
   }
 }

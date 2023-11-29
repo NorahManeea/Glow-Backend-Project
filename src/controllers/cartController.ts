@@ -85,9 +85,9 @@ export const getCartItems = async (req: Request, res: Response, next: NextFuncti
 export const updateCartItems = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = req.params.id
-    const { cartItems } = req.body
+    const { _id, quantity } = req.body
 
-    const { cart, itemsCount } = await updateCart(userId, cartItems.productId, cartItems.quantity)
+    const { cart, itemsCount } = await updateCart(userId, _id, quantity)
 
     res.status(200).json({ message: 'Cart item has been updated successfully', cart, itemsCount })
   } catch (error) {
