@@ -83,5 +83,5 @@ export type ReviewDocument = {
     product: mongoose.Schema.Types.ObjectId
   }[]
   content: string
-  comentDate: Date
+  reviewDate: Date
 }
