@@ -27,15 +27,15 @@ export const addToCart = async (req: Request, res: Response, next: NextFunction)
 
     const product = await findProduct(productId)
 
-    await checkStock(product, quantity).catch((error) => {
-      throw new Error(error.message)
-    })
-
+    const isValid = await checkStock(product, quantity)
+    if (!isValid.status && isValid.error) {
+      return next(ApiError.badRequest(isValid.error))
+    }
     let cart = await createCart(userId)
 
     cart = await addItem(cart, quantity, product)
 
-    const totalPrice = await calculateTotalPrice(cart)
+    const totalPrice = await calculateTotalPrice(cart, discountCode)
 
     // Update the product stock
     await updateQuantityInStock(productId, product.quantityInStock)
@@ -108,7 +108,9 @@ export const deleteCartItem = async (req: Request, res: Response, next: NextFunc
     const productId = req.params.productId
     const updatedCart = await deleteItemFromCart(userId, productId)
 
-    res.status(200).json({ meassge: 'Product has been deleted from the cart successfully', result: updatedCart })
+    res
+      .status(200)
+      .json({ meassge: 'Product has been deleted from the cart successfully', result: updatedCart })
   } catch (error) {
     next(ApiError.badRequest('Something went wrong'))
   }
@@ -122,7 +124,7 @@ export const deleteCartItem = async (req: Request, res: Response, next: NextFunc
  -----------------------------------------------*/
 export const deleteCartById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    console.log("tesst")
+    console.log('tesst')
     const cart = await deleteCart(req.params.id)
     console.log('1: ' + cart)
     res.status(200).json({

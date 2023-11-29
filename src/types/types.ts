@@ -33,8 +33,6 @@ export type DiscountCodeDocument = Document & {
   code: string
   discountPercentage: number
   expirationDate: Date
-  createdAt: Date
-  updatedAt: Date
 }
 
 export type DecodedUser = {
@@ -69,7 +67,6 @@ export type CartDocument = Document & {
     product: mongoose.Schema.Types.ObjectId
     quantity: number
   }[]
-  discountCode: mongoose.Schema.Types.ObjectId
 }
 export type WishListDocument = Document & {
   user: string
