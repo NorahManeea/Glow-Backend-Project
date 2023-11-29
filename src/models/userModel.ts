@@ -50,9 +50,12 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: '',
     },
+    activationToken: {
+      type: String,
+    },
     resetPasswordToken: {
       type: String,
-    }
+    },
   },
 
   { timestamps: true }

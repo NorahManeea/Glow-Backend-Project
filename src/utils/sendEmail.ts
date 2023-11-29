@@ -3,7 +3,6 @@ import nodemailer from 'nodemailer'
 import { emailConfig } from '../config/email.config'
 import crypto from 'crypto'
 
-
 export function generateActivationToken() {
   return crypto.randomBytes(32).toString('hex')
 }
@@ -27,6 +26,7 @@ export const sendEmail = async (email: string, subject: string, htmlTemplate: st
 
     const info = await transporter.sendMail(mailOptions)
     console.log('Test The Email: ' + info.response)
+    return true
   } catch (error) {
     console.log(error)
     throw new Error('Nodemailer Error')

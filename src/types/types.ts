@@ -6,6 +6,7 @@ export type UserDocument = Document & {
   email: string
   password: string
   role: string
+  activationToken: string
   isAccountVerified: boolean
   isBlocked: boolean
   avatar: string

@@ -21,7 +21,7 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
     if (user) {
       return next(ApiError.badRequest('This email is already registered'))
     }
-    const token = generateActivationToken()
+    const activationToken = generateActivationToken()
     const hashPassword = await bcrypt.hash(password, 10)
 
     const newUser = new User({
@@ -29,14 +29,14 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
       firstName,
       lastName,
       password: hashPassword,
-      token,
+      activationToken,
       role: 'USER',
       avatar,
       isBlocked: false,
     })
+    console.log(newUser)
 
-    await newUser.save()
-    const activationLink = `http://localhost:5050/api/auth/activate/${token}`
+    const activationLink = `http://localhost:5050/api/auth/activate/${activationToken}`
 
     const subject = 'Welcome to Black Tigers Team!'
     const htmlTemplate = `
@@ -46,7 +46,8 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
           <p style="font-size: 14px; color: #302B2E;">Black Tigers Team</p>
         </div>
       `
-    await sendEmail(email, subject, htmlTemplate)
+    const isSent = await sendEmail(email, subject, htmlTemplate)
+    isSent && (await newUser.save())
 
     res.status(201).json({
       message: 'Registration successful. Check your email to activate your account',
@@ -66,17 +67,21 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
 export const activateUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const activationToken = req.params.token
+    console.log(activationToken)
     const user = await User.findOneAndUpdate(
-      { token: activationToken },
+      { activationToken },
       { isAccountVerified: true, token: undefined },
       { new: true }
     )
+
+    console.log(user)
+
     if (!user) {
       return next(ApiError.badRequest('Invalid token'))
     }
     res.status(200).json({
       message: 'Your Account has been activated successfull',
-      user
+      user,
     })
   } catch (error) {
     next(ApiError.badRequest('Something went wrong'))
