@@ -5,12 +5,12 @@ import { Product } from '../models/productModel'
 import ApiError from '../errors/ApiError'
 
 export const findAllOrders = async () => {
-  const orders = await Order.find()
+  const orders = await Order.find().populate('products.product', 'productName productPrice')
   return orders
 }
 
 export const findOrder = async (orderId: string) => {
-  const order = await Order.findById(orderId)
+  const order = await Order.findById(orderId).populate('products.product', 'productName productPrice')
   if (!order) {
     throw ApiError.notFound(`Order not found with the ID: ${orderId}`)
   }
