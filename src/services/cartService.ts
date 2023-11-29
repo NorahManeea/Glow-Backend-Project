@@ -14,11 +14,12 @@ export const createCart = async (userId: string): Promise<CartDocument> => {
 
 export const checkStock = async (product: ProductDocument, quantity: number) => {
   if (product.quantityInStock === 0) {
-    throw ApiError.notFound(`Product is currently out of stock`)
+    return { status: false, error: 'Product is currently out of stock' }
   }
   if (quantity > product.quantityInStock) {
-    throw ApiError.notFound(`Quantity requested exceeds quantity available in stock.`)
+    return { status: false, error: `Quantity requested exceeds quantity available in stock.` }
   }
+  return { status: true, error: null }
 }
 
 export const addItem = async (
@@ -39,7 +40,10 @@ export const addItem = async (
   return cart
 }
 
-export const calculateTotalPrice = async (cart: CartDocument): Promise<number> => {
+export const calculateTotalPrice = async (
+  cart: CartDocument,
+  discountCode: DiscountCodeDocument
+) => {
   const total = await Promise.all(
     cart.products.map(async (product) => {
       try {
@@ -52,29 +56,20 @@ export const calculateTotalPrice = async (cart: CartDocument): Promise<number> =
       }
     })
   )
-
   let totalPrice = total.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+  let savedAmount = 0
+  let totalAfterDiscount = 0
 
-  console.log('Total Price before discount:', totalPrice)
-
-  if (cart.discountCode) {
-    const discountCode = await DiscountCode.findById(cart.discountCode)
-    if (discountCode) {
-      console.log('Discount Code found:', discountCode)
-
-      const discountPercentage = discountCode.discountPercentage
-      console.log('Discount Percentage:', discountPercentage)
-
-      const discountAmount = (totalPrice * discountPercentage) / 100
-      console.log('Discount Amount:', discountAmount)
-
-      totalPrice -= discountAmount
-      totalPrice = Math.ceil(totalPrice)
-    }
+  console.log(await DiscountCode.findById(discountCode))
+  const isDiscountCodeFound = await DiscountCode.findById(discountCode)
+  if (isDiscountCodeFound) {
+    savedAmount = (totalPrice * isDiscountCodeFound.discountPercentage) / 100
+    totalAfterDiscount = totalPrice - savedAmount
+  } else {
+    console.log('Discount Code not found or is null.')
   }
 
-  console.log('Total Price after discount:', totalPrice)
-  return totalPrice
+  return { totalPrice, savedAmount, totalAfterDiscount }
 }
 
 export const updateQuantityInStock = async (productId: string, quantityInStock: number) => {
@@ -139,7 +134,7 @@ export const deleteItemFromCart = async (userId: string, carttItemId: string) =>
 
 export const deleteCart = async (userId: string) => {
   const cart = await Cart.findOneAndDelete({ user: userId })
-  console.log("2: "+ cart)
+  console.log('2: ' + cart)
   if (!cart) {
     return ApiError.notFound(`Cart not found with the ID: ${userId}`)
   }
