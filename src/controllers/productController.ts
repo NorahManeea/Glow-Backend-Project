@@ -65,16 +65,23 @@ export const getProductById = async (req: Request, res: Response, next: NextFunc
  -----------------------------------------------*/
 export const deleteProductById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const product = await removeProduct(req.params.id)
+    const productId = req.params.id
+    console.log('Product ID to delete:', productId)
+
+    const product = await removeProduct(productId)
+    if (!product) {
+      throw ApiError.notFound('Product not found with the entered ID')
+    }
+
     res.status(200).json({
-      message: 'Product has been deleted Successfully',
+      message: 'Product has been deleted successfully',
       payload: product,
     })
   } catch (error) {
     if (error instanceof ApiError) {
       return next(error)
     }
-    next(ApiError.badRequest('Something went wrong'))
+    next(ApiError.internal('Something went wrong'))
   }
 }
 
@@ -85,20 +92,30 @@ export const deleteProductById = async (req: Request, res: Response, next: NextF
  * @access private (admin Only)
  -----------------------------------------------*/
 export const createProduct = async (req: Request, res: Response, next: NextFunction) => {
-  const { productName, productDescription, productPrice, quantityInStock, category, discount } =
-    req.body
+  const {
+    productName,
+    productDescription,
+    productPrice,
+    quantityInStock,
+    category,
+    discount,
+    sizes,
+    variants,
+  } = req.body
 
   try {
     const product = new Product({
-      productName: productName,
-      productDescription: productDescription,
-      productPrice: productPrice,
+      productName,
+      productDescription,
+      productPrice,
       productImage: req.file?.path,
-      quantityInStock: quantityInStock,
-      category: category,
-      discount: discount,
+      quantityInStock,
+      category,
+      discount,
+      sizes,
+      variants,
     })
-    await product.save()
+
     const newProduct = await createNewProduct(product)
     res.status(201).json({ message: 'Product has been created successfully', payload: newProduct })
   } catch (error) {

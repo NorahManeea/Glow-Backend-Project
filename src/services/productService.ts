@@ -1,6 +1,7 @@
 import { Product } from '../models/productModel'
 import { ProductDocument } from '../types/types'
 import ApiError from '../errors/ApiError'
+import { Category } from '../models/categoryModel'
 
 // @service:- Find All Products
 export const findAllProducts = async (
@@ -26,6 +27,11 @@ export const findAllProducts = async (
   } else if (sortBy === 'highestPrice') {
     sortQuery = { productPrice: -1 }
   }
+
+  const foundCategory = await Category.find({
+    categoryName: { $regex: `${category}`, $options: 'i' },
+  })
+
   const products = await Product.find()
     .populate('category')
     .skip(skip)
@@ -41,7 +47,7 @@ export const findAllProducts = async (
           }
         : {}
     )
-    .find(category ? { category: { $in: [category] } } : {})
+    .find(category ? { category: { $in: foundCategory } } : {})
 
   return { products, totalPages, currentPage: pageNumber }
 }
@@ -66,9 +72,6 @@ export const findHighestSoldProducts = async (limit = 8) => {
 // @service:- Remove a Product
 export const removeProduct = async (id: string) => {
   const product = await Product.findByIdAndDelete(id)
-  if (!product) {
-    throw ApiError.notFound('Product not found with the entered ID')
-  }
   return product
 }
 // @service:- Update a Product
@@ -90,14 +93,6 @@ export const updateProduct = async (
 
 // @service:- Create a Product
 export const createNewProduct = async (newProduct: ProductDocument) => {
-  const product = await Product.create({
-    ...newProduct,
-  })
+  const product = await Product.create(newProduct)
   return product
-}
-
-// @service:- Check Product Existence
-export const checkProductExistence = async (productName: string) => {
-  const productExist = await Product.exists({ productName: productName })
-  return productExist
 }

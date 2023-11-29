@@ -78,7 +78,6 @@ export const activateUser = async (req: Request, res: Response, next: NextFuncti
     }
     res.status(200).json({
       message: 'Your Account has been activated successfull',
-      user,
     })
   } catch (error) {
     next(ApiError.badRequest('Something went wrong'))

@@ -9,6 +9,7 @@ const productSchema = new mongoose.Schema(
       required: true,
       minlength: 3,
       maxlength: 100,
+      unique: true
     },
     productDescription: {
       type: String,
@@ -40,7 +41,8 @@ const productSchema = new mongoose.Schema(
       type: [String],
     },
     itemsSold:{
-      type: Number
+      type: Number,
+      default: 0,
     },  
     discount: {
       type: Number,
