@@ -21,9 +21,10 @@ export const getAllUsers = async (req: Request, res: Response, next: NextFunctio
     let pageNumber = Number(req.query.pageNumber)
     const limit = Number(req.query.limit)
     const searchText = req.query.searchText?.toString()
-
-    const { users, totalPages, currentPage }  = await findAllUser(pageNumber, limit, searchText)
-    res.status(200).json({ message: 'All users returned successfully', payload: users, totalPages, currentPage })
+    const { users, totalPages, currentPage } = await findAllUser(pageNumber, limit, searchText)
+    res
+      .status(200)
+      .json({ message: 'All users returned successfully', payload: users, totalPages, currentPage })
   } catch (error) {
     next(ApiError.badRequest('Something went wrong'))
   }
@@ -59,6 +60,9 @@ export const updateUserById = async (req: Request, res: Response, next: NextFunc
       payload: user,
     })
   } catch (error) {
+    if (error instanceof ApiError) {
+      return next(error)
+    }
     next(ApiError.badRequest('Something went wrong'))
   }
 }
@@ -71,7 +75,10 @@ export const updateUserById = async (req: Request, res: Response, next: NextFunc
   -----------------------------------------------*/
 export const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const user = await removeUser(req.params.userId)
+    const user = await removeUser(req.params.userId, next)
+    if (!user) {
+      return next(ApiError.notFound('User not found with the entered ID'))
+    }
     res.status(200).json({
       message: 'User has been deleted successfully',
       payload: user,
@@ -90,6 +97,9 @@ export const deleteUser = async (req: Request, res: Response, next: NextFunction
 export const getUserById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = await findAUser(req.params.userId)
+    if (!user) {
+      return next(ApiError.notFound('User not found with the entered ID'))
+    }
     res.status(200).json({ message: 'Single user returned successfully', payload: user })
   } catch (error) {
     next(ApiError.badRequest('Something went wrong'))
@@ -104,9 +114,18 @@ export const getUserById = async (req: Request, res: Response, next: NextFunctio
   -----------------------------------------------*/
 export const blockUserById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const user = await blockUser(req.params.userId)
-    res.status(200).json({ message: 'User has been blocked successfully', payload: user })
+    const userId = req.params.userId
+
+    const blockedUser = await blockUser(userId)
+
+    res.status(200).json({
+      message: 'User has been blocked successfully',
+      payload: blockedUser,
+    })
   } catch (error) {
+    if (error instanceof ApiError) {
+      return next(error)
+    }
     next(ApiError.badRequest('Something went wrong'))
   }
 }

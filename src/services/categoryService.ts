@@ -39,7 +39,7 @@ export const updateCategory = async (categoryId: string, updatedCategory: Catego
   const { categoryName } = updatedCategory
   const categoryExist = await Category.exists({ categoryName: categoryName })
   if (categoryExist) {
-    throw ApiError.conflict(`Category already exists with this ${categoryName}`)
+    throw ApiError.alreadyExist(`Category already exists with this ${categoryName}`)
   }
   const category = await Category.findByIdAndUpdate(categoryId, updatedCategory, { new: true })
   if (!category) {
@@ -60,7 +60,7 @@ export const createNewCategory = async (newCategory: CategoryDocument) => {
   const { categoryName } = newCategory
   const categoryExist = await Category.exists({ categoryName: categoryName })
   if (categoryExist) {
-    return ApiError.conflict(`Category already exists with this ${categoryName}`)
+    return ApiError.alreadyExist(`Category already exists with this ${categoryName}`)
   }
   const category = await Category.create({
     ...newCategory,

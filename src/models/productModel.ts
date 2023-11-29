@@ -39,11 +39,6 @@ const productSchema = new mongoose.Schema(
     sizes: {
       type: [String],
     },
-    slug:{
-      type: String,
-      unique: true,
-      lowercase: true,
-    },
     itemsSold:{
       type: Number
     },  

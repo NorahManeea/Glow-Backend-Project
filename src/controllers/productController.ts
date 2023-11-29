@@ -1,4 +1,3 @@
-import slugify from 'slugify'
 import { NextFunction, Request, Response } from 'express'
 
 import {
@@ -51,6 +50,9 @@ export const getProductById = async (req: Request, res: Response, next: NextFunc
     const product = await findProduct(req.params.id)
     res.status(200).json({ message: 'Single product returned', payload: product })
   } catch (error) {
+    if (error instanceof ApiError) {
+      return next(error)
+    }
     next(ApiError.badRequest('Something went wrong'))
   }
 }
@@ -69,6 +71,9 @@ export const deleteProductById = async (req: Request, res: Response, next: NextF
       payload: product,
     })
   } catch (error) {
+    if (error instanceof ApiError) {
+      return next(error)
+    }
     next(ApiError.badRequest('Something went wrong'))
   }
 }
@@ -80,7 +85,8 @@ export const deleteProductById = async (req: Request, res: Response, next: NextF
  * @access private (admin Only)
  -----------------------------------------------*/
 export const createProduct = async (req: Request, res: Response, next: NextFunction) => {
-  const { productName, productDescription, productPrice, quantityInStock, category, discount } = req.body
+  const { productName, productDescription, productPrice, quantityInStock, category, discount } =
+    req.body
 
   try {
     const product = new Product({
@@ -90,14 +96,15 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
       productImage: req.file?.path,
       quantityInStock: quantityInStock,
       category: category,
-      slug: slugify(productName),
-      discount: discount
+      discount: discount,
     })
     await product.save()
     const newProduct = await createNewProduct(product)
     res.status(201).json({ message: 'Product has been created successfully', payload: newProduct })
   } catch (error) {
-    console.log(error)
+    if (error instanceof ApiError) {
+      return next(error)
+    }
     next(ApiError.badRequest('Something went wrong'))
   }
 }
@@ -111,14 +118,14 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
 export const updateProductById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const productId = req.params.id
-    if (req.body.productName) {
-      req.body.slug = slugify(req.body.productName)
-    }
     const updatedProduct = await updateProduct(productId, req.body, req.file?.path)
     res
       .status(200)
       .json({ message: 'Product has been updated successfully', payload: updatedProduct })
   } catch (error) {
+    if (error instanceof ApiError) {
+      return next(error)
+    }
     next(ApiError.badRequest('Something went wrong'))
   }
 }

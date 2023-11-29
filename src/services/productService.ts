@@ -1,10 +1,8 @@
-import slugify from 'slugify'
-
 import { Product } from '../models/productModel'
 import { ProductDocument } from '../types/types'
 import ApiError from '../errors/ApiError'
 
-
+// @service:- Find All Products
 export const findAllProducts = async (
   pageNumber = 1,
   limit = 8,
@@ -48,6 +46,7 @@ export const findAllProducts = async (
   return { products, totalPages, currentPage: pageNumber }
 }
 
+// @service:- Find a Product
 export const findProduct = async (productId: string) => {
   const product = await Product.findById(productId)
   if (!product) {
@@ -55,7 +54,7 @@ export const findProduct = async (productId: string) => {
   }
   return product
 }
-
+// @service:- Find Highest Sold Products
 export const findHighestSoldProducts = async (limit = 8) => {
   const highestSoldProducts = await Product.find()
     .sort({ itemsSold: -1 })
@@ -64,15 +63,15 @@ export const findHighestSoldProducts = async (limit = 8) => {
 
   return { highestSoldProducts }
 }
-
+// @service:- Remove a Product
 export const removeProduct = async (id: string) => {
   const product = await Product.findByIdAndDelete(id)
   if (!product) {
-    return ApiError.notFound('Product not found with the entered ID')
+    throw ApiError.notFound('Product not found with the entered ID')
   }
   return product
 }
-
+// @service:- Update a Product
 export const updateProduct = async (
   productId: string,
   updatedProduct: ProductDocument,
@@ -84,20 +83,21 @@ export const updateProduct = async (
     { new: true }
   )
   if (!product) {
-    return ApiError.notFound('Product not found with the entered ID')
+    throw ApiError.notFound('Product not found with the entered ID')
   }
   return product
 }
 
+// @service:- Create a Product
 export const createNewProduct = async (newProduct: ProductDocument) => {
-  const { productName } = newProduct
-  const productExist = await Product.exists({ productName: productName })
-  if (productExist) {
-    return ApiError.conflict(`Product already exists with this product name ${productName}`)
-  }
   const product = await Product.create({
     ...newProduct,
-    slug: slugify(productName),
   })
   return product
+}
+
+// @service:- Check Product Existence
+export const checkProductExistence = async (productName: string) => {
+  const productExist = await Product.exists({ productName: productName })
+  return productExist
 }

@@ -115,7 +115,7 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
       },
       authConfig.jwt.accessToken as string,
       {
-        expiresIn: '10m',
+        expiresIn: '24h',
       }
     )
     res.status(200).json({ message: 'Login successful', token })
