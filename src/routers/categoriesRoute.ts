@@ -1,9 +1,6 @@
 import express from 'express'
 
 import { validateCategory } from '../validation/validateCategory'
-
-const router = express.Router()
-
 import {
   createCategory,
   getAllCategory,
@@ -12,11 +9,17 @@ import {
   deleteCategory,
 } from '../controllers/categoryController'
 import { validateObjectId } from '../middlewares/validateObjectId'
+import { checkAuth, checkRole } from '../middlewares/verifyToken'
+
+const router = express.Router()
 
 router.get('/', getAllCategory)
-router.post('/', validateCategory, createCategory)
 router.get('/:id', validateObjectId, getCategoryById)
-router.put('/:id', validateObjectId, updateCategoryById)
-router.delete('/:id', validateObjectId, deleteCategory)
+
+router.post('/', checkAuth, checkRole('ADMIN'), validateCategory, createCategory)
+
+router.put('/:id', checkAuth, checkRole('ADMIN'), validateObjectId, validateCategory, updateCategoryById)
+
+router.delete('/:id', checkAuth, checkRole('ADMIN'), validateObjectId, deleteCategory)
 
 export default router
