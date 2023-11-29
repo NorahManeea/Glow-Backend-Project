@@ -1,11 +1,30 @@
-
 import { Category } from '../models/categoryModel'
 import { CategoryDocument } from '../types/types'
 import ApiError from '../errors/ApiError'
 
-export const findAllCategories = async () => {
+export const findAllCategories = async (pageNumber = 1, limit = 8, searchText = '') => {
+  const categoryCount = await Category.countDocuments()
+  const totalPages = Math.ceil(categoryCount / limit)
+
+  if (pageNumber > totalPages) {
+    pageNumber = totalPages
+  }
+  const skip = (pageNumber - 1) * limit
+
   const categories = await Category.find()
-  return categories
+    .skip(skip)
+    .limit(limit)
+    .find(
+      searchText
+        ? {
+            $or: [
+              { categoryName: { $regex: searchText, $options: 'i' } },
+            ],
+          }
+        : {}
+    )
+
+  return { categories, totalPages, currentPage: pageNumber }
 }
 
 export const findCategory = async (categoryId: string) => {
