@@ -30,11 +30,11 @@ export type CategoryDocument = Document & {
   categoryName: string
 }
 export type DiscountCodeDocument = Document & {
-  code: string;
-  discountPercentage: number;
-  expirationDate: Date;
-  createdAt: Date;
-  updatedAt: Date;
+  code: string
+  discountPercentage: number
+  expirationDate: Date
+  createdAt: Date
+  updatedAt: Date
 }
 
 export type DecodedUser = {
