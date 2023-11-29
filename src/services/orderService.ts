@@ -1,16 +1,38 @@
-
 import { Order } from '../models/orderModel'
 import { OrderDocument } from '../types/types'
 import { Product } from '../models/productModel'
 import ApiError from '../errors/ApiError'
 
-export const findAllOrders = async () => {
-  const orders = await Order.find().populate('products.product', 'productName productPrice')
-  return orders
+export const findAllOrders = async (pageNumber = 1, limit = 8, user = '', status = '') => {
+  const orderCount = await Product.countDocuments()
+  const totalPages = Math.ceil(orderCount / limit)
+
+  if (pageNumber > totalPages) {
+    pageNumber = totalPages
+  }
+  const skip = (pageNumber - 1) * limit
+
+  const orders = await Order.find(
+    user
+      ? {
+          $or: [
+            { user: { $regex: user, $options: 'i' } },
+            { orderStatus: { $regex: status, $options: 'i' } },
+          ],
+        }
+      : {}
+  )
+    .populate('products.product', 'productName productPrice')
+    .skip(skip)
+    .limit(limit)
+  return { orders, totalPages, currentPage: pageNumber }
 }
 
 export const findOrder = async (orderId: string) => {
-  const order = await Order.findById(orderId).populate('products.product', 'productName productPrice')
+  const order = await Order.findById(orderId).populate(
+    'products.product',
+    'productName productPrice'
+  )
   if (!order) {
     throw ApiError.notFound(`Order not found with the ID: ${orderId}`)
   }
@@ -40,6 +62,7 @@ export const createNewOrder = async (newOrder: OrderDocument) => {
   }
   return order
 }
+
 export const updateItemsSold = async (productId: string) => {
   await Product.findByIdAndUpdate(productId, { $inc: { itemsSold: 1 } }, { new: true })
 }
@@ -49,7 +72,8 @@ export const changeOrderStatus = async (orderId: string, newStatus: string) => {
   const order = await Order.findByIdAndUpdate(
     orderId,
     { $set: { orderStatus: newStatus } },
-    { new: true })
+    { new: true }
+  )
   return order
 }
 

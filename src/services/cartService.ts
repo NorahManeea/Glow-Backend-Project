@@ -136,3 +136,12 @@ export const deleteItemFromCart = async (userId: string, carttItemId: string) =>
 
   return updatedCart
 }
+
+export const deleteCart = async (userId: string) => {
+  const cart = await Cart.findOneAndDelete({ user: userId })
+  console.log("2: "+ cart)
+  if (!cart) {
+    return ApiError.notFound(`Cart not found with the ID: ${userId}`)
+  }
+  return cart
+}

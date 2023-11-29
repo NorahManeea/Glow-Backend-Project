@@ -5,6 +5,7 @@ import {
   calculateTotalPrice,
   checkStock,
   createCart,
+  deleteCart,
   deleteItemFromCart,
   findCart,
   updateCart,
@@ -81,19 +82,19 @@ export const getCartItems = async (req: Request, res: Response, next: NextFuncti
  * @method PUT
  * @access private (user himself only)
   -----------------------------------------------*/
-  export const updateCartItems = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const userId = req.params.id;
-      const { cartItems } = req.body;
-  
-      const { cart, itemsCount } = await updateCart(userId, cartItems.productId, cartItems.quantity);
-  
-      res.status(200).json({ message: 'Cart item has been updated successfully', cart, itemsCount });
-    } catch (error) {
-      console.error(error);
-      next(ApiError.badRequest('Something went wrong'));
-    }
-  };
+export const updateCartItems = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userId = req.params.id
+    const { cartItems } = req.body
+
+    const { cart, itemsCount } = await updateCart(userId, cartItems.productId, cartItems.quantity)
+
+    res.status(200).json({ message: 'Cart item has been updated successfully', cart, itemsCount })
+  } catch (error) {
+    console.error(error)
+    next(ApiError.badRequest('Something went wrong'))
+  }
+}
 
 /** -----------------------------------------------
  * @desc Delete cart item
@@ -104,10 +105,30 @@ export const getCartItems = async (req: Request, res: Response, next: NextFuncti
 export const deleteCartItem = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = req.params.id
-    const { productId } = req.body
+    const productId = req.params.productId
     const updatedCart = await deleteItemFromCart(userId, productId)
-    
+
     res.status(200).json({ meassge: 'Product has been deleted from the cart successfully', result: updatedCart })
+  } catch (error) {
+    next(ApiError.badRequest('Something went wrong'))
+  }
+}
+
+/**-----------------------------------------------
+ * @desc Delete cart by ID
+ * @route /api/cart/:id
+ * @method DELETE
+ * @access private (admin Only)
+ -----------------------------------------------*/
+export const deleteCartById = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    console.log("tesst")
+    const cart = await deleteCart(req.params.id)
+    console.log('1: ' + cart)
+    res.status(200).json({
+      message: 'Cart has been deleted Successfully',
+      payload: cart,
+    })
   } catch (error) {
     next(ApiError.badRequest('Something went wrong'))
   }
