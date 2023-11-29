@@ -51,7 +51,6 @@ export const findAllProducts = async (
 
   return { products, totalPages, currentPage: pageNumber }
 }
-
 // @service:- Find a Product
 export const findProduct = async (productId: string) => {
   const product = await Product.findById(productId)
@@ -90,7 +89,6 @@ export const updateProduct = async (
   }
   return product
 }
-
 // @service:- Create a Product
 export const createNewProduct = async (newProduct: ProductDocument) => {
   const product = await Product.create(newProduct)
