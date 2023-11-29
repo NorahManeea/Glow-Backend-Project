@@ -12,20 +12,19 @@ export const findAllOrders = async (pageNumber = 1, limit = 8, user = '', status
   }
   const skip = (pageNumber - 1) * limit
 
-  const orders = await Product.find()
+  const orders = await Order.find(
+    user
+      ? {
+          $or: [
+            { user: { $regex: user, $options: 'i' } },
+            { orderStatus: { $regex: status, $options: 'i' } },
+          ],
+        }
+      : {}
+  )
     .populate('products.product', 'productName productPrice')
     .skip(skip)
     .limit(limit)
-    .find(
-      user
-        ? {
-            $or: [
-              { user: { $regex: user, $options: 'i' } },
-              { status: { $regex: status, $options: 'i' } },
-            ],
-          }
-        : {}
-    )
   return { orders, totalPages, currentPage: pageNumber }
 }
 
