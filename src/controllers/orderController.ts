@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 
+import { OrderStatus } from './../enums/enums'
 import {
   changeOrderStatus,
   createNewOrder,
@@ -10,7 +11,7 @@ import {
 } from '../services/orderService'
 import ApiError from '../errors/ApiError'
 import { sendEmail } from '../utils/sendEmail'
-import { OrderStatus } from '../enums/enums'
+import { Cart } from '../models/cartModel'
 
 /**-----------------------------------------------
  * @desc Get All Orders
@@ -25,18 +26,13 @@ export const getAllOrders = async (req: Request, res: Response, next: NextFuncti
     const user = req.query.user?.toString()
     const status = req.query.status?.toString()
 
-    const { orders, totalPages, currentPage } = await findAllOrders(
-      pageNumber,
-      limit,
-      user,
-      status
-    )
-    console.log(orders)
+    const { orders, totalPages, currentPage } = await findAllOrders(pageNumber, limit, user, status)
 
     res
       .status(200)
       .json({ message: 'All orders returned', payload: orders, totalPages, currentPage })
   } catch (error) {
+    if (error instanceof ApiError) return next(error)
     next(ApiError.badRequest('Something went wrong'))
   }
 }
@@ -50,8 +46,10 @@ export const getAllOrders = async (req: Request, res: Response, next: NextFuncti
 export const getOrderById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const order = await findOrder(req.params.orderId)
+
     res.status(200).json({ message: 'Single order returned successfully', payload: order })
   } catch (error) {
+    if (error instanceof ApiError) return next(error)
     next(ApiError.badRequest('Something went wrong'))
   }
 }
@@ -64,9 +62,13 @@ export const getOrderById = async (req: Request, res: Response, next: NextFuncti
  -----------------------------------------------*/
 export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const email = req.decodedUser.email
+    const cart = await Cart.findOne({ user: req.decodedUser.userId }).populate('products.product')
+    if (!cart) {
+      throw ApiError.notFound(`Cart not found with userId: ${req.decodedUser.userId}`)
+    }
 
-    const order = await createNewOrder(req.body)
+    const order = await createNewOrder(cart, req.body.shippingInfo)
+
     const subject = 'We have received your order'
     const htmlTemplate = `
         <div style="color: #333; text-align: center;">
@@ -75,9 +77,11 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
           <p style="font-size: 14px; color: #302B2E;">Black Tigers Team</p>
         </div>
       `
-    await sendEmail(email, subject, htmlTemplate)
+    await sendEmail(req.decodedUser.email, subject, htmlTemplate)
+
     res.status(201).json({ meassge: 'Order has been created successfuly', payload: order })
   } catch (error) {
+    if (error instanceof ApiError) return next(error)
     next(ApiError.badRequest('Something went wrong'))
   }
 }
@@ -91,8 +95,10 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
 export const deleteOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const order = await removeOrder(req.params.orderId)
+
     res.status(200).json({ meassge: 'Order has been deleted Successfully', result: order })
   } catch (error) {
+    if (error instanceof ApiError) return next(error)
     next(ApiError.badRequest('Something went wrong'))
   }
 }
@@ -105,13 +111,14 @@ export const deleteOrder = async (req: Request, res: Response, next: NextFunctio
  -----------------------------------------------*/
 export const updateOrderStatus = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { orderStatus } = req.body
-    const updatedOrder = await changeOrderStatus(req.params.orderId, orderStatus)
+    const updatedOrder = await changeOrderStatus(req.params.orderId, req.body.orderStatus)
+
     res.status(200).json({
       message: 'Category has been updated successfully',
       payload: updatedOrder,
     })
   } catch (error) {
+    if (error instanceof ApiError) return next(error)
     next(ApiError.badRequest('Something went wrong'))
   }
 }
@@ -125,10 +132,12 @@ export const updateOrderStatus = async (req: Request, res: Response, next: NextF
 export const getOrderHistory = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { userId } = req.decodedUser
+
     const orderHistory = await findOrderHistory(userId)
 
-    res.json({ message: 'Order History returned successfully', payload: orderHistory })
+    res.status(200).json({ message: 'Order History returned successfully', payload: orderHistory })
   } catch (error) {
+    if (error instanceof ApiError) return next(error)
     next(ApiError.badRequest('Something went wrong'))
   }
 }
@@ -141,11 +150,11 @@ export const getOrderHistory = async (req: Request, res: Response, next: NextFun
  -----------------------------------------------*/
 export const returnOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const orderId = req.params.orderId
-    const order = await findOrder(orderId)
+    const order = await findOrder(req.params.orderId)
     if (order.orderStatus !== OrderStatus.DELIVERED) {
       return next(ApiError.badRequest('Order cannot be returned as it has not been delivered yet'))
     }
+
     const returnDeadline = new Date(order.orderDate)
     returnDeadline.setDate(returnDeadline.getDate() + 7)
 
@@ -155,12 +164,14 @@ export const returnOrder = async (req: Request, res: Response, next: NextFunctio
         ApiError.badRequest('The order has exceeded the return time limit and cannot be returned')
       )
     }
-    const returnedOrder = await changeOrderStatus(orderId, OrderStatus.RETURNED)
+
+    const returnedOrder = await changeOrderStatus(req.params.orderId, OrderStatus.RETURNED)
 
     res
       .status(200)
       .json({ message: 'Order has been returned successfully', payload: returnedOrder })
   } catch (error) {
+    if (error instanceof ApiError) return next(error)
     next(ApiError.badRequest('Something went wrong'))
   }
 }

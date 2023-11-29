@@ -1,5 +1,5 @@
 import { Order } from '../models/orderModel'
-import { OrderDocument } from '../types/types'
+import { CartDocument } from '../types/types'
 import { Product } from '../models/productModel'
 import ApiError from '../errors/ApiError'
 
@@ -12,19 +12,25 @@ export const findAllOrders = async (pageNumber = 1, limit = 8, user = '', status
   }
   const skip = (pageNumber - 1) * limit
 
-  const orders = await Order.find(
-    user
-      ? {
-          $or: [
-            { user: { $regex: user, $options: 'i' } },
-            { orderStatus: { $regex: status, $options: 'i' } },
-          ],
-        }
-      : {}
-  )
+  const orders = await Order.find()
     .populate('products.product', 'productName productPrice')
     .skip(skip)
     .limit(limit)
+    .find(
+      user
+        ? {
+            $or: [
+              { user: { $regex: user, $options: 'i' } },
+              { orderStatus: { $regex: status, $options: 'i' } },
+            ],
+          }
+        : {}
+    )
+
+  if (orders.length == 0) {
+    throw ApiError.notFound('There are no orders')
+  }
+
   return { orders, totalPages, currentPage: pageNumber }
 }
 
@@ -34,27 +40,31 @@ export const findOrder = async (orderId: string) => {
     'productName productPrice'
   )
   if (!order) {
-    throw ApiError.notFound(`Order not found with the ID: ${orderId}`)
+    throw ApiError.notFound(`Order not found with ID: ${orderId}`)
   }
+
   return order
 }
 
 export const removeOrder = async (orderId: string) => {
   const order = await Order.findByIdAndDelete(orderId)
   if (!order) {
-    throw ApiError.notFound(`Order not found with the ID: ${orderId}`)
+    throw ApiError.notFound(`Order not found with ID: ${orderId}`)
   }
+
   return order
 }
 
-export const createNewOrder = async (newOrder: OrderDocument) => {
-  const { user, orderDate, products, shippingInfo, orderStatus } = newOrder
+export const createNewOrder = async (
+  userCart: CartDocument,
+  shippingInfo: { country: string; city: string; address: string }
+) => {
+  const { user, products } = userCart
   const order = await Order.create({
     user: user,
-    orderDate: orderDate,
+    orderDate: new Date(),
     products: products,
     shippingInfo: shippingInfo,
-    orderStatus: orderStatus,
   })
   for (const product of products) {
     const productId = product.product.toString()
@@ -68,16 +78,23 @@ export const updateItemsSold = async (productId: string) => {
 }
 
 export const changeOrderStatus = async (orderId: string, newStatus: string) => {
-  findOrder(orderId)
   const order = await Order.findByIdAndUpdate(
     orderId,
     { $set: { orderStatus: newStatus } },
     { new: true }
   )
+  if (!order) {
+    throw ApiError.notFound(`Order not found with ID: ${orderId}`)
+  }
+
   return order
 }
 
 export const findOrderHistory = async (userId: string) => {
   const orderHistory = await Order.find({ user: userId })
+  if (!orderHistory) {
+    throw ApiError.notFound(`There are no order history for user with ID: ${userId}`)
+  }
+
   return orderHistory
 }
