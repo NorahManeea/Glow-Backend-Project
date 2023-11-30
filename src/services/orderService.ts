@@ -92,7 +92,7 @@ export const changeOrderStatus = async (orderId: string, newStatus: string) => {
 
 export const findOrderHistory = async (userId: string) => {
   const orderHistory = await Order.find({ user: userId })
-  if (!orderHistory) {
+  if (orderHistory.length == 0 ) {
     throw ApiError.notFound(`There are no order history for user with ID: ${userId}`)
   }
 

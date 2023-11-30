@@ -22,7 +22,7 @@ router.get('/history', checkAuth, getOrderHistory)
 router.get('/:orderId', getOrderById)
 
 // Create new order route
-router.post('/', validateOrder, checkAuth, checkBlock, createOrder)
+router.post('/', checkAuth, checkBlock, createOrder)
 // Return order route
 router.post('/:orderId/return', checkAuth, returnOrder)
 

@@ -62,9 +62,12 @@ export const getOrderById = async (req: Request, res: Response, next: NextFuncti
  -----------------------------------------------*/
 export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const cart = await Cart.findOne({ user: req.decodedUser.userId }).populate('products.product')
+    const { userId } = req.decodedUser
+
+    console.log(userId)
+    const cart = await Cart.findOne({ user: userId })
     if (!cart) {
-      throw ApiError.notFound(`Cart not found with userId: ${req.decodedUser.userId}`)
+      throw ApiError.notFound(`Cart not found with user ID: ${userId}`)
     }
 
     const order = await createNewOrder(cart, req.body.shippingInfo)
@@ -132,6 +135,7 @@ export const updateOrderStatus = async (req: Request, res: Response, next: NextF
 export const getOrderHistory = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { userId } = req.decodedUser
+    console.log(userId)
 
     const orderHistory = await findOrderHistory(userId)
 
