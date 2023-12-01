@@ -1,11 +1,14 @@
 import { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
-
+import asyncHandler from 'express-async-handler'
 import ApiError from '../errors/ApiError'
+
 import { authConfig } from '../config/auth.config'
-import { generateActivationToken, sendEmail } from '../utils/sendEmail'
+import { generateActivationToken } from '../utils/sendEmail'
 import { User } from '../models/userModel'
+import { activate, checkIfUserExistsByEmail, createUser } from '../services/authService'
+import { sendActivationEmail } from '../helpers/sendActivationEmail'
 
 /** -----------------------------------------------
  * @desc Register User
@@ -13,11 +16,11 @@ import { User } from '../models/userModel'
  * @method POST
  * @access public
   -----------------------------------------------*/
-export const registerUser = async (req: Request, res: Response, next: NextFunction) => {
-  try {
+export const registerUser = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const { email, firstName, lastName, password } = req.body
-    const avatar = req.file?.path || ''
-    let user = await User.findOne({ email })
+    const avatar = req.file?.path
+    let user = await checkIfUserExistsByEmail(email)
     if (user) {
       return next(ApiError.badRequest('This email is already registered'))
     }
@@ -34,55 +37,35 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
       avatar,
       isBlocked: false,
     })
-    console.log(newUser)
 
     const activationLink = `http://localhost:5050/api/auth/activate/${activationToken}`
-
-    const subject = 'Welcome to Black Tigers Team!'
-    const htmlTemplate = `
-        <div style="color: #333; text-align: center;">
-          <h1 style="color: #1E1E1E;">Welcome to Black Tigers Team!</h1>
-          <a href="${activationLink}" style="display: inline-block; padding: 10px 20px; background-color: #664971; color: #FFFFFF; font-size: 18px; text-decoration: none; border-radius: 5px;">Activate Now</a>
-          <p style="font-size: 14px; color: #302B2E;">Black Tigers Team</p>
-        </div>
-      `
-    const isSent = await sendEmail(email, subject, htmlTemplate)
-    isSent && (await newUser.save())
+    const isSent = await sendActivationEmail(email, activationLink)
+    isSent && (await createUser(newUser))
 
     res.status(201).json({
       message: 'Registration successful. Check your email to activate your account',
-      newUser,
     })
-  } catch (error) {
-    next(ApiError.badRequest('Something went wrong'))
   }
-}
+)
 
 /** -----------------------------------------------
- * @desc Create User 
+ * @desc Activate User 
  * @route /api/auth/activate/:token
  * @method GET
  * @access private
   -----------------------------------------------*/
-export const activateUser = async (req: Request, res: Response, next: NextFunction) => {
-  try {
+export const activateUser = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const activationToken = req.params.token
-    console.log(activationToken)
-    const user = await User.findOneAndUpdate(
-      { activationToken },
-      { isAccountVerified: true, token: undefined },
-      { new: true }
-    )
+    const user = await activate(activationToken)
     if (!user) {
       return next(ApiError.badRequest('Invalid token'))
     }
     res.status(200).json({
       message: 'Your Account has been activated successfull',
     })
-  } catch (error) {
-    next(ApiError.badRequest('Something went wrong'))
   }
-}
+)
 
 /** -----------------------------------------------
  * @desc Login User
@@ -90,35 +73,31 @@ export const activateUser = async (req: Request, res: Response, next: NextFuncti
  * @method POST
  * @access public
   -----------------------------------------------*/
-export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { email, password } = req.body
-    const user = await User.findOne({ email: email })
-    if (!user || !user.isAccountVerified) {
-      return next(ApiError.badRequest('Invalid email or account not activated'))
-    }
-    if (!user) {
-      return next(ApiError.notFound('User not found'))
-    }
-    const isPasswordMatch = await bcrypt.compare(password, user.password)
-    if (!isPasswordMatch) {
-      return next(ApiError.badRequest('The email or password you entered is invalid'))
-    }
-    const token = jwt.sign(
-      {
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        role: user.role,
-        isBlocked: user.isBlocked,
-      },
-      authConfig.jwt.accessToken as string,
-      {
-        expiresIn: '24h',
-      }
-    )
-    res.status(200).json({ message: 'Login successful', token })
-  } catch (error) {
-    next(ApiError.badRequest('Something went wrong'))
+export const loginUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  const { email, password } = req.body
+  const user = await checkIfUserExistsByEmail(email)
+  if (!user || !user.isAccountVerified) {
+    return next(ApiError.badRequest('Invalid email or account not activated'))
   }
-}
+  if (!user) {
+    return next(ApiError.notFound('User not found'))
+  }
+  const isPasswordMatch = await bcrypt.compare(password, user.password)
+  if (!isPasswordMatch) {
+    return next(ApiError.badRequest('The email or password you entered is invalid'))
+  }
+  const token = jwt.sign(
+    {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      role: user.role,
+      isBlocked: user.isBlocked,
+    },
+    authConfig.jwt.accessToken as string,
+    {
+      expiresIn: '24h',
+    }
+  )
+  res.status(200).json({ message: 'Login successful', token })
+})
