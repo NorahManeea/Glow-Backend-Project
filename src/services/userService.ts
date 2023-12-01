@@ -33,6 +33,9 @@ export const findAllUser = async (pageNumber = 1, limit = 8, searchText = '') =>
 // @service:- Find a User
 export const findAUser = async (userId: string) => {
   const user = await User.findById(userId)
+  if (!user) {
+    throw ApiError.notFound('User not found')
+  }
   return user
 }
 // @service:- Remove a User

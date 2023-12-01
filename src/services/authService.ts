@@ -1,7 +1,6 @@
 import ApiError from '../errors/ApiError'
 import { User } from '../models/userModel'
 import { UserDocument } from '../types/types'
-import bcrypt from 'bcrypt'
 
 //** Service:- Check User email */
 export const checkIfUserExistsByEmail = async (email: string) => {
@@ -9,6 +8,7 @@ export const checkIfUserExistsByEmail = async (email: string) => {
   if (!userEmail) {
     throw ApiError.notFound('No user found with the provided email address')
   }
+
   return userEmail
 }
 
@@ -26,25 +26,4 @@ export const activate = async (activationToken: string) => {
 export const createUser = async (user: UserDocument) => {
   const newUser = await User.create({ user })
   return newUser.save()
-}
-
-//** Service:- Reset Password  */
-export const resetPassword = async (userId: string, password: string) => {
-  const hashedPassword = await bcrypt.hash(password, 10)
-  const user = await User.findByIdAndUpdate(
-    userId,
-    {
-      $set: {
-        password: hashedPassword,
-        resetPasswordToken: undefined,
-      },
-    },
-    { new: true }
-  )
-
-  if (!user) {
-    throw ApiError.notFound('User not found with the entered ID')
-  }
-
-  return user
 }

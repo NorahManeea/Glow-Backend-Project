@@ -1766,3 +1766,9 @@ Method: POST, Path: /api/reset-password/, Date: 12/1/2023, Time: 9:09:12 PM
 Method: POST, Path: /api/reset-password/, Date: 12/1/2023, Time: 9:10:22 PM
 Method: POST, Path: /api/reset-password/, Date: 12/1/2023, Time: 9:10:37 PM
 Method: POST, Path: /api/auth/register, Date: 12/1/2023, Time: 9:58:35 PM
+Method: POST, Path: /api/reset-password/, Date: 12/2/2023, Time: 12:27:21 AM
+Method: GET, Path: /api/reset-password/6567942d5172a61a7a9d7c14/29dd45c23f2329fe5f9cd66f1841e442dcfa782ee44bc85bb94417233e5cc3a1, Date: 12/2/2023, Time: 12:28:09 AM
+Method: POST, Path: /api/reset-567942d5172a61a7a9d7c14/29dd45c23f2329fe5f9cd66f1841e442dcfa782ee44bc85bb94417233e5cc3a1, Date: 12/2/2023, Time: 12:28:27 AM
+Method: POST, Path: /api/reset-password/567942d5172a61a7a9d7c14/29dd45c23f2329fe5f9cd66f1841e442dcfa782ee44bc85bb94417233e5cc3a1, Date: 12/2/2023, Time: 12:28:53 AM
+Method: POST, Path: /api/reset-password/6567942d5172a61a7a9d7c14/29dd45c23f2329fe5f9cd66f1841e442dcfa782ee44bc85bb94417233e5cc3a1, Date: 12/2/2023, Time: 12:29:05 AM
+Method: POST, Path: /api/auth/login, Date: 12/2/2023, Time: 12:29:14 AM
