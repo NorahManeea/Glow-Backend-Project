@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
-
 import ApiError from '../errors/ApiError'
+
 import { authConfig } from '../config/auth.config'
 import { generateActivationToken } from '../utils/sendEmail'
 import { User } from '../models/userModel'
-import { activate, checkIfUserExistsByEmail } from '../services/authService'
+import { activate, checkIfUserExistsByEmail, createUser } from '../services/authService'
 import { sendActivationEmail } from '../helpers/sendActivationEmail'
 
 /** -----------------------------------------------
@@ -39,14 +39,13 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
 
     const activationLink = `http://localhost:5050/api/auth/activate/${activationToken}`
     const isSent = await sendActivationEmail(email, activationLink)
-    isSent && (await newUser.save())
+    isSent && (await createUser(newUser))
 
     res.status(201).json({
       message: 'Registration successful. Check your email to activate your account',
     })
   } catch (error) {
-    if (error instanceof ApiError) return next(error)
-    next(ApiError.badRequest('Something went wrong'))
+    next(error)
   }
 }
 
@@ -67,8 +66,7 @@ export const activateUser = async (req: Request, res: Response, next: NextFuncti
       message: 'Your Account has been activated successfull',
     })
   } catch (error) {
-    if (error instanceof ApiError) return next(error)
-    next(ApiError.badRequest('Something went wrong'))
+    next(error)
   }
 }
 
@@ -107,7 +105,6 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
     )
     res.status(200).json({ message: 'Login successful', token })
   } catch (error) {
-    if (error instanceof ApiError) return next(error)
-    next(ApiError.badRequest('Something went wrong'))
+    next(error)
   }
 }

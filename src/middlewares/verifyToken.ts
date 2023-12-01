@@ -1,10 +1,10 @@
-import { NextFunction, Request, RequestHandler, Response } from 'express'
-import jwt, { JwtPayload } from 'jsonwebtoken'
+import { NextFunction, Request, Response } from 'express'
+import jwt from 'jsonwebtoken'
 import { authConfig } from '../config/auth.config'
 import { DecodedUser, Role } from '../types/types'
 import ApiError from '../errors/ApiError'
 
-     
+//** User Verification  */
 export function checkAuth(req: Request, res: Response, next: NextFunction) {
   const token = req.headers.authorization?.split(' ')[1]
 
@@ -21,7 +21,7 @@ export function checkAuth(req: Request, res: Response, next: NextFunction) {
     return next(ApiError.forbidden('Invalid token'))
   }
 }
-
+//** Check User Role  */
 export function checkRole(expectedRole: Role) {
   return (req: Request, res: Response, next: NextFunction) => {
     const decodedUser = req.decodedUser
@@ -33,7 +33,7 @@ export function checkRole(expectedRole: Role) {
     next()
   }
 }
-
+//** Check If User Blocked  */
 export function checkBlock(req: Request, res: Response, next: NextFunction) {
   const decodedUser = req.decodedUser;
   console.log(decodedUser)

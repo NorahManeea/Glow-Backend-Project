@@ -1,17 +1,17 @@
 import mongoose, { Document } from 'mongoose'
 
 export type UserDocument = Document & {
-  firstName: string
-  lastName: string
-  email: string
-  password: string
-  role: string
-  activationToken: string
-  isAccountVerified: boolean
-  isBlocked: boolean
-  avatar: string
-  resetPasswordToken: string
-}
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  role: string;
+  activationToken: string;
+  isAccountVerified: boolean;
+  isBlocked: boolean;
+  avatar: string;
+  resetPasswordToken?: string;
+};
 
 export type ProductDocument = Document & {
   productName: string

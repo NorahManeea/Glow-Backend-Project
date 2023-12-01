@@ -1,8 +1,11 @@
 import { NextFunction, Request, Response } from 'express'
 import ApiError from '../errors/ApiError'
 import { User } from '../models/userModel'
-import { generateActivationToken, sendEmail } from '../utils/sendEmail'
+import { generateActivationToken } from '../utils/sendEmail'
 import bcrypt from 'bcrypt'
+import { checkIfUserExistsByEmail } from '../services/authService'
+import { sendResetPasswordEmail } from '../helpers/sendActivationEmail'
+import { findAUser } from '../services/userService'
 
 /**-----------------------------------------------
  * @desc    Send Reset Password Link
@@ -13,31 +16,17 @@ import bcrypt from 'bcrypt'
 export async function sendResetPasswordLink(req: Request, res: Response, next: NextFunction) {
   try {
     const { email } = req.body
-    const user = await User.findOne({ email })
-
-    if (!user) {
-      return ApiError.notFound('User not found')
-    }
+    const user = await checkIfUserExistsByEmail(email)
     const resetToken = generateActivationToken()
     user.resetPasswordToken = resetToken
 
     await user.save()
-
-    const subject = 'Reset Your Password'
     const resetLink = `http://localhost:5050/api/reset-password/${user._id}/${resetToken}`
-    const htmlTemplate = `
-  <p>Click the following button to reset your password:</p>
-  <a href="${resetLink}">
-    <button style="display: inline-block; padding: 10px 20px; background-color: #664971; color: #FFFFFF; font-size: 18px; text-decoration: none; border-radius: 5px;">
-      Reset Password
-    </button>
-  </a>
-`
-    await sendEmail(user.email, subject, htmlTemplate)
+    await sendResetPasswordEmail(user.email, resetLink)
 
     res.json({ message: 'Password reset link has been sent successfully' })
   } catch (error) {
-    next(ApiError.badRequest('Something went wrong'))
+    next(error)
   }
 }
 
@@ -50,18 +39,16 @@ export async function sendResetPasswordLink(req: Request, res: Response, next: N
 export async function getResetPasswordLink(req: Request, res: Response, next: NextFunction) {
   try {
     const { userId, token } = req.params
-
     const user = await User.findOne({
       _id: userId,
       resetPasswordToken: token,
     })
-
     if (!user) {
       return ApiError.badRequest('Invalid token')
     }
     res.json({ message: 'Password reset can proceed with the valid token' })
   } catch (error) {
-    next(ApiError.badRequest('Something went wrong'))
+    next(error)
   }
 }
 
@@ -75,7 +62,7 @@ export const resetPassword = async (req: Request, res: Response, next: NextFunct
   try {
     const { userId, token } = req.params
     const { password } = req.body
-    const user = await User.findById(userId)
+    const user = await findAUser(userId)
     if (!user) {
       return next(ApiError.notFound('User not found'))
     }
@@ -98,6 +85,6 @@ export const resetPassword = async (req: Request, res: Response, next: NextFunct
       message: 'Password has been reset successfully',
     })
   } catch (error) {
-    next(ApiError.badRequest('Something went wrong'))
+    next(error)
   }
 }

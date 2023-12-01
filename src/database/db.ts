@@ -3,6 +3,7 @@ import { dbConfig } from '../config/db.config'
 
 const URL = dbConfig.db.url
 
+//**  Mongo DB Connection */
 export const databaseConnection = () => {
   mongoose
     .connect(URL)

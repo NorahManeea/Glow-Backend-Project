@@ -1,6 +1,13 @@
 import { Request, Response, NextFunction } from 'express'
 import ApiError from '../errors/ApiError'
 import { DiscountCode } from '../models/discountCodeModel'
+import {
+  createNewDiscountCode,
+  findAllDiscountCodes,
+  findDiscountCode,
+  findValidDiscountCodes,
+  removeDiscountCode,
+} from '../services/discounCodeService'
 
 /**-----------------------------------------------
  * @desc Add Discount Code
@@ -11,20 +18,18 @@ import { DiscountCode } from '../models/discountCodeModel'
 export const addDiscountCode = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { code, discountPercentage, discountAmount, expirationDate } = req.body
-
     const discountCode = new DiscountCode({
       code,
       discountPercentage,
       discountAmount,
       expirationDate,
     })
-    await discountCode.save()
+    const newDiscountCode = await createNewDiscountCode(discountCode)
     res
       .status(201)
-      .json({ message: 'Discount code has been created successfully', payload: discountCode })
+      .json({ message: 'Discount code has been created successfully', payload: newDiscountCode })
   } catch (error) {
-    console.log(error)
-    next(ApiError.badRequest('Something went wrong'))
+    next(error)
   }
 }
 
@@ -36,13 +41,12 @@ export const addDiscountCode = async (req: Request, res: Response, next: NextFun
  -----------------------------------------------*/
 export const deleteDiscountCode = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const discountCodeId = req.params.id
-
-    await DiscountCode.findByIdAndDelete(discountCodeId)
-
-    res.status(200).json({ message: 'Discount code has been deleted successfully' })
+    const discounCode = await removeDiscountCode(req.params.id)
+    res
+      .status(200)
+      .json({ message: 'Discount code has been deleted successfully', paylod: discounCode })
   } catch (error) {
-    next(ApiError.badRequest('Something went wrong'))
+    next(error)
   }
 }
 
@@ -56,20 +60,17 @@ export const updateDiscountCode = async (req: Request, res: Response, next: Next
   try {
     const discountCodeId = req.params.id
     const { code, discountPercentage, discountAmount, expirationDate } = req.body
-
     const updatedDiscountCode = await DiscountCode.findByIdAndUpdate(
       discountCodeId,
       { code, discountPercentage, discountAmount, expirationDate },
       { new: true }
     )
-
     if (!updatedDiscountCode) {
       return next(ApiError.notFound('Discount code not found'))
     }
-
     res.status(200).json({ message: 'Discount code has been updated successfully' })
   } catch (error) {
-    next(ApiError.badRequest('Something went wrong'))
+    next(error)
   }
 }
 
@@ -81,11 +82,47 @@ export const updateDiscountCode = async (req: Request, res: Response, next: Next
  -----------------------------------------------*/
 export const getDiscountCodes = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const discountCode = await DiscountCode.find()
+    const discountCode = await findAllDiscountCodes()
     res
       .status(200)
       .json({ message: 'Discount codes have been returned successfully', payload: discountCode })
   } catch (error) {
-    next(ApiError.badRequest('Something went wrong'))
+    next(error)
+  }
+}
+
+/**-----------------------------------------------
+ * @desc Get Discount Codes
+ * @route /api/discount-code/:id
+ * @method GET
+ * @access private (Admin Only)
+ -----------------------------------------------*/
+export const getDiscountCodeById = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { discountCodeId } = req.params
+    const discountCode = await findDiscountCode(discountCodeId)
+    res
+      .status(200)
+      .json({ message: 'Discount code has been returned successfully', payload: discountCode })
+  } catch (error) {
+    next(error)
+  }
+}
+
+/**-----------------------------------------------
+ * @desc Get Valid Codes
+ * @route /api/discount-code/valid
+ * @method GET
+ * @access public
+ -----------------------------------------------*/
+export const getValidDiscountCodes = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const discountCode = await findValidDiscountCodes()
+    res.status(200).json({
+      message: 'Valid Discount codes have been returned successfully',
+      payload: discountCode,
+    })
+  } catch (error) {
+    next(error)
   }
 }

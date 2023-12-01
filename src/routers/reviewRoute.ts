@@ -1,11 +1,11 @@
 import express from 'express'
-
-const router = express.Router()
 import { addNewReview, deleteReview,getAllReviews } from '../controllers/reviewController'
 import { checkAuth } from '../middlewares/verifyToken'
 
-router.get('/', getAllReviews)
-router.post('/', checkAuth,addNewReview)
-router.delete('/:reviewId', deleteReview)
+const router = express.Router()
+
+router.get('/',getAllReviews)
+router.post('/',checkAuth, checkAuth,addNewReview)
+router.delete('/:reviewId',checkAuth, deleteReview)
 
 export default router;
