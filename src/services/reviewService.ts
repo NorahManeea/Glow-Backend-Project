@@ -5,7 +5,7 @@ import { ReviewDocument } from '../types/types'
 
 //** Service:- Get All Reviews  */
 export const findAllReviews = async () => {
-  const reviews = await Review.find()
+  const reviews = await Review.find().populate('user')
   return reviews
 }
 

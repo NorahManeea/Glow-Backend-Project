@@ -21,7 +21,6 @@ export const createCategory = asyncHandler(
     res.status(201).json({ meassge: 'Category has been created successfuly', payload: category })
   }
 )
-
 /**-----------------------------------------------
  * @desc Get All Categories
  * @route /api/categories/
