@@ -4,8 +4,10 @@ import bcrypt from 'bcrypt'
 
 import ApiError from '../errors/ApiError'
 import { authConfig } from '../config/auth.config'
-import { generateActivationToken, sendEmail } from '../utils/sendEmail'
+import { generateActivationToken } from '../utils/sendEmail'
 import { User } from '../models/userModel'
+import { activate, checkIfUserExistsByEmail } from '../services/authService'
+import { sendActivationEmail } from '../helpers/sendActivationEmail'
 
 /** -----------------------------------------------
  * @desc Register User
@@ -16,8 +18,8 @@ import { User } from '../models/userModel'
 export const registerUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, firstName, lastName, password } = req.body
-    const avatar = req.file?.path || ''
-    let user = await User.findOne({ email })
+    const avatar = req.file?.path
+    let user = await checkIfUserExistsByEmail(email)
     if (user) {
       return next(ApiError.badRequest('This email is already registered'))
     }
@@ -34,32 +36,22 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
       avatar,
       isBlocked: false,
     })
-    console.log(newUser)
 
     const activationLink = `http://localhost:5050/api/auth/activate/${activationToken}`
-
-    const subject = 'Welcome to Black Tigers Team!'
-    const htmlTemplate = `
-        <div style="color: #333; text-align: center;">
-          <h1 style="color: #1E1E1E;">Welcome to Black Tigers Team!</h1>
-          <a href="${activationLink}" style="display: inline-block; padding: 10px 20px; background-color: #664971; color: #FFFFFF; font-size: 18px; text-decoration: none; border-radius: 5px;">Activate Now</a>
-          <p style="font-size: 14px; color: #302B2E;">Black Tigers Team</p>
-        </div>
-      `
-    const isSent = await sendEmail(email, subject, htmlTemplate)
+    const isSent = await sendActivationEmail(email, activationLink)
     isSent && (await newUser.save())
 
     res.status(201).json({
       message: 'Registration successful. Check your email to activate your account',
-      newUser,
     })
   } catch (error) {
+    if (error instanceof ApiError) return next(error)
     next(ApiError.badRequest('Something went wrong'))
   }
 }
 
 /** -----------------------------------------------
- * @desc Create User 
+ * @desc Activate User 
  * @route /api/auth/activate/:token
  * @method GET
  * @access private
@@ -67,12 +59,7 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
 export const activateUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const activationToken = req.params.token
-    console.log(activationToken)
-    const user = await User.findOneAndUpdate(
-      { activationToken },
-      { isAccountVerified: true, token: undefined },
-      { new: true }
-    )
+    const user = await activate(activationToken)
     if (!user) {
       return next(ApiError.badRequest('Invalid token'))
     }
@@ -80,6 +67,7 @@ export const activateUser = async (req: Request, res: Response, next: NextFuncti
       message: 'Your Account has been activated successfull',
     })
   } catch (error) {
+    if (error instanceof ApiError) return next(error)
     next(ApiError.badRequest('Something went wrong'))
   }
 }
@@ -93,7 +81,7 @@ export const activateUser = async (req: Request, res: Response, next: NextFuncti
 export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, password } = req.body
-    const user = await User.findOne({ email: email })
+    const user = await checkIfUserExistsByEmail(email)
     if (!user || !user.isAccountVerified) {
       return next(ApiError.badRequest('Invalid email or account not activated'))
     }
@@ -119,6 +107,7 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
     )
     res.status(200).json({ message: 'Login successful', token })
   } catch (error) {
+    if (error instanceof ApiError) return next(error)
     next(ApiError.badRequest('Something went wrong'))
   }
 }
