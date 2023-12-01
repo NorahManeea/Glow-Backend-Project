@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express'
-import ApiError from '../errors/ApiError'
 import { DiscountCode } from '../models/discountCodeModel'
 import asyncHandler from 'express-async-handler'
 import {
@@ -8,6 +7,7 @@ import {
   findDiscountCode,
   findValidDiscountCodes,
   removeDiscountCode,
+  updateDiscountCode,
 } from '../services/discounCodeService'
 
 /**-----------------------------------------------
@@ -53,19 +53,11 @@ export const deleteDiscountCode = asyncHandler(
  * @method PUT
  * @access private (Admin Only)
  -----------------------------------------------*/
-export const updateDiscountCode = asyncHandler(
+export const updateDiscountCodeById = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const discountCodeId = req.params.id
-    const { code, discountPercentage, discountAmount, expirationDate } = req.body
-    const updatedDiscountCode = await DiscountCode.findByIdAndUpdate(
-      discountCodeId,
-      { code, discountPercentage, discountAmount, expirationDate },
-      { new: true }
-    )
-    if (!updatedDiscountCode) {
-      return next(ApiError.notFound('Discount code not found'))
-    }
-    res.status(200).json({ message: 'Discount code has been updated successfully' })
+    const updatedDiscountCode = await updateDiscountCode(discountCodeId, req.body)
+    res.status(200).json({ message: 'Discount code has been updated successfully', payload: updatedDiscountCode })
   }
 )
 

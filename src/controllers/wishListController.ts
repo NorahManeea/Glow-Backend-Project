@@ -1,7 +1,11 @@
 import { NextFunction, Request, Response } from 'express'
-import { WishList } from '../models/wishListModel'
 import asyncHandler from 'express-async-handler'
-import { findWishList, removeFromWishList } from '../services/wishListService'
+import {
+  addItemToWishList,
+  createWishList,
+  findWishList,
+  removeFromWishList,
+} from '../services/wishListService'
 
 /**-----------------------------------------------
  * @desc Add to wishlist  
@@ -10,18 +14,10 @@ import { findWishList, removeFromWishList } from '../services/wishListService'
  -----------------------------------------------*/
 export const addToWishList = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { productId } = req.body
     const { userId } = req.decodedUser
-
-    const wishlist = await findWishList(userId)
-
-    if (wishlist) {
-      wishlist.products.push({ product: productId })
-      await wishlist.save()
-    } else {
-      await WishList.create({ user: userId, products: [{ product: productId }] })
-    }
-
+    const { productId } = req.body
+    let wishlist = await createWishList(userId)
+    wishlist = await addItemToWishList(wishlist, productId)
     res
       .status(200)
       .json({ message: 'Product has been added successfully to wishlist', payload: wishlist })

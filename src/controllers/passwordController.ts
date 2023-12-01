@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from 'express'
-import ApiError from '../errors/ApiError'
 import asyncHandler from 'express-async-handler'
-import { User } from '../models/userModel'
-import { generateActivationToken } from '../utils/sendEmail'
-import bcrypt from 'bcrypt'
-import { checkIfUserExistsByEmail } from '../services/authService'
+
+import ApiError from '../errors/ApiError'
+import { generateActivationToken } from '../utils/sendEmailUtils'
 import { sendResetPasswordEmail } from '../helpers/emailHelpers'
 import { findAUser } from '../services/userService'
+import { updatePassword, checkResetPasswordToken } from '../services/passwordService'
+import { checkIfUserExistsByEmail } from '../services/authService'
 
 /**-----------------------------------------------
  * @desc    Send Reset Password Link
@@ -37,14 +37,7 @@ export const sendResetPasswordLink = asyncHandler(
 export const getResetPasswordLink = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { userId, token } = req.params
-    const user = await User.findOne({
-      _id: userId,
-      resetPasswordToken: token,
-    })
-
-    if (!user) {
-      return next(ApiError.badRequest('Invalid token'))
-    }
+    await checkResetPasswordToken(userId, token)
     res.status(200).json({ message: 'Password reset is allowed with the valid token' })
   }
 )
@@ -60,23 +53,13 @@ export const resetPassword = asyncHandler(
     const { userId, token } = req.params
     const { password } = req.body
     const user = await findAUser(userId)
-    if (!user) {
-      return next(ApiError.notFound('User not found'))
-    }
+
     if (user.resetPasswordToken !== token) {
       return next(ApiError.badRequest('Invalid token'))
     }
-    const hashedPassword = await bcrypt.hash(password, 10)
 
-    await User.updateOne(
-      { _id: userId },
-      {
-        $set: {
-          password: hashedPassword,
-          resetPasswordToken: undefined,
-        },
-      }
-    )
+    await updatePassword(userId, password)
+
     res.status(200).json({
       message: 'Password has been reset successfully',
     })
