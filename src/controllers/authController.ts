@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
+import asyncHandler from 'express-async-handler'
 import ApiError from '../errors/ApiError'
 
 import { authConfig } from '../config/auth.config'
@@ -15,8 +16,8 @@ import { sendActivationEmail } from '../helpers/sendActivationEmail'
  * @method POST
  * @access public
   -----------------------------------------------*/
-export const registerUser = async (req: Request, res: Response, next: NextFunction) => {
-  try {
+export const registerUser = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const { email, firstName, lastName, password } = req.body
     const avatar = req.file?.path
     let user = await checkIfUserExistsByEmail(email)
@@ -44,10 +45,8 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
     res.status(201).json({
       message: 'Registration successful. Check your email to activate your account',
     })
-  } catch (error) {
-    next(error)
   }
-}
+)
 
 /** -----------------------------------------------
  * @desc Activate User 
@@ -55,8 +54,8 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
  * @method GET
  * @access private
   -----------------------------------------------*/
-export const activateUser = async (req: Request, res: Response, next: NextFunction) => {
-  try {
+export const activateUser = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const activationToken = req.params.token
     const user = await activate(activationToken)
     if (!user) {
@@ -65,10 +64,8 @@ export const activateUser = async (req: Request, res: Response, next: NextFuncti
     res.status(200).json({
       message: 'Your Account has been activated successfull',
     })
-  } catch (error) {
-    next(error)
   }
-}
+)
 
 /** -----------------------------------------------
  * @desc Login User
@@ -76,35 +73,31 @@ export const activateUser = async (req: Request, res: Response, next: NextFuncti
  * @method POST
  * @access public
   -----------------------------------------------*/
-export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { email, password } = req.body
-    const user = await checkIfUserExistsByEmail(email)
-    if (!user || !user.isAccountVerified) {
-      return next(ApiError.badRequest('Invalid email or account not activated'))
-    }
-    if (!user) {
-      return next(ApiError.notFound('User not found'))
-    }
-    const isPasswordMatch = await bcrypt.compare(password, user.password)
-    if (!isPasswordMatch) {
-      return next(ApiError.badRequest('The email or password you entered is invalid'))
-    }
-    const token = jwt.sign(
-      {
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        role: user.role,
-        isBlocked: user.isBlocked,
-      },
-      authConfig.jwt.accessToken as string,
-      {
-        expiresIn: '24h',
-      }
-    )
-    res.status(200).json({ message: 'Login successful', token })
-  } catch (error) {
-    next(error)
+export const loginUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  const { email, password } = req.body
+  const user = await checkIfUserExistsByEmail(email)
+  if (!user || !user.isAccountVerified) {
+    return next(ApiError.badRequest('Invalid email or account not activated'))
   }
-}
+  if (!user) {
+    return next(ApiError.notFound('User not found'))
+  }
+  const isPasswordMatch = await bcrypt.compare(password, user.password)
+  if (!isPasswordMatch) {
+    return next(ApiError.badRequest('The email or password you entered is invalid'))
+  }
+  const token = jwt.sign(
+    {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      role: user.role,
+      isBlocked: user.isBlocked,
+    },
+    authConfig.jwt.accessToken as string,
+    {
+      expiresIn: '24h',
+    }
+  )
+  res.status(200).json({ message: 'Login successful', token })
+})

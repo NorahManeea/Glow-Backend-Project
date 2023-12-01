@@ -1765,3 +1765,4 @@ Method: POST, Path: /api/reset-password/, Date: 12/1/2023, Time: 9:09:07 PM
 Method: POST, Path: /api/reset-password/, Date: 12/1/2023, Time: 9:09:12 PM
 Method: POST, Path: /api/reset-password/, Date: 12/1/2023, Time: 9:10:22 PM
 Method: POST, Path: /api/reset-password/, Date: 12/1/2023, Time: 9:10:37 PM
+Method: POST, Path: /api/auth/register, Date: 12/1/2023, Time: 9:58:35 PM

@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { findAllReviews, removeReview } from '../services/reviewService'
+import asyncHandler from 'express-async-handler'
 import ApiError from '../errors/ApiError'
 import { Review } from '../models/reviewModel'
 import { Product } from '../models/productModel'
@@ -10,14 +11,12 @@ import { Product } from '../models/productModel'
  * @method GET
  * @access puplic
   -----------------------------------------------*/
-export const getAllReviews = async (req: Request, res: Response, next: NextFunction) => {
-  try {
+export const getAllReviews = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const reviews = await findAllReviews()
     res.status(200).json({ message: 'All reviews returned successfully', payload: reviews })
-  } catch (error) {
-    next(error)
   }
-}
+)
 
 /** -----------------------------------------------
  * @desc Add Review
@@ -25,8 +24,8 @@ export const getAllReviews = async (req: Request, res: Response, next: NextFunct
  * @method POST
  * @access private (logged in user)
   -----------------------------------------------*/
-export const addNewReview = async (req: Request, res: Response, next: NextFunction) => {
-  try {
+export const addNewReview = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const { productId, reviewText } = req.body
     const { userId } = req.decodedUser
 
@@ -46,10 +45,8 @@ export const addNewReview = async (req: Request, res: Response, next: NextFuncti
     })
     await review.save()
     res.status(201).json({ message: 'Review added successfully', payload: review })
-  } catch (error) {
-    next(error)
   }
-}
+)
 
 /** -----------------------------------------------
  * @desc Delete Review
@@ -57,12 +54,10 @@ export const addNewReview = async (req: Request, res: Response, next: NextFuncti
  * @method DELETE
  * @access private (Admin or logged in user)
   -----------------------------------------------*/
-export const deleteReview = async (req: Request, res: Response, next: NextFunction) => {
-  try {
+export const deleteReview = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const { reviewId } = req.params
     const review = await removeReview(reviewId)
     res.status(201).json({ message: 'Review has been deleted successfully', payload: review })
-  } catch (error) {
-    next(error)
   }
-}
+)

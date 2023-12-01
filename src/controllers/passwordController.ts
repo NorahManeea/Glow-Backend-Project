@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import ApiError from '../errors/ApiError'
+import asyncHandler from 'express-async-handler'
 import { User } from '../models/userModel'
 import { generateActivationToken } from '../utils/sendEmail'
 import bcrypt from 'bcrypt'
@@ -13,8 +14,8 @@ import { findAUser } from '../services/userService'
  * @method  POST
  * @access  public
  ------------------------------------------------*/
-export async function sendResetPasswordLink(req: Request, res: Response, next: NextFunction) {
-  try {
+export const sendResetPasswordLink = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const { email } = req.body
     const user = await checkIfUserExistsByEmail(email)
     const resetToken = generateActivationToken()
@@ -25,10 +26,8 @@ export async function sendResetPasswordLink(req: Request, res: Response, next: N
     await sendResetPasswordEmail(user.email, resetLink)
 
     res.json({ message: 'Password reset link has been sent successfully' })
-  } catch (error) {
-    next(error)
   }
-}
+)
 
 /**-----------------------------------------------
  * @desc    Get Reset Password Link
@@ -36,21 +35,20 @@ export async function sendResetPasswordLink(req: Request, res: Response, next: N
  * @method  GET
  * @access  private
  ------------------------------------------------*/
-export async function getResetPasswordLink(req: Request, res: Response, next: NextFunction) {
-  try {
-    const { userId, token } = req.params
-    const user = await User.findOne({
-      _id: userId,
-      resetPasswordToken: token,
-    })
-    if (!user) {
-      return ApiError.badRequest('Invalid token')
-    }
-    res.json({ message: 'Password reset can proceed with the valid token' })
-  } catch (error) {
-    next(error)
+export const getResetPasswordLink = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  const { userId, token } = req.params;
+  const user = await User.findOne({
+    _id: userId,
+    resetPasswordToken: token,
+  });
+
+  if (!user) {
+    return next(ApiError.badRequest('Invalid token'));
   }
-}
+
+  res.status(200).json({ message: 'Password reset is allowed with the valid token' });
+});
+
 
 /**-----------------------------------------------
  * @desc    Reset Password
@@ -58,8 +56,8 @@ export async function getResetPasswordLink(req: Request, res: Response, next: Ne
  * @method  POST
  * @access  private
  ------------------------------------------------*/
-export const resetPassword = async (req: Request, res: Response, next: NextFunction) => {
-  try {
+export const resetPassword = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const { userId, token } = req.params
     const { password } = req.body
     const user = await findAUser(userId)
@@ -84,7 +82,5 @@ export const resetPassword = async (req: Request, res: Response, next: NextFunct
     res.status(200).json({
       message: 'Password has been reset successfully',
     })
-  } catch (error) {
-    next(error)
   }
-}
+)
