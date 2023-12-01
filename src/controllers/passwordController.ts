@@ -5,7 +5,7 @@ import { User } from '../models/userModel'
 import { generateActivationToken } from '../utils/sendEmail'
 import bcrypt from 'bcrypt'
 import { checkIfUserExistsByEmail } from '../services/authService'
-import { sendResetPasswordEmail } from '../helpers/sendActivationEmail'
+import { sendResetPasswordEmail } from '../helpers/emailHelpers'
 import { findAUser } from '../services/userService'
 
 /**-----------------------------------------------
@@ -24,7 +24,6 @@ export const sendResetPasswordLink = asyncHandler(
     await user.save()
     const resetLink = `http://localhost:5050/api/reset-password/${user._id}/${resetToken}`
     await sendResetPasswordEmail(user.email, resetLink)
-
     res.json({ message: 'Password reset link has been sent successfully' })
   }
 )
@@ -35,20 +34,20 @@ export const sendResetPasswordLink = asyncHandler(
  * @method  GET
  * @access  private
  ------------------------------------------------*/
-export const getResetPasswordLink = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-  const { userId, token } = req.params;
-  const user = await User.findOne({
-    _id: userId,
-    resetPasswordToken: token,
-  });
+export const getResetPasswordLink = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { userId, token } = req.params
+    const user = await User.findOne({
+      _id: userId,
+      resetPasswordToken: token,
+    })
 
-  if (!user) {
-    return next(ApiError.badRequest('Invalid token'));
+    if (!user) {
+      return next(ApiError.badRequest('Invalid token'))
+    }
+    res.status(200).json({ message: 'Password reset is allowed with the valid token' })
   }
-
-  res.status(200).json({ message: 'Password reset is allowed with the valid token' });
-});
-
+)
 
 /**-----------------------------------------------
  * @desc    Reset Password
@@ -67,7 +66,6 @@ export const resetPassword = asyncHandler(
     if (user.resetPasswordToken !== token) {
       return next(ApiError.badRequest('Invalid token'))
     }
-
     const hashedPassword = await bcrypt.hash(password, 10)
 
     await User.updateOne(
