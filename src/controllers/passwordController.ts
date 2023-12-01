@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import asyncHandler from 'express-async-handler'
 
 import ApiError from '../errors/ApiError'
-import { generateActivationToken } from '../utils/sendEmail'
+import { generateActivationToken } from '../utils/sendEmailUtils'
 import { sendResetPasswordEmail } from '../helpers/emailHelpers'
 import { findAUser } from '../services/userService'
 import { updatePassword, checkResetPasswordToken } from '../services/passwordService'

@@ -27,8 +27,7 @@ export const addItemToWishList = async (wishlist: WishListDocument, product: Pro
   if (!existingWishListItem) {
     wishlist.products.push({ product: product._id })
   }
-  await wishlist.save()
-  return wishlist
+  return await wishlist.save()
 }
 //** Service:- Remove from wishlist */
 export const removeFromWishList = async (productId: string, userId: string) => {
@@ -43,7 +42,5 @@ export const removeFromWishList = async (productId: string, userId: string) => {
   }
 
   wishlist.products = updatedProducts
-  await wishlist.save()
-
-  return wishlist
+  return await wishlist.save()
 }

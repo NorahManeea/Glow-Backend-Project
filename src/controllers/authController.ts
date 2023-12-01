@@ -5,7 +5,7 @@ import asyncHandler from 'express-async-handler'
 import ApiError from '../errors/ApiError'
 
 import { authConfig } from '../config/auth.config'
-import { generateActivationToken } from '../utils/sendEmail'
+import { generateActivationToken } from '../utils/sendEmailUtils'
 import { User } from '../models/userModel'
 import { activate, checkIfUserExistsByEmail, createUser } from '../services/authService'
 import { sendActivationEmail } from '../helpers/emailHelpers'

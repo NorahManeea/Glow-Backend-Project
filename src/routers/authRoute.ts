@@ -1,7 +1,7 @@
 import express from 'express'
 import { activateUser, loginUser, registerUser } from '../controllers/authController'
 import { validateUser } from '../validation/validateUser';
-import { limiter } from '../utils/rateLimit';
+import { limiter } from '../middlewares/rateLimit';
 
 
 const router = express.Router()

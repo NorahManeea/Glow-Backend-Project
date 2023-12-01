@@ -1,5 +1,4 @@
-import { sendEmail } from '../utils/sendEmail'
-
+import { sendEmail } from '../utils/sendEmailUtils'
 
 export const sendActivationEmail = async (email: string, activationLink: string) => {
   const subject = 'Welcome to Black Tigers Team!'
@@ -15,7 +14,7 @@ export const sendActivationEmail = async (email: string, activationLink: string)
 }
 
 export const sendResetPasswordEmail = async (email: string, resetLink: string) => {
-  const subject = 'Reset Your Password';
+  const subject = 'Reset Your Password'
   const htmlTemplate = `
     <p>Click the following button to reset your password:</p>
     <a href="${resetLink}">
@@ -23,6 +22,6 @@ export const sendResetPasswordEmail = async (email: string, resetLink: string) =
         Reset Password
       </button>
     </a>
-  `;
-  return await sendEmail(email, subject, htmlTemplate);
-};
+  `
+  return await sendEmail(email, subject, htmlTemplate)
+}

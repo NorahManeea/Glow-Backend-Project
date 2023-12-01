@@ -10,7 +10,7 @@ import {
   removeOrder,
 } from '../services/orderService'
 import ApiError from '../errors/ApiError'
-import { sendEmail } from '../utils/sendEmail'
+import { sendEmail } from '../utils/sendEmailUtils'
 import { Cart } from '../models/cartModel'
 
 /**-----------------------------------------------

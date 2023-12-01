@@ -1,23 +1,19 @@
 import { Category } from '../models/categoryModel'
 import { CategoryDocument } from '../types/types'
 import ApiError from '../errors/ApiError'
+import { calculatePagination } from '../utils/paginationUtils'
+import { findBySearchQuery } from '../utils/searchUtils'
 
 //** Service:- Find All Categories */
 export const findAllCategories = async (pageNumber = 1, limit = 8, searchText = '') => {
   const categoryCount = await Category.countDocuments()
-  const totalPages = Math.ceil(categoryCount / limit)
-
-  if (pageNumber > totalPages) {
-    pageNumber = totalPages
-  }
-  const skip = (pageNumber - 1) * limit
-
+  const { currentPage, skip, totalPages } = calculatePagination(categoryCount, pageNumber, limit)
   const categories = await Category.find()
     .skip(skip)
     .limit(limit)
-    .find(searchText ? { $or: [{ categoryName: { $regex: searchText, $options: 'i' } }] } : {})
+    .find(findBySearchQuery(searchText, 'categoryName'))
 
-  return { categories, totalPages, currentPage: pageNumber }
+  return { categories, totalPages, currentPage }
 }
 
 //** Service:- Find a Category */
