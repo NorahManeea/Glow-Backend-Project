@@ -8,7 +8,7 @@ import { authConfig } from '../config/auth.config'
 import { generateActivationToken } from '../utils/sendEmail'
 import { User } from '../models/userModel'
 import { activate, checkIfUserExistsByEmail, createUser } from '../services/authService'
-import { sendActivationEmail } from '../helpers/sendActivationEmail'
+import { sendActivationEmail } from '../helpers/emailHelpers'
 
 /** -----------------------------------------------
  * @desc Register User
@@ -20,10 +20,8 @@ export const registerUser = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { email, firstName, lastName, password } = req.body
     const avatar = req.file?.path
-    let user = await checkIfUserExistsByEmail(email)
-    if (user) {
-      return next(ApiError.badRequest('This email is already registered'))
-    }
+    await checkIfUserExistsByEmail(email)
+
     const activationToken = generateActivationToken()
     const hashPassword = await bcrypt.hash(password, 10)
 
