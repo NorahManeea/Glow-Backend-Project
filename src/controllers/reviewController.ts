@@ -1,9 +1,8 @@
 import { NextFunction, Request, Response } from 'express'
-import { findAllReviews, removeReview } from '../services/reviewService'
+import { createNewReview, findAllReviews, removeReview } from '../services/reviewService'
 import asyncHandler from 'express-async-handler'
-import ApiError from '../errors/ApiError'
 import { Review } from '../models/reviewModel'
-import { Product } from '../models/productModel'
+import { findProduct } from '../services/productService'
 
 /** -----------------------------------------------
  * @desc Get All Reviews
@@ -28,22 +27,13 @@ export const addNewReview = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { productId, reviewText } = req.body
     const { userId } = req.decodedUser
-
-    if (!productId || !reviewText) {
-      return next(ApiError.badRequest('ProductId and review text are required.'))
-    }
-    const productFound = await Product.findOne({
-      productId,
-    })
-    if (!productFound) {
-      return next(ApiError.notFound('ProductId not found'))
-    }
+    await findProduct(userId)
     const review = new Review({
       userId,
       productId,
       reviewText,
     })
-    await review.save()
+    await createNewReview(review)
     res.status(201).json({ message: 'Review added successfully', payload: review })
   }
 )

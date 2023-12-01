@@ -5,7 +5,7 @@ import asyncHandler from 'express-async-handler'
 import ApiError from '../errors/ApiError'
 
 import { authConfig } from '../config/auth.config'
-import { generateActivationToken } from '../utils/sendEmailUtils'
+import { generateActivationToken, sendEmail } from '../utils/sendEmailUtils'
 import { User } from '../models/userModel'
 import { activate, checkIfUserExistsByEmail, createUser } from '../services/authService'
 import { sendActivationEmail } from '../helpers/emailHelpers'
@@ -19,9 +19,11 @@ import { sendActivationEmail } from '../helpers/emailHelpers'
 export const registerUser = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { email, firstName, lastName, password } = req.body
-    const avatar = req.file?.path
-    await checkIfUserExistsByEmail(email)
-
+    const avatar = req.file?.path || ''
+    let isEmailExitsy = await checkIfUserExistsByEmail(email)
+    if (isEmailExitsy) {
+      return next(ApiError.badRequest('This email is already registered'))
+    }
     const activationToken = generateActivationToken()
     const hashPassword = await bcrypt.hash(password, 10)
 
@@ -74,6 +76,9 @@ export const activateUser = asyncHandler(
 export const loginUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body
   const user = await checkIfUserExistsByEmail(email)
+  if (!user) {
+    throw ApiError.notFound('No user found with the provided email address')
+  }
   if (!user.isAccountVerified) {
     return next(ApiError.badRequest('Invalid email or account not activated'))
   }

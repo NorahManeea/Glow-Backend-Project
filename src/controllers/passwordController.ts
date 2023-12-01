@@ -18,6 +18,9 @@ export const sendResetPasswordLink = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { email } = req.body
     const user = await checkIfUserExistsByEmail(email)
+    if (!user) {
+      throw ApiError.notFound('No user found with the provided email address')
+    }
     const resetToken = generateActivationToken()
     user.resetPasswordToken = resetToken
 
@@ -57,9 +60,7 @@ export const resetPassword = asyncHandler(
     if (user.resetPasswordToken !== token) {
       return next(ApiError.badRequest('Invalid token'))
     }
-
     await updatePassword(userId, password)
-
     res.status(200).json({
       message: 'Password has been reset successfully',
     })
