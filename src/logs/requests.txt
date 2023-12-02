@@ -1945,3 +1945,14 @@ Method: GET, Path: /api/products, Date: 12/2/2023, Time: 11:12:59 PM
 Method: POST, Path: /api/reviews, Date: 12/2/2023, Time: 11:13:13 PM
 Method: POST, Path: /api/reviews, Date: 12/2/2023, Time: 11:13:51 PM
 Method: POST, Path: /api/reviews, Date: 12/2/2023, Time: 11:14:43 PM
+Method: PUT, Path: /api/cart/656ba8aaad7a44347ee07e5d, Date: 12/3/2023, Time: 1:13:30 AM
+Method: PUT, Path: /api/cart/656ba8aaad7a44347ee07e5d, Date: 12/3/2023, Time: 1:14:31 AM
+Method: GET, Path: /api/cart/, Date: 12/3/2023, Time: 1:18:19 AM
+Method: PUT, Path: /api/cart/655dd64a2a277b3e9272dfd4, Date: 12/3/2023, Time: 1:18:33 AM
+Method: GET, Path: /api/cart/, Date: 12/3/2023, Time: 1:18:42 AM
+Method: PUT, Path: /api/cart/656bad430207f9ee567a029f, Date: 12/3/2023, Time: 1:19:05 AM
+Method: PUT, Path: /api/cart/655dd64a2a277b3e9272dfd4, Date: 12/3/2023, Time: 1:19:21 AM
+Method: GET, Path: /api/cart/, Date: 12/3/2023, Time: 1:19:25 AM
+Method: PUT, Path: /api/cart/655dd64a2a277b3e9272dfd4, Date: 12/3/2023, Time: 1:19:38 AM
+Method: GET, Path: /api/cart/, Date: 12/3/2023, Time: 1:19:43 AM
+Method: POST, Path: /api/cart/, Date: 12/3/2023, Time: 1:21:11 AM

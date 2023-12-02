@@ -96,11 +96,11 @@ export const deleteItemFromCart = async (userId: string, carttItemId: string) =>
   if (!cart) {
     throw ApiError.notFound(`Cart not found with userId: ${userId}`)
   }
-console.log(carttItemId)
+
   // check if the product in the cart
-  const deletedItem = cart.products.find((p) => p.product.toString() === carttItemId)
-  if (!deletedItem) {
-    throw ApiError.notFound(`Product with id: ${userId} not found in the cart`)
+  const cartItem = cart.products.find((p) => p.product.toString() === carttItemId)
+  if (!cartItem) {
+    throw ApiError.notFound(`Product with id: ${carttItemId} not found in the cart`)
   }
 
   //delete the product from the cart
