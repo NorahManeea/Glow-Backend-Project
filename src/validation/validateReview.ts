@@ -5,9 +5,8 @@ import ApiError from '../errors/ApiError'
 
 export function validateReview(req: Request, res: Response, next: NextFunction) {
   const reviewSchema = zod.object({
-    userId: zod.string(),
-    reviewText: zod.string().max(5, { message: 'Review text must be 250 characters or less' }),
-    products: zod.string(),
+    reviewText: zod.string().max(250, { message: 'Review text must be 250 characters or less' }),
+    productId: zod.string(),
   })
 
   try {

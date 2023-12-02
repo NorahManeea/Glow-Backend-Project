@@ -7,7 +7,7 @@ const reviewSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
-    products: {
+    productId: {
       product: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product',
@@ -16,8 +16,8 @@ const reviewSchema = new mongoose.Schema(
     reviewText: {
       type: String,
       required: true,
-      minlength: 10,
-      maxlength: 100,
+      minlength: 5,
+      maxlength: 250,
     },
   },
   { timestamps: true }
