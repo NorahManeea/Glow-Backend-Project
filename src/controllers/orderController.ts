@@ -59,7 +59,7 @@ export const getOrderById = async (req: Request, res: Response, next: NextFuncti
  * @desc Create Order By ID
  * @route /api/orders
  * @method POST
- * @access public
+ * @access private (only registered users)
  -----------------------------------------------*/
 export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -126,6 +126,9 @@ export const updateOrderStatus = async (req: Request, res: Response, next: NextF
 export const getOrderHistory = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const orderHistory = await findOrderHistory(req.decodedUser.userId)
+    if (orderHistory.length == 0) {
+      return ApiError.notFound(`There are no order history`)
+    }
 
     res.status(200).json({ message: 'Order History returned successfully', payload: orderHistory })
   } catch (error) {
