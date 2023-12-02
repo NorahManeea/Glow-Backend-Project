@@ -27,14 +27,14 @@ export const addToWishList = async (req: Request, res: Response, next: NextFunct
 
 /**-----------------------------------------------
  * @desc Delete from wishlist  
- * @route DELETE /api/wishlist/:id
+ * @route DELETE /api/wishlist/:wishListId
  * @access Private 
  -----------------------------------------------*/
 export const deleteFromWishList = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params
+    const { wishListId } = req.params
     const { userId } = req.decodedUser
-    const wishlist = await removeFromWishList(id, userId)
+    const wishlist = await removeFromWishList(wishListId, userId)
     res
       .status(200)
       .json({ message: 'Product has been removed successfully from wishlist', payload: wishlist })

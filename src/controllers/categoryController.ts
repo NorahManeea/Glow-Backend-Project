@@ -49,13 +49,13 @@ export const getAllCategory = async (req: Request, res: Response, next: NextFunc
 
 /**-----------------------------------------------
  * @desc Get Category by Id
- * @route /api/categories/:id
+ * @route /api/categories/:categoryId
  * @method GET
  * @access public
  -----------------------------------------------*/
 export const getCategoryById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const categories = await findCategory(req.params.id)
+    const categories = await findCategory(req.params.categoryId)
     res.status(200).json({ message: 'Single category returned successfully', payload: categories })
   } catch (error) {
     next(error)
@@ -64,13 +64,13 @@ export const getCategoryById = async (req: Request, res: Response, next: NextFun
 
 /**-----------------------------------------------
  * @desc Update Category 
- * @route /api/categories/:id
+ * @route /api/categories/:categoryId
  * @method PUT
  * @access private (Admin Only)
  -----------------------------------------------*/
 export const updateCategoryById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const updatedCategory = await updateCategory(req.params.id, req.body)
+    const updatedCategory = await updateCategory(req.params.categoryId, req.body)
     res
       .status(200)
       .json({ message: 'Category has been updated successfully', payload: updatedCategory })
@@ -81,13 +81,13 @@ export const updateCategoryById = async (req: Request, res: Response, next: Next
 
 /**-----------------------------------------------
  * @desc Delete Category 
- * @route /api/categories/:id
+ * @route /api/categories/:categoryId
  * @method DELETE
  * @access private (Admin Only)
  -----------------------------------------------*/
 export const deleteCategory = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const category = await removeCategory(req.params.id)
+    const category = await removeCategory(req.params.categoryId)
     res.status(200).json({ meassge: 'Category has been deleted Successfully', result: category })
   } catch (error) {
     next(error)

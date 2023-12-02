@@ -35,13 +35,13 @@ export const addDiscountCode = async (req: Request, res: Response, next: NextFun
 
 /**-----------------------------------------------
  * @desc Delete Discount Code
- * @route /api/discount-code/:id
+ * @route /api/discount-code/:discountCodeId
  * @method DELETE
  * @access private (Admin Only)
  -----------------------------------------------*/
 export const deleteDiscountCode = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const discounCode = await removeDiscountCode(req.params.id)
+    const discounCode = await removeDiscountCode(req.params.discountCodeId)
     res
       .status(200)
       .json({ message: 'Discount code has been deleted successfully', paylod: discounCode })
@@ -52,20 +52,18 @@ export const deleteDiscountCode = async (req: Request, res: Response, next: Next
 
 /**-----------------------------------------------
  * @desc Update Discount Code
- * @route /api/discount-code/:id
+ * @route /api/discount-code/:discountCodeId
  * @method PUT
  * @access private (Admin Only)
  -----------------------------------------------*/
 export const updateDiscountCodeById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const discountCodeId = req.params.id
+    const discountCodeId = req.params.discountCodeId
     const updatedDiscountCode = await updateDiscountCode(discountCodeId, req.body)
-    res
-      .status(200)
-      .json({
-        message: 'Discount code has been updated successfully',
-        payload: updatedDiscountCode,
-      })
+    res.status(200).json({
+      message: 'Discount code has been updated successfully',
+      payload: updatedDiscountCode,
+    })
   } catch (error) {
     next(error)
   }
@@ -90,7 +88,7 @@ export const getDiscountCodes = async (req: Request, res: Response, next: NextFu
 
 /**-----------------------------------------------
  * @desc Get Discount Codes
- * @route /api/discount-code/:id
+ * @route /api/discount-code/:discountCodeId
  * @method GET
  * @access private (Admin Only)
  -----------------------------------------------*/

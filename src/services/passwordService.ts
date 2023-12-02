@@ -26,7 +26,9 @@ export const resetPassword = async (userId: string, password: string) => {
         password: hashedPassword,
         resetPasswordToken: undefined,
       },
-    },{ new: true })
+    },
+    { new: true }
+  )
   if (!user) {
     throw ApiError.notFound('User not found with the entered ID')
   }

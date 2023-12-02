@@ -12,9 +12,9 @@ export const findAllCategories = async (pageNumber = 1, limit = 8, searchText = 
     .skip(skip)
     .limit(limit)
     .find(findBySearchQuery(searchText, 'categoryName'))
-    if(categories.length === 0){
-      throw ApiError.notFound('There are no categories')
-    }
+  if (categories.length === 0) {
+    throw ApiError.notFound('There are no categories')
+  }
 
   return { categories, totalPages, currentPage }
 }

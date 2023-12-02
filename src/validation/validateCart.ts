@@ -3,14 +3,9 @@ import zod, { ZodError } from 'zod'
 
 import ApiError from '../errors/ApiError'
 
-
 export function validateCart(req: Request, res: Response, next: NextFunction) {
-
-
   const cartSchema = zod.object({
-    quantity: zod
-    .number()
-    .nonnegative({ message: 'Quantity must be nonnegative number' }),
+    quantity: zod.number().nonnegative({ message: 'Quantity must be nonnegative number' }),
   })
   try {
     cartSchema.parse(req.body)

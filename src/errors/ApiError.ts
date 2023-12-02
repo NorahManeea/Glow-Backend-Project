@@ -18,13 +18,13 @@ class ApiError {
     return new ApiError(403, msg)
   }
   static unauthorized(msg: string) {
-    return new ApiError(401, msg);
+    return new ApiError(401, msg)
   }
   static notFound(msg: string) {
-    return new ApiError(404, msg);
+    return new ApiError(404, msg)
   }
   static alreadyExist(msg: string) {
-    return new ApiError(409, msg);
+    return new ApiError(409, msg)
   }
 }
 

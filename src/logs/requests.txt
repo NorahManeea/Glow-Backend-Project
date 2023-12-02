@@ -1847,3 +1847,12 @@ Method: POST, Path: /api/auth/login, Date: 12/2/2023, Time: 2:29:10 AM
 Method: DELETE, Path: /api/reviews/656a6c38ee15ed0f70ff8e4a, Date: 12/2/2023, Time: 2:29:22 AM
 Method: GET, Path: /api/categories, Date: 12/2/2023, Time: 12:28:38 PM
 Method: GET, Path: /api/categories, Date: 12/2/2023, Time: 12:28:47 PM
+Method: GET, Path: /api/categories/6564920714d1507151803c1b, Date: 12/2/2023, Time: 12:42:50 PM
+Method: GET, Path: /api/categories/jfjfj, Date: 12/2/2023, Time: 12:42:54 PM
+Method: GET, Path: /api/categories/6564920714d1507151803c1b, Date: 12/2/2023, Time: 12:43:00 PM
+Method: GET, Path: /api/categories/6564920714d1507151803c1b, Date: 12/2/2023, Time: 12:43:19 PM
+Method: GET, Path: /api/categories/6564920714d1507151803c1b, Date: 12/2/2023, Time: 12:45:08 PM
+Method: PUT, Path: /api/categories/6564920714d1507151803c1b, Date: 12/2/2023, Time: 12:45:12 PM
+Method: DELETE, Path: /api/categories/6564920714d1507151803c1b, Date: 12/2/2023, Time: 12:45:17 PM
+Method: GET, Path: /api/discount-code/, Date: 12/2/2023, Time: 12:47:02 PM
+Method: GET, Path: /api/reviews, Date: 12/2/2023, Time: 12:53:06 PM
