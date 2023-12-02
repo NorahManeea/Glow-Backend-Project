@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
 import { DiscountCode } from '../models/discountCodeModel'
-import asyncHandler from 'express-async-handler'
 import {
   createNewDiscountCode,
   findAllDiscountCodes,
@@ -16,8 +15,8 @@ import {
  * @method POST
  * @access private (Admin Only)
  -----------------------------------------------*/
-export const addDiscountCode = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+export const addDiscountCode = async (req: Request, res: Response, next: NextFunction) => {
+  try {
     const { code, discountPercentage, discountAmount, expirationDate } = req.body
     const discountCode = new DiscountCode({
       code,
@@ -29,8 +28,10 @@ export const addDiscountCode = asyncHandler(
     res
       .status(201)
       .json({ message: 'Discount code has been created successfully', payload: newDiscountCode })
+  } catch (error) {
+    next(error)
   }
-)
+}
 
 /**-----------------------------------------------
  * @desc Delete Discount Code
@@ -38,14 +39,16 @@ export const addDiscountCode = asyncHandler(
  * @method DELETE
  * @access private (Admin Only)
  -----------------------------------------------*/
-export const deleteDiscountCode = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+export const deleteDiscountCode = async (req: Request, res: Response, next: NextFunction) => {
+  try {
     const discounCode = await removeDiscountCode(req.params.id)
     res
       .status(200)
       .json({ message: 'Discount code has been deleted successfully', paylod: discounCode })
+  } catch (error) {
+    next(error)
   }
-)
+}
 
 /**-----------------------------------------------
  * @desc Update Discount Code
@@ -53,13 +56,20 @@ export const deleteDiscountCode = asyncHandler(
  * @method PUT
  * @access private (Admin Only)
  -----------------------------------------------*/
-export const updateDiscountCodeById = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+export const updateDiscountCodeById = async (req: Request, res: Response, next: NextFunction) => {
+  try {
     const discountCodeId = req.params.id
     const updatedDiscountCode = await updateDiscountCode(discountCodeId, req.body)
-    res.status(200).json({ message: 'Discount code has been updated successfully', payload: updatedDiscountCode })
+    res
+      .status(200)
+      .json({
+        message: 'Discount code has been updated successfully',
+        payload: updatedDiscountCode,
+      })
+  } catch (error) {
+    next(error)
   }
-)
+}
 
 /**-----------------------------------------------
  * @desc Get Discount Codes
@@ -67,14 +77,16 @@ export const updateDiscountCodeById = asyncHandler(
  * @method GET
  * @access private (Admin Only)
  -----------------------------------------------*/
-export const getDiscountCodes = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+export const getDiscountCodes = async (req: Request, res: Response, next: NextFunction) => {
+  try {
     const discountCode = await findAllDiscountCodes()
     res
       .status(200)
       .json({ message: 'Discount codes have been returned successfully', payload: discountCode })
+  } catch (error) {
+    next(error)
   }
-)
+}
 
 /**-----------------------------------------------
  * @desc Get Discount Codes
@@ -82,15 +94,17 @@ export const getDiscountCodes = asyncHandler(
  * @method GET
  * @access private (Admin Only)
  -----------------------------------------------*/
-export const getDiscountCodeById = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+export const getDiscountCodeById = async (req: Request, res: Response, next: NextFunction) => {
+  try {
     const { discountCodeId } = req.params
     const discountCode = await findDiscountCode(discountCodeId)
     res
       .status(200)
       .json({ message: 'Discount code has been returned successfully', payload: discountCode })
+  } catch (error) {
+    next(error)
   }
-)
+}
 
 /**-----------------------------------------------
  * @desc Get Valid Codes
@@ -98,12 +112,14 @@ export const getDiscountCodeById = asyncHandler(
  * @method GET
  * @access public
  -----------------------------------------------*/
-export const getValidDiscountCodes = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+export const getValidDiscountCodes = async (req: Request, res: Response, next: NextFunction) => {
+  try {
     const discountCode = await findValidDiscountCodes()
     res.status(200).json({
       message: 'Valid Discount codes have been returned successfully',
       payload: discountCode,
     })
+  } catch (error) {
+    next(error)
   }
-)
+}

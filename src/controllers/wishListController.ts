@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express'
-import asyncHandler from 'express-async-handler'
 import {
   addItemToWishList,
   createWishList,
@@ -12,8 +11,8 @@ import {
  * @route POST /api/wishlist/
  * @access Private 
  -----------------------------------------------*/
-export const addToWishList = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+export const addToWishList = async (req: Request, res: Response, next: NextFunction) => {
+  try {
     const { userId } = req.decodedUser
     const { productId } = req.body
     let wishlist = await createWishList(userId)
@@ -21,32 +20,40 @@ export const addToWishList = asyncHandler(
     res
       .status(200)
       .json({ message: 'Product has been added successfully to wishlist', payload: wishlist })
+  } catch (error) {
+    next(error)
   }
-)
+}
 
 /**-----------------------------------------------
  * @desc Delete from wishlist  
  * @route DELETE /api/wishlist/:id
  * @access Private 
  -----------------------------------------------*/
-export const deleteFromWishList = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+export const deleteFromWishList = async (req: Request, res: Response, next: NextFunction) => {
+  try {
     const { id } = req.params
     const { userId } = req.decodedUser
     const wishlist = await removeFromWishList(id, userId)
     res
       .status(200)
       .json({ message: 'Product has been removed successfully from wishlist', payload: wishlist })
+  } catch (error) {
+    next(error)
   }
-)
+}
 
 /**-----------------------------------------------
  * @desc Get wishlist  
  * @route GET /api/wishlist/
  * @access Private 
  -----------------------------------------------*/
-export const getWishList = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-  const { userId } = req.decodedUser
-  const wishlist = await findWishList(userId)
-  res.status(200).json({ message: 'WishList items returned successfully', payload: wishlist })
-})
+export const getWishList = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId } = req.decodedUser
+    const wishlist = await findWishList(userId)
+    res.status(200).json({ message: 'WishList items returned successfully', payload: wishlist })
+  } catch (error) {
+    next(error)
+  }
+}
