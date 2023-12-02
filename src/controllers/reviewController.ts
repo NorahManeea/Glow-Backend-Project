@@ -25,18 +25,20 @@ export const getAllReviews = async (req: Request, res: Response, next: NextFunct
  * @access private (logged in user)
   -----------------------------------------------*/
 export const addNewReview = async (req: Request, res: Response, next: NextFunction) => {
+
   try {
     const { productId, reviewText } = req.body
-    const { userId } = req.decodedUser
-    await findProduct(userId)
+    console.log(productId,reviewText)
+    await findProduct(productId)
     const review = new Review({
-      userId,
+      userId: req.decodedUser.userId,
       productId,
       reviewText,
     })
     await createNewReview(review)
     res.status(201).json({ message: 'Review added successfully', payload: review })
   } catch (error) {
+    console.log(error)
     next(error)
   }
 }
