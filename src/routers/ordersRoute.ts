@@ -9,6 +9,7 @@ import {
   getOrderHistory,
   returnOrder,
   updateOrderStatus,
+  updateShippingInfo,
 } from '../controllers/orderController'
 import { checkAuth, checkBlock, checkRole } from '../middlewares/verifyToken'
 
@@ -27,7 +28,7 @@ router.post('/', checkAuth, checkBlock, validateOrder, createOrder)
 // Update order status route
 router.put('/:orderId/status', checkAuth, checkRole('ADMIN'), updateOrderStatus)
 // Update shipping information route
-router.put('/:orderId/shippingInfo', validateOrder, updateOrderStatus)
+router.put('/:orderId/shippingInfo', validateOrder, updateShippingInfo)
 // Return order route
 router.put('/:orderId/return', checkAuth, returnOrder)
 

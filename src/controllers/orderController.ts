@@ -102,7 +102,7 @@ export const updateOrderStatus = async (req: Request, res: Response, next: NextF
     const updatedOrder = await changeOrderStatus(req.params.orderId, req.body.orderStatus)
 
     res.status(200).json({
-      message: 'Category has been updated successfully',
+      message: 'Status has been updated successfully',
       payload: updatedOrder,
     })
   } catch (error) {
@@ -136,17 +136,19 @@ export const returnOrder = async (req: Request, res: Response, next: NextFunctio
   try {
     //Check order status
     const order = await findOrder(req.params.orderId)
-    if (order.orderStatus !== OrderStatus.DELIVERED)
+    if (order.orderStatus !== OrderStatus.DELIVERED) {
       return next(ApiError.badRequest('Order cannot be returned as it has not been delivered yet'))
+    }
 
     //Check return due date
     const returnDeadline = new Date(order.orderDate)
     returnDeadline.setDate(returnDeadline.getDate() + 7)
     const currentDate = new Date()
-    if (currentDate > returnDeadline)
+    if (currentDate > returnDeadline) {
       return next(
         ApiError.badRequest('The order has exceeded the return time limit and cannot be returned')
       )
+    }
 
     const returnedOrder = await changeOrderStatus(req.params.id, OrderStatus.RETURNED)
 
@@ -179,7 +181,10 @@ export const updateShippingInfo = async (req: Request, res: Response, next: Next
 
     res
       .status(200)
-      .json({ message: 'Shipping information has been updated successfully', payload: updatedShippingInfo })
+      .json({
+        message: 'Shipping information has been updated successfully',
+        payload: updatedShippingInfo,
+      })
   } catch (error) {
     next(error)
   }
