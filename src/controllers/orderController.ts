@@ -118,19 +118,16 @@ export const getOrderHistory = asyncHandler(
  -----------------------------------------------*/
 export const returnOrder = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
   const order = await findOrder(req.params.id)
-  if (order.orderStatus !== OrderStatus.DELIVERED) {
+  if (order.orderStatus !== OrderStatus.DELIVERED)
     return next(ApiError.badRequest('Order cannot be returned as it has not been delivered yet'))
-  }
 
   const returnDeadline = new Date(order.orderDate)
   returnDeadline.setDate(returnDeadline.getDate() + 7)
-
   const currentDate = new Date()
-  if (currentDate > returnDeadline) {
+  if (currentDate > returnDeadline)
     return next(
       ApiError.badRequest('The order has exceeded the return time limit and cannot be returned')
     )
-  }
 
   const returnedOrder = await changeOrderStatus(req.params.id, OrderStatus.RETURNED)
 
