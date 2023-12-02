@@ -76,7 +76,7 @@ export type WishListDocument = Document & {
 }
 export type ReviewDocument = {
   userId: string
-  productId: {
+  products: {
     product: mongoose.Schema.Types.ObjectId
   }
   reviewText: string
