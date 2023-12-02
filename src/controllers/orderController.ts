@@ -136,7 +136,6 @@ export const returnOrder = async (req: Request, res: Response, next: NextFunctio
   try {
     //Check order status
     const order = await findOrder(req.params.orderId)
-    console.log(req.params.orderId)
     if (order.orderStatus !== OrderStatus.DELIVERED) {
       return next(ApiError.badRequest('Order cannot be returned as it has not been delivered yet'))
     }

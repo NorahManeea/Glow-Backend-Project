@@ -29,7 +29,6 @@ export const addNewReview = async (req: Request, res: Response, next: NextFuncti
 
   try {
     const { productId, reviewText } = req.body
-    console.log(productId,reviewText)
     await findProduct(productId)
     const review = new Review({
       userId: req.decodedUser.userId,
@@ -39,7 +38,6 @@ export const addNewReview = async (req: Request, res: Response, next: NextFuncti
     await createNewReview(review)
     res.status(201).json({ message: 'Review added successfully', payload: review })
   } catch (error) {
-    console.log(error)
     next(error)
   }
 }
