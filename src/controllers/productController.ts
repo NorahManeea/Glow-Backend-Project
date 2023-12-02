@@ -66,7 +66,6 @@ export const getProductById = async (req: Request, res: Response, next: NextFunc
 export const deleteProductById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const productId = req.params.id
-    console.log('Product ID to delete:', productId)
 
     const product = await removeProduct(productId)
     if (!product) {
