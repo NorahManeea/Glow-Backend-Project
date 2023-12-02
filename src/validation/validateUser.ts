@@ -1,15 +1,15 @@
 import { NextFunction, Request, Response } from 'express'
-import zod, { ZodError } from 'zod'
+import zod, { ZodError, z } from 'zod'
 
 import ApiError from '../errors/ApiError'
 
 export function validateUser(req: Request, res: Response, next: NextFunction) {
   const isUpdated = req.method === 'PUT'
   const schema = zod.object({
-    firstName: isUpdated ? zod.string().min(3).max(30).optional() : zod.string().min(3).max(30),
-    lastName: isUpdated ? zod.string().min(3).max(30).optional() : zod.string().min(3).max(30),
-    password: isUpdated ? zod.string().min(8).max(100).optional() : zod.string().min(8).max(100),
-    email: isUpdated ? zod.string().email().optional() : zod.string().email(),
+    firstName: isUpdated ? z.string().min(3).max(30).optional() : z.string().min(3).max(30),
+    lastName: isUpdated ? z.string().min(3).max(30).optional() : z.string().min(3).max(30),
+    password: isUpdated ? z.string().min(8).max(100).optional() : z.string().min(8).max(100),
+    email: isUpdated ? z.string().email().optional() : z.string().email(),
   })
 
   try {

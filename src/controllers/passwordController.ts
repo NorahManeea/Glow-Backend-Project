@@ -22,6 +22,7 @@ export const sendResetPasswordLink = async (req: Request, res: Response, next: N
     }
     const resetToken = generateActivationToken()
     user.resetPasswordToken = resetToken
+
     await user.save()
     const resetLink = `http://localhost:5050/api/reset-password/${user._id}/${resetToken}`
     await sendResetPasswordEmail(user.email, resetLink)
@@ -58,6 +59,7 @@ export const resetPassword = async (req: Request, res: Response, next: NextFunct
     const { userId, token } = req.params
     const { password } = req.body
     const user = await findAUser(userId)
+
     if (user.resetPasswordToken !== token) {
       return next(ApiError.badRequest('Invalid token'))
     }

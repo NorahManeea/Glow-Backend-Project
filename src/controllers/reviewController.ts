@@ -37,11 +37,13 @@ export const addNewReview = async (req: Request, res: Response, next: NextFuncti
     if (!orderedProductIds.includes(productId)) {
       return next(ApiError.badRequest('You can only review products that you have ordered.'))
     }
+
     const review = new Review({
       userId: req.decodedUser.userId,
       productId,
       reviewText,
     })
+
     await createNewReview(review)
     res.status(201).json({ message: 'Review added successfully', payload: review })
   } catch (error) {

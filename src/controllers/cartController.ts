@@ -21,11 +21,17 @@ export const addToCart = async (req: Request, res: Response, next: NextFunction)
   try {
     const userId = req.decodedUser.userId
     const { productId, quantity, discountCode } = req.body
+
     const product = await findProduct(productId)
+
     await checkStock(productId, quantity)
+
     let cart = await createCart(userId)
+
     cart = await addItem(cart, quantity, product)
+
     const totalPrice = await calculateTotalPrice(cart, discountCode)
+
     res.json({
       message: 'Product has been added to the cart successfully',
       cart,
@@ -46,8 +52,10 @@ export const getCartItems = async (req: Request, res: Response, next: NextFuncti
   {
     try {
       const userId = req.params.id
+
       const cartItems = await findCart(userId)
       const itemsCount = cartItems.reduce((count, product) => count + product.quantity, 0)
+
       res.status(200).json({
         message: 'All cart items returned',
         cartItems: cartItems,
@@ -69,7 +77,9 @@ export const updateCartItems = async (req: Request, res: Response, next: NextFun
   try {
     const userId = req.params.id
     const { _id, quantity } = req.body
+
     const { cart, itemsCount } = await updateCart(userId, _id, quantity)
+
     res.status(200).json({ message: 'Cart item has been updated successfully', cart, itemsCount })
   } catch (error) {
     next(error)
@@ -87,6 +97,7 @@ export const deleteCartItem = async (req: Request, res: Response, next: NextFunc
     const userId = req.params.id
     const productId = req.params.productId
     const updatedCart = await deleteItemFromCart(userId, productId)
+
     res
       .status(200)
       .json({ meassge: 'Product has been deleted from the cart successfully', result: updatedCart })
