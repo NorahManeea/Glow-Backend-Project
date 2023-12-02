@@ -49,21 +49,19 @@ export const addToCart = async (req: Request, res: Response, next: NextFunction)
  * @access private (user himself only)
   -----------------------------------------------*/
 export const getCartItems = async (req: Request, res: Response, next: NextFunction) => {
-  {
-    try {
-      const userId = req.params.id
+  try {
+    const userId = req.decodedUser.userId
 
-      const cartItems = await findCart(userId)
-      const itemsCount = cartItems.reduce((count, product) => count + product.quantity, 0)
+    const cartItems = await findCart(userId)
+    const itemsCount = cartItems.reduce((count, product) => count + product.quantity, 0)
 
-      res.status(200).json({
-        message: 'All cart items returned',
-        cartItems: cartItems,
-        itemsCount: itemsCount,
-      })
-    } catch (error) {
-      next(error)
-    }
+    res.status(200).json({
+      message: 'All cart items returned',
+      cartItems: cartItems,
+      itemsCount: itemsCount,
+    })
+  } catch (error) {
+    next(error)
   }
 }
 
@@ -75,7 +73,7 @@ export const getCartItems = async (req: Request, res: Response, next: NextFuncti
   -----------------------------------------------*/
 export const updateCartItems = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = req.params.id
+    const userId = req.decodedUser.userId
     const { _id, quantity } = req.body
 
     const { cart, itemsCount } = await updateCart(userId, _id, quantity)
@@ -94,8 +92,9 @@ export const updateCartItems = async (req: Request, res: Response, next: NextFun
   -----------------------------------------------*/
 export const deleteCartItem = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = req.params.id
+    const userId = req.decodedUser.userId
     const productId = req.params.productId
+    console.log(productId)
     const updatedCart = await deleteItemFromCart(userId, productId)
 
     res

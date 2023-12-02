@@ -13,13 +13,13 @@ import { checkAuth } from '../middlewares/verifyToken'
 
 const router = express.Router()
 
-router.get('/:id', validateObjectId, getCartItems)
+router.get('/', checkAuth, getCartItems)
 
 router.post('/', checkAuth, validateCart, addToCart)
 
-router.put('/:id', validateObjectId, updateCartItems)
-router.put('/:id/:productId', deleteCartItem)
+router.put('/', checkAuth, updateCartItems)
+router.put('/:productId', validateObjectId('productId'), checkAuth, deleteCartItem)
 
-router.delete('/:id', deleteCartById)
+router.delete('/:cartId', validateObjectId('cartId'), deleteCartById)
 
 export default router
