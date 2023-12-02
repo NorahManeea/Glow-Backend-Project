@@ -1945,3 +1945,17 @@ Method: GET, Path: /api/products, Date: 12/2/2023, Time: 11:12:59 PM
 Method: POST, Path: /api/reviews, Date: 12/2/2023, Time: 11:13:13 PM
 Method: POST, Path: /api/reviews, Date: 12/2/2023, Time: 11:13:51 PM
 Method: POST, Path: /api/reviews, Date: 12/2/2023, Time: 11:14:43 PM
+Method: POST, Path: /api/reviews, Date: 12/3/2023, Time: 12:14:37 AM
+Method: POST, Path: /api/reviews, Date: 12/3/2023, Time: 12:14:40 AM
+Method: POST, Path: /api/reviews, Date: 12/3/2023, Time: 12:15:28 AM
+Method: POST, Path: /api/auth/login, Date: 12/3/2023, Time: 12:15:42 AM
+Method: POST, Path: /api/auth/login, Date: 12/3/2023, Time: 12:15:48 AM
+Method: POST, Path: /api/auth/login, Date: 12/3/2023, Time: 12:15:51 AM
+Method: DELETE, Path: /api/reviews/656b9e70ea90a7cb46c881c0, Date: 12/3/2023, Time: 12:16:16 AM
+Method: DELETE, Path: /api/reviews/656b9e70ea90a7cb46c881c0, Date: 12/3/2023, Time: 12:18:12 AM
+Method: POST, Path: /api/reviews, Date: 12/3/2023, Time: 12:18:19 AM
+Method: DELETE, Path: /api/reviews/656b9f1b51c998bf641d81e2, Date: 12/3/2023, Time: 12:18:51 AM
+Method: POST, Path: /api/reviews, Date: 12/3/2023, Time: 12:20:11 AM
+Method: POST, Path: /api/reviews, Date: 12/3/2023, Time: 12:20:36 AM
+Method: DELETE, Path: /api/reviews/6567028d27e7a67a83b9f066, Date: 12/3/2023, Time: 12:20:44 AM
+Method: DELETE, Path: /api/reviews/656b9fa4f42789a47edc3242, Date: 12/3/2023, Time: 12:20:56 AM

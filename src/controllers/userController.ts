@@ -75,7 +75,6 @@ export const deleteUser = async (req: Request, res: Response, next: NextFunction
     if (!user) {
       return next(ApiError.notFound('User not found with the entered ID'))
     }
-
     res.status(200).json({
       message: 'User has been deleted successfully',
       payload: user,
@@ -109,7 +108,6 @@ export const getUserById = async (req: Request, res: Response, next: NextFunctio
 export const blockUserById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const blockedUser = await blockUser(req.params.userId)
-
     res.status(200).json({
       message: 'User has been blocked successfully',
       payload: blockedUser,

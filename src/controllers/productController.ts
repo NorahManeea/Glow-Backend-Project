@@ -32,7 +32,6 @@ export const getAllProducts = async (req: Request, res: Response, next: NextFunc
       searchText,
       category
     )
-
     res
       .status(200)
       .json({ message: 'All products returned', payload: products, totalPages, currentPage })
@@ -148,7 +147,6 @@ export const updateProductById = async (req: Request, res: Response, next: NextF
 export const getHighestSoldProducts = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const highestSoldProducts = await findHighestSoldProducts(Number(req.query.limit))
-
     res.status(200).json({
       message: 'Highest Sold Products have been returned successfully',
       payload: highestSoldProducts,
