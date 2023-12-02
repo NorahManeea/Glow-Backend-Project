@@ -22,12 +22,14 @@ router.get('/history', checkAuth, getOrderHistory)
 router.get('/:orderId', getOrderById)
 
 // Create new order route
-router.post('/', checkAuth, checkBlock, createOrder)
+router.post('/', checkAuth, checkBlock, validateOrder, createOrder)
 // Return order route
 router.post('/:orderId/return', checkAuth, returnOrder)
 
 // Update order status route
-router.put('/:orderId', checkAuth, checkRole('ADMIN'), updateOrderStatus)
+router.put('/:orderId/status', checkAuth, checkRole('ADMIN'), updateOrderStatus)
+// Update shipping information route
+router.put('/:orderId/shippingInfo', validateOrder, updateOrderStatus)
 
 // Delete order by id route
 router.delete('/:orderId', checkAuth, checkRole('ADMIN'), deleteOrder)

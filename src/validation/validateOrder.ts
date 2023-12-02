@@ -3,16 +3,12 @@ import zod, { ZodError } from 'zod'
 
 import ApiError from '../errors/ApiError'
 
-const productSchema = zod.object({
-  product: zod.string(),
-  quantity: zod.number().nonnegative({ message: 'Quantity must be nonnegative number' }).optional(),
-})
-
 export function validateOrder(req: Request, res: Response, next: NextFunction) {
   const orderSchema = zod.object({
-    user: zod.string(),
-    orderDate: zod.date().default(() => new Date()),
-    products: zod.array(productSchema),
+    orderDate: zod
+      .date()
+      .default(() => new Date())
+      .optional(),
     shippingInfo: zod.object({
       country: zod.string(),
       city: zod.string(),
@@ -34,3 +30,4 @@ export function validateOrder(req: Request, res: Response, next: NextFunction) {
     next(ApiError.internal('Something went wrong'))
   }
 }
+

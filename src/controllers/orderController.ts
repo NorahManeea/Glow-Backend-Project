@@ -1,8 +1,10 @@
 import { NextFunction, Request, Response } from 'express'
+import asyncHandler from 'express-async-handler'
 
 import { OrderStatus } from './../enums/enums'
 import {
   changeOrderStatus,
+  changeShippingInfo,
   createNewOrder,
   findAllOrders,
   findOrder,
@@ -10,8 +12,8 @@ import {
   removeOrder,
 } from '../services/orderService'
 import ApiError from '../errors/ApiError'
-import { sendEmail } from '../utils/sendEmailUtils'
 import { Cart } from '../models/cartModel'
+import { sendOrderConfirmationEmail } from '../helpers/emailHelpers'
 
 /**-----------------------------------------------
  * @desc Get All Orders
@@ -32,7 +34,7 @@ export const getAllOrders = async (req: Request, res: Response, next: NextFuncti
       .status(200)
       .json({ message: 'All orders returned', payload: orders, totalPages, currentPage })
   } catch (error) {
-    if (error instanceof ApiError) return next(error)
+    console.error(error)
     next(ApiError.badRequest('Something went wrong'))
   }
 }
@@ -49,7 +51,7 @@ export const getOrderById = async (req: Request, res: Response, next: NextFuncti
 
     res.status(200).json({ message: 'Single order returned successfully', payload: order })
   } catch (error) {
-    if (error instanceof ApiError) return next(error)
+    console.error(error)
     next(ApiError.badRequest('Something went wrong'))
   }
 }
@@ -62,29 +64,17 @@ export const getOrderById = async (req: Request, res: Response, next: NextFuncti
  -----------------------------------------------*/
 export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { userId } = req.decodedUser
-
-    console.log(userId)
-    const cart = await Cart.findOne({ user: userId })
+    const cart = await Cart.findOne({ user: req.decodedUser })
     if (!cart) {
-      throw ApiError.notFound(`Cart not found with user ID: ${userId}`)
+      throw ApiError.notFound(`Cart not found with user ID: ${req.decodedUser}`)
     }
 
     const order = await createNewOrder(cart, req.body.shippingInfo)
-
-    const subject = 'We have received your order'
-    const htmlTemplate = `
-        <div style="color: #333; text-align: center;">
-          <h1 style="color: #1E1E1E;">Thanks for your purchase</h1>
-         <p>We'll prepare your order for immediate dispatch and you will recive it shortly. We'll email you the shiping confirmation once your order is on its way.</p>
-          <p style="font-size: 14px; color: #302B2E;">Black Tigers Team</p>
-        </div>
-      `
-    await sendEmail(req.decodedUser.email, subject, htmlTemplate)
+    await sendOrderConfirmationEmail(req.decodedUser.email)
 
     res.status(201).json({ meassge: 'Order has been created successfuly', payload: order })
   } catch (error) {
-    if (error instanceof ApiError) return next(error)
+    console.error(error)
     next(ApiError.badRequest('Something went wrong'))
   }
 }
@@ -95,16 +85,16 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
  * @method DELETE
  * @access private (admin Only)
  -----------------------------------------------*/
-export const deleteOrder = async (req: Request, res: Response, next: NextFunction) => {
+export const deleteOrder = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
   try {
     const order = await removeOrder(req.params.orderId)
 
     res.status(200).json({ meassge: 'Order has been deleted Successfully', result: order })
   } catch (error) {
-    if (error instanceof ApiError) return next(error)
+    console.error(error)
     next(ApiError.badRequest('Something went wrong'))
   }
-}
+})
 
 /**-----------------------------------------------
  * @desc Update Order By ID
@@ -121,7 +111,7 @@ export const updateOrderStatus = async (req: Request, res: Response, next: NextF
       payload: updatedOrder,
     })
   } catch (error) {
-    if (error instanceof ApiError) return next(error)
+    console.error(error)
     next(ApiError.badRequest('Something went wrong'))
   }
 }
@@ -130,18 +120,15 @@ export const updateOrderStatus = async (req: Request, res: Response, next: NextF
  * @desc Get Order History
  * @route /api/orders/history
  * @method GET
- * @access private (admin Only)
+ * @access private (user himself Only)
  -----------------------------------------------*/
 export const getOrderHistory = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { userId } = req.decodedUser
-    console.log(userId)
-
-    const orderHistory = await findOrderHistory(userId)
+    const orderHistory = await findOrderHistory(req.decodedUser.userId)
 
     res.status(200).json({ message: 'Order History returned successfully', payload: orderHistory })
   } catch (error) {
-    if (error instanceof ApiError) return next(error)
+    console.error(error)
     next(ApiError.badRequest('Something went wrong'))
   }
 }
@@ -150,32 +137,59 @@ export const getOrderHistory = async (req: Request, res: Response, next: NextFun
  * @desc return order
  * @route /api/orders/:orderId/return
  * @method POST
- * @access private 
+ * @access private (user who has an order only)  
  -----------------------------------------------*/
 export const returnOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    //Check order status
     const order = await findOrder(req.params.orderId)
-    if (order.orderStatus !== OrderStatus.DELIVERED) {
+    if (order.orderStatus !== OrderStatus.DELIVERED)
       return next(ApiError.badRequest('Order cannot be returned as it has not been delivered yet'))
-    }
 
+    //Check return due date
     const returnDeadline = new Date(order.orderDate)
     returnDeadline.setDate(returnDeadline.getDate() + 7)
-
     const currentDate = new Date()
-    if (currentDate > returnDeadline) {
+    if (currentDate > returnDeadline)
       return next(
         ApiError.badRequest('The order has exceeded the return time limit and cannot be returned')
       )
-    }
 
-    const returnedOrder = await changeOrderStatus(req.params.orderId, OrderStatus.RETURNED)
+    const returnedOrder = await changeOrderStatus(req.params.id, OrderStatus.RETURNED)
 
     res
       .status(200)
       .json({ message: 'Order has been returned successfully', payload: returnedOrder })
   } catch (error) {
-    if (error instanceof ApiError) return next(error)
+    console.error(error)
+    next(ApiError.badRequest('Something went wrong'))
+  }
+}
+
+/**-----------------------------------------------
+ * @desc return order
+ * @route /api/orders/:orderId/return
+ * @method POST
+ * @access private (user who has an order only) 
+ -----------------------------------------------*/
+export const updateShippingInfo = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    //Check order status
+    const order = await findOrder(req.params.orderId)
+    if (order.orderStatus !== OrderStatus.PENDING)
+      return next(
+        ApiError.badRequest(
+          'Updating the shipping information is not possible at the moment as it is currently in the processing stage.'
+        )
+      )
+
+    const updatedShippingInfo = await changeShippingInfo(req.params.orderId, req.body.shippingInfo)
+
+    res
+      .status(200)
+      .json({ message: 'Shipping information has been updated successfully', payload: updatedShippingInfo })
+  } catch (error) {
+    console.error(error)
     next(ApiError.badRequest('Something went wrong'))
   }
 }
