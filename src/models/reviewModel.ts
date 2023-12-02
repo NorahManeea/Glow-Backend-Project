@@ -8,10 +8,8 @@ const reviewSchema = new mongoose.Schema(
       ref: 'User',
     },
     productId: {
-      product: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product',
-      },
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Product',
     },
     reviewText: {
       type: String,
