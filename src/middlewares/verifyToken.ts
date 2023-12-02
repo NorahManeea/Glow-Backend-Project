@@ -14,6 +14,7 @@ export function checkAuth(req: Request, res: Response, next: NextFunction) {
   try {
     const decodedUser = jwt.verify(token, authConfig.jwt.accessToken) as DecodedUser
     req.decodedUser = decodedUser
+    console.log(decodedUser)
     return next()
   } catch (error) {
     next(ApiError.forbidden('Invalid token'))

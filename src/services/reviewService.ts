@@ -19,6 +19,6 @@ export const removeReview = async (reviewId: string) => {
 
 //** Service:- Add new Reviews  */
 export const createNewReview = async (newReveiew: ReviewDocument) => {
-  const review = await Review.create({ newReveiew })
+  const review = await Review.create(newReveiew)
   return review
 }
