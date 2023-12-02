@@ -19,17 +19,17 @@ router.get('/', checkAuth, checkRole('ADMIN'), getAllOrders)
 // Get orders history route
 router.get('/history', checkAuth, getOrderHistory)
 // Get order by id route
-router.get('/:orderId', getOrderById)
+router.get('/:id', getOrderById)
 
 // Create new order route
 router.post('/', checkAuth, checkBlock, createOrder)
 // Return order route
-router.post('/:orderId/return', checkAuth, returnOrder)
+router.post('/:id/return', checkAuth, returnOrder)
 
 // Update order status route
-router.put('/:orderId', checkAuth, checkRole('ADMIN'), updateOrderStatus)
+router.put('/:id', checkAuth, checkRole('ADMIN'), updateOrderStatus)
 
 // Delete order by id route
-router.delete('/:orderId', checkAuth, checkRole('ADMIN'), deleteOrder)
+router.delete('/:id', checkAuth, checkRole('ADMIN'), deleteOrder)
 
 export default router

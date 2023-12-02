@@ -25,3 +25,15 @@ export const sendResetPasswordEmail = async (email: string, resetLink: string) =
   `
   return await sendEmail(email, subject, htmlTemplate)
 }
+
+export const sendOrderConfirmationEmail = async (email: string) => {
+  const subject = 'We have received your order'
+  const htmlTemplate = `
+        <div style="color: #333; text-align: center;">
+          <h1 style="color: #1E1E1E;">Thanks for your purchase</h1>
+          <p>We'll prepare your order for immediate dispatch and you will recive it shortly. We'll email you the shiping confirmation once your order is on its way.</p>
+          <p style="font-size: 14px; color: #302B2E;">Black Tigers Team</p>
+        </div>
+      `
+  return await sendEmail(email, subject, htmlTemplate)
+}
