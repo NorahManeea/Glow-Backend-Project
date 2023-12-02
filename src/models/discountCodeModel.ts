@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
-import { DiscountCodeDocument } from '../types/types';
+import mongoose from 'mongoose'
+import { DiscountCodeDocument } from '../types/types'
 
 const discountCodeSchema = new mongoose.Schema(
   {
@@ -19,6 +19,6 @@ const discountCodeSchema = new mongoose.Schema(
     },
   },
   { timestamps: true }
-);
+)
 
-export const DiscountCode = mongoose.model<DiscountCodeDocument>('DiscountCode', discountCodeSchema);
+export const DiscountCode = mongoose.model<DiscountCodeDocument>('DiscountCode', discountCodeSchema)

@@ -1,4 +1,4 @@
-import multer, { FileFilterCallback } from 'multer';
+import multer, { FileFilterCallback } from 'multer'
 import { Request } from 'express'
 
 const productStorage = multer.diskStorage({
@@ -11,14 +11,13 @@ const productStorage = multer.diskStorage({
 })
 
 const fileFilter = (req: Request, file: Express.Multer.File, cb: FileFilterCallback) => {
-    try {
-      const allowedTypes = ['image/png', 'image/jpg', 'image/jpeg'];
-      if (allowedTypes.includes(file.mimetype)) {
-        cb(null, true);
-      } else {
-        throw new Error('Unsupported file format');
-      }
-    } catch (error) {
+  try {
+    const allowedTypes = ['image/png', 'image/jpg', 'image/jpeg']
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true)
+    } else {
+      throw new Error('Unsupported file format')
     }
-  };
+  } catch (error) {}
+}
 export const uploadImage = multer({ storage: productStorage, fileFilter })

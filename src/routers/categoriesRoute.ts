@@ -14,12 +14,9 @@ import { checkAuth, checkRole } from '../middlewares/verifyToken'
 const router = express.Router()
 
 router.get('/', getAllCategory)
-router.get('/:id', validateObjectId, getCategoryById)
-
+router.get('/:categoryId', validateObjectId('categoryId'), getCategoryById)
 router.post('/', checkAuth, checkRole('ADMIN'), validateCategory, createCategory)
-
-router.put('/:id', checkAuth, checkRole('ADMIN'), validateObjectId, validateCategory, updateCategoryById)
-
-router.delete('/:id', checkAuth, checkRole('ADMIN'), validateObjectId, deleteCategory)
+router.put('/:categoryId', checkAuth, checkRole('ADMIN'), validateObjectId('categoryId'), validateCategory, updateCategoryById)
+router.delete('/:categoryId', checkAuth, checkRole('ADMIN'), validateObjectId('categoryId'), deleteCategory)
 
 export default router
