@@ -8,6 +8,7 @@ const router = express.Router()
 
 router.post('/register', validateUser, registerUser)
 router.post('/login', limiter, loginUser)
+
 router.get('/activate/:token', activateUser)
 
 export default router

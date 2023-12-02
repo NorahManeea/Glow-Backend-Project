@@ -31,6 +31,7 @@ router.post(
   createProduct,
   validateProduct
 )
+
 // Delete product bu id route
 router.delete(
   '/:productId',

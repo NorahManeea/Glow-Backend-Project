@@ -95,7 +95,6 @@ export const updateCart = async (userId: string, cartItemId: string, quantity: n
 
     return { cart: updatedCart, itemsCount }
   } catch (error) {
-    console.log(error)
     throw new Error('Failed to update cart item')
   }
 }
@@ -105,13 +104,13 @@ export const deleteItemFromCart = async (userId: string, carttItemId: string) =>
   //check if the cart exist
   const cart = await Cart.findOne({ user: userId })
   if (!cart) {
-    return ApiError.notFound(`Cart not found with userId: ${userId}`)
+    throw ApiError.notFound(`Cart not found with userId: ${userId}`)
   }
 
   // check if the product in the cart
   const deletedItem = cart.products.find((p) => p.product.toString() === carttItemId)
   if (!deletedItem) {
-    return ApiError.notFound(`Product with id: ${userId} not found in the cart`)
+    throw ApiError.notFound(`Product with id: ${userId} not found in the cart`)
   }
 
   //delete the product from the cart
@@ -128,7 +127,7 @@ export const deleteItemFromCart = async (userId: string, carttItemId: string) =>
 export const deleteCart = async (userId: string) => {
   const cart = await Cart.findOneAndDelete({ user: userId })
   if (!cart) {
-    return ApiError.notFound(`Cart not found with the ID: ${userId}`)
+    throw ApiError.notFound(`Cart not found with the ID: ${userId}`)
   }
   return cart
 }
