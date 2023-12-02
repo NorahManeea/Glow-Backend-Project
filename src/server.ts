@@ -1,5 +1,8 @@
 import express from 'express'
 import { config } from 'dotenv'
+import { databaseConnection } from './database/db'
+import apiErrorHandler from './middlewares/errorHandler'
+import myLogger from './middlewares/logger'
 
 import usersRouter from './routers/usersRoute'
 import authRouter from './routers/authRoute'
@@ -11,9 +14,6 @@ import discountCodeRouter from './routers/discountCodeRoute'
 import passwordRouter from './routers/passwordRoute'
 import reviewRouter from './routers/reviewRoute'
 import ordersRouter from './routers/ordersRoute'
-import apiErrorHandler from './middlewares/errorHandler'
-import myLogger from './middlewares/logger'
-import { databaseConnection } from './database/db'
 
 config()
 const app = express()
@@ -33,7 +33,6 @@ app.use('/api/reset-password', passwordRouter)
 app.use('/api/products', productsRouter)
 app.use('/api/discount-code', discountCodeRouter)
 app.use('/api/reviews', reviewRouter)
-
 
 app.use(apiErrorHandler)
 

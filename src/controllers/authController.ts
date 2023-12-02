@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
-import asyncHandler from 'express-async-handler'
 import ApiError from '../errors/ApiError'
 
 import { authConfig } from '../config/auth.config'
@@ -16,8 +15,8 @@ import { sendActivationEmail } from '../helpers/emailHelpers'
  * @method POST
  * @access public
   -----------------------------------------------*/
-export const registerUser = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+export const registerUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
     const { email, firstName, lastName, password } = req.body
     const avatar = req.file?.path || ''
     let isEmailExitsy = await checkIfUserExistsByEmail(email)
@@ -45,17 +44,18 @@ export const registerUser = asyncHandler(
     res.status(201).json({
       message: 'Registration successful. Check your email to activate your account',
     })
+  } catch (error) {
+    next(error)
   }
-)
-
+}
 /** -----------------------------------------------
  * @desc Activate User 
  * @route /api/auth/activate/:token
  * @method GET
  * @access private
   -----------------------------------------------*/
-export const activateUser = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+export const activateUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
     const activationToken = req.params.token
     const user = await activate(activationToken)
     if (!user) {
@@ -64,8 +64,10 @@ export const activateUser = asyncHandler(
     res.status(200).json({
       message: 'Your Account has been activated successfull',
     })
+  } catch (error) {
+    next(error)
   }
-)
+}
 
 /** -----------------------------------------------
  * @desc Login User
@@ -73,31 +75,35 @@ export const activateUser = asyncHandler(
  * @method POST
  * @access public
   -----------------------------------------------*/
-export const loginUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-  const { email, password } = req.body
-  const user = await checkIfUserExistsByEmail(email)
-  if (!user) {
-    throw ApiError.notFound('No user found with the provided email address')
-  }
-  if (!user.isAccountVerified) {
-    return next(ApiError.badRequest('Invalid email or account not activated'))
-  }
-  const isPasswordMatch = await bcrypt.compare(password, user.password)
-  if (!isPasswordMatch) {
-    return next(ApiError.badRequest('The email or password you entered is invalid'))
-  }
-  const token = jwt.sign(
-    {
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      role: user.role,
-      isBlocked: user.isBlocked,
-    },
-    authConfig.jwt.accessToken as string,
-    {
-      expiresIn: '24h',
+export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email, password } = req.body
+    const user = await checkIfUserExistsByEmail(email)
+    if (!user) {
+      throw ApiError.notFound('No user found with the provided email address')
     }
-  )
-  res.status(200).json({ message: 'Login successful', token })
-})
+    if (!user.isAccountVerified) {
+      return next(ApiError.badRequest('Invalid email or account not activated'))
+    }
+    const isPasswordMatch = await bcrypt.compare(password, user.password)
+    if (!isPasswordMatch) {
+      return next(ApiError.badRequest('The email or password you entered is invalid'))
+    }
+    const token = jwt.sign(
+      {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role,
+        isBlocked: user.isBlocked,
+      },
+      authConfig.jwt.accessToken as string,
+      {
+        expiresIn: '24h',
+      }
+    )
+    res.status(200).json({ message: 'Login successful', token })
+  } catch (error) {
+    next(error)
+  }
+}

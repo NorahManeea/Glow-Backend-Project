@@ -2,7 +2,6 @@ import nodemailer from 'nodemailer'
 import crypto from 'crypto'
 
 import { emailConfig } from '../config/email.config'
- 
 
 //** Generate Activation Token */
 export function generateActivationToken() {

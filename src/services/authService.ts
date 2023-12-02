@@ -1,4 +1,3 @@
-import ApiError from '../errors/ApiError'
 import { User } from '../models/userModel'
 import { UserDocument } from '../types/types'
 

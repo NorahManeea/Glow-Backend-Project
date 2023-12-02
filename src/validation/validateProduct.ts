@@ -17,9 +17,7 @@ export function validateProduct(req: Request, res: Response, next: NextFunction)
     quantityInStock: zod
       .number()
       .nonnegative({ message: 'Quantity in stock must be nonnegative number' }),
-    productPrice: zod
-      .number()
-      .nonnegative({ message: 'Product price must be nonnegative number' }),
+    productPrice: zod.number().nonnegative({ message: 'Product price must be nonnegative number' }),
     category: zod.array(zod.string()).min(1, { message: 'Please enter at least one category' }),
   })
 

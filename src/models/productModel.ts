@@ -9,7 +9,7 @@ const productSchema = new mongoose.Schema(
       required: true,
       minlength: 3,
       maxlength: 100,
-      unique: true
+      unique: true,
     },
     productDescription: {
       type: String,
@@ -19,7 +19,7 @@ const productSchema = new mongoose.Schema(
     },
     productImage: {
       type: String,
-      default: ''
+      default: '',
     },
     quantityInStock: {
       type: Number,
@@ -40,10 +40,10 @@ const productSchema = new mongoose.Schema(
     sizes: {
       type: [String],
     },
-    itemsSold:{
+    itemsSold: {
       type: Number,
       default: 0,
-    },  
+    },
     discount: {
       type: Number,
       default: 0,
