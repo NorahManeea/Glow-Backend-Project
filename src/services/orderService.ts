@@ -94,3 +94,17 @@ export const findOrderHistory = async (userId: string) => {
 
   return orderHistory
 }
+
+//** Service:- Update Shipping Information */
+export const changeShippingInfo = async (orderId: string, newShippingInfo: string) => {
+  const order = await Order.findByIdAndUpdate(
+    orderId,
+    { $set: { shippingInfo: newShippingInfo } },
+    { new: true }
+  )
+  if (!order) {
+    throw ApiError.notFound(`Order not found with ID: ${orderId}`)
+  }
+
+  return order
+}

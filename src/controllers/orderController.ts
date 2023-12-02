@@ -4,6 +4,7 @@ import asyncHandler from 'express-async-handler'
 import { OrderStatus } from './../enums/enums'
 import {
   changeOrderStatus,
+  changeShippingInfo,
   createNewOrder,
   findAllOrders,
   findOrder,
@@ -46,7 +47,7 @@ export const getAllOrders = async (req: Request, res: Response, next: NextFuncti
  -----------------------------------------------*/
 export const getOrderById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const order = await findOrder(req.params.id)
+    const order = await findOrder(req.params.orderId)
 
     res.status(200).json({ message: 'Single order returned successfully', payload: order })
   } catch (error) {
@@ -86,7 +87,7 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
  -----------------------------------------------*/
 export const deleteOrder = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const order = await removeOrder(req.params.id)
+    const order = await removeOrder(req.params.orderId)
 
     res.status(200).json({ meassge: 'Order has been deleted Successfully', result: order })
   } catch (error) {
@@ -103,7 +104,7 @@ export const deleteOrder = asyncHandler(async (req: Request, res: Response, next
  -----------------------------------------------*/
 export const updateOrderStatus = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const updatedOrder = await changeOrderStatus(req.params.id, req.body.orderStatus)
+    const updatedOrder = await changeOrderStatus(req.params.orderId, req.body.orderStatus)
 
     res.status(200).json({
       message: 'Category has been updated successfully',
@@ -119,7 +120,7 @@ export const updateOrderStatus = async (req: Request, res: Response, next: NextF
  * @desc Get Order History
  * @route /api/orders/history
  * @method GET
- * @access private (admin Only)
+ * @access private (user himself Only)
  -----------------------------------------------*/
 export const getOrderHistory = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -136,12 +137,12 @@ export const getOrderHistory = async (req: Request, res: Response, next: NextFun
  * @desc return order
  * @route /api/orders/:orderId/return
  * @method POST
- * @access private 
+ * @access private (user who has an order only)  
  -----------------------------------------------*/
 export const returnOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
     //Check order status
-    const order = await findOrder(req.params.id)
+    const order = await findOrder(req.params.orderId)
     if (order.orderStatus !== OrderStatus.DELIVERED)
       return next(ApiError.badRequest('Order cannot be returned as it has not been delivered yet'))
 
@@ -159,6 +160,34 @@ export const returnOrder = async (req: Request, res: Response, next: NextFunctio
     res
       .status(200)
       .json({ message: 'Order has been returned successfully', payload: returnedOrder })
+  } catch (error) {
+    console.error(error)
+    next(ApiError.badRequest('Something went wrong'))
+  }
+}
+
+/**-----------------------------------------------
+ * @desc return order
+ * @route /api/orders/:orderId/return
+ * @method POST
+ * @access private (user who has an order only) 
+ -----------------------------------------------*/
+export const updateShippingInfo = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    //Check order status
+    const order = await findOrder(req.params.orderId)
+    if (order.orderStatus !== OrderStatus.PENDING)
+      return next(
+        ApiError.badRequest(
+          'Updating the shipping information is not possible at the moment as it is currently in the processing stage.'
+        )
+      )
+
+    const updatedShippingInfo = await changeShippingInfo(req.params.orderId, req.body.shippingInfo)
+
+    res
+      .status(200)
+      .json({ message: 'Shipping information has been updated successfully', payload: updatedShippingInfo })
   } catch (error) {
     console.error(error)
     next(ApiError.badRequest('Something went wrong'))
