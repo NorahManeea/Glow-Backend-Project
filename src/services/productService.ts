@@ -2,8 +2,10 @@ import { Product } from '../models/productModel'
 import { ProductDocument } from '../types/types'
 import ApiError from '../errors/ApiError'
 import { Category } from '../models/categoryModel'
+import { calculatePagination } from '../utils/paginationUtils'
+import { findBySearchQuery } from '../utils/searchUtils'
 
-// @service:- Find All Products
+//** Service:- Find All Products */
 export const findAllProducts = async (
   pageNumber = 1,
   limit = 8,
@@ -12,14 +14,9 @@ export const findAllProducts = async (
   category = ''
 ) => {
   const productCount = await Product.countDocuments()
-  const totalPages = Math.ceil(productCount / limit)
+  const { currentPage, skip, totalPages } = calculatePagination(productCount, pageNumber, limit)
 
-  if (pageNumber > totalPages) {
-    pageNumber = totalPages
-  }
-  const skip = (pageNumber - 1) * limit
   let sortQuery = {}
-
   if (sortBy === 'newest') {
     sortQuery = { createdAt: -1 }
   } else if (sortBy === 'lowestPrice') {
@@ -37,29 +34,28 @@ export const findAllProducts = async (
     .skip(skip)
     .limit(limit)
     .sort(sortQuery)
-    .find(
-      searchText
-        ? {
-            $or: [
-              { productName: { $regex: searchText, $options: 'i' } },
-              { productDescription: { $regex: searchText, $options: 'i' } },
-            ],
-          }
-        : {}
-    )
+    .find(findBySearchQuery(searchText, 'productName'))
+    .find(findBySearchQuery(searchText, 'productDescription'))
     .find(category ? { category: { $in: foundCategory } } : {})
 
-  return { products, totalPages, currentPage: pageNumber }
+  if (products.length == 0) {
+    throw ApiError.notFound('There are no orders')
+  }
+
+  return { products, totalPages, currentPage }
 }
-// @service:- Find a Product
+
+//** Service:- Find Single Product */
 export const findProduct = async (productId: string) => {
   const product = await Product.findById(productId)
   if (!product) {
-    throw ApiError.notFound('Product not found with the entered ID')
+    throw ApiError.notFound(`Product not found with ID: ${productId}`)
   }
+
   return product
 }
-// @service:- Find Highest Sold Products
+
+//** Service:- Find Highest Sold Products */
 export const findHighestSoldProducts = async (limit = 8) => {
   const highestSoldProducts = await Product.find()
     .sort({ itemsSold: -1 })
@@ -68,12 +64,15 @@ export const findHighestSoldProducts = async (limit = 8) => {
 
   return { highestSoldProducts }
 }
-// @service:- Remove a Product
-export const removeProduct = async (id: string) => {
-  const product = await Product.findByIdAndDelete(id)
+
+//** Service:- Remove a Product */
+export const removeProduct = async (productId: string) => {
+  const product = await Product.findByIdAndDelete(productId)
+
   return product
 }
-// @service:- Update a Product
+
+//** Service:- Update a Product */
 export const updateProduct = async (
   productId: string,
   updatedProduct: ProductDocument,
@@ -87,10 +86,13 @@ export const updateProduct = async (
   if (!product) {
     throw ApiError.notFound('Product not found with the entered ID')
   }
+
   return product
 }
-// @service:- Create a Product
+
+//** Service:- Create a Product */
 export const createNewProduct = async (newProduct: ProductDocument) => {
   const product = await Product.create(newProduct)
+
   return product
 }

@@ -8,6 +8,7 @@ const apiErrorHandler = (err: typeof ApiError, req: Request, res: Response, next
     return
   }
 
+  console.log(err)
   res.status(500).json({ msg: 'Something went wrong.' })
 }
 
