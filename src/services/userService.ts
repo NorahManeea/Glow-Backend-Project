@@ -1,4 +1,3 @@
-import bcrypt from 'bcrypt'
 import { NextFunction } from 'express'
 
 import { User } from '../models/userModel'
@@ -17,6 +16,10 @@ export const findAllUser = async (pageNumber = 1, limit = 8, searchText = '') =>
     .limit(limit)
     .find(findBySearchQuery(searchText, 'firstName'))
     .find(findBySearchQuery(searchText, 'lastName'))
+
+  if (users.length === 0) {
+    throw ApiError.notFound('There are no users')
+  }
 
   return { users, totalPages, currentPage }
 }

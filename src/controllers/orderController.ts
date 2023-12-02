@@ -14,7 +14,6 @@ import ApiError from '../errors/ApiError'
 import { Cart } from '../models/cartModel'
 import { sendOrderConfirmationEmail } from '../helpers/emailHelpers'
 import { checkStock, updateQuantityInStock } from '../services/productService'
-import { Product } from '../models/productModel'
 
 /**-----------------------------------------------
  * @desc Get All Orders
