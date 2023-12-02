@@ -9,7 +9,7 @@ import {
   updateUserById,
 } from '../controllers/userController'
 import { uploadavatar } from '../middlewares/uploadImage'
-import { checkAuth, checkRole } from '../middlewares/verifyToken'
+import { checkAuth, checkOwnership, checkRole } from '../middlewares/verifyToken'
 import { validateObjectId } from '../middlewares/validateObjectId'
 
 const router = express.Router()
@@ -30,6 +30,7 @@ router.put(
   checkAuth,
   uploadavatar.single('avatar'),
   validateObjectId('userId'),
+  checkOwnership,
   updateUserById
 )
 
