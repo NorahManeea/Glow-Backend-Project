@@ -1941,3 +1941,8 @@ Method: PUT, Path: /api/products/6560b1c41ee50dbf66e78da4, Date: 12/2/2023, Time
 Method: PUT, Path: /api/products/6560b1c41ee50dbf66e78da4, Date: 12/2/2023, Time: 10:20:39 PM
 Method: PUT, Path: /api/products/6560b1c41ee50dbf66e78da4, Date: 12/2/2023, Time: 10:22:19 PM
 Method: POST, Path: /api/products, Date: 12/2/2023, Time: 10:38:21 PM
+Method: POST, Path: /api/auth/login, Date: 12/2/2023, Time: 11:12:18 PM
+Method: POST, Path: /api/orders/, Date: 12/2/2023, Time: 11:12:37 PM
+Method: POST, Path: /api/cart/6551d693b02415cecc13aa7b, Date: 12/2/2023, Time: 11:13:56 PM
+Method: POST, Path: /api/cart/, Date: 12/2/2023, Time: 11:14:02 PM
+Method: POST, Path: /api/orders/, Date: 12/2/2023, Time: 11:14:36 PM

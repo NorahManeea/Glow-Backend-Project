@@ -96,3 +96,23 @@ export const createNewProduct = async (newProduct: ProductDocument) => {
 
   return product
 }
+
+//** Service:- Check Stcok */
+export const checkStock = async (productId: string, quantity: number) => {
+  const product = await findProduct(productId)
+  if (product.quantityInStock === 0) {
+    throw ApiError.notFound(`Product is currently out of stock`)
+  }
+  if (quantity > product.quantityInStock) {
+    throw ApiError.notFound(`Quantity requested exceeds quantity available in stock.`)
+  }
+}
+
+//** Service: Update Quantity in Stock */
+export const updateQuantityInStock = async (productId: string, quantity: number) => {
+  await Product.findByIdAndUpdate(
+    productId,
+    { $inc: { quantityInStock: -quantity } },
+    { new: true }
+  );
+};

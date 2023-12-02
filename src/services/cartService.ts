@@ -12,16 +12,7 @@ export const createCart = async (userId: string): Promise<CartDocument> => {
   }
   return cart
 }
-//** Service:- Check Stcok */
-export const checkStock = async (product: ProductDocument, quantity: number) => {
-  if (product.quantityInStock === 0) {
-    return { status: false, error: 'Product is currently out of stock' }
-  }
-  if (quantity > product.quantityInStock) {
-    return { status: false, error: `Quantity requested exceeds quantity available in stock.` }
-  }
-  return { status: true, error: null }
-}
+
 //** Service:- Add item to cart */
 export const addItem = async (
   cart: CartDocument,
@@ -72,14 +63,7 @@ export const calculateTotalPrice = async (
 
   return { totalPrice, savedAmount, totalAfterDiscount }
 }
-//** Service:- Update Quantity in Stock */
-export const updateQuantityInStock = async (productId: string, quantityInStock: number) => {
-  await Product.findByIdAndUpdate(
-    productId,
-    { $set: { quantityInStock: quantityInStock - 1 } },
-    { new: true }
-  )
-}
+
 //** Service:- Find User Cart */
 export const findCart = async (userId: string) => {
   const cart = await Cart.findOne({ user: userId }).populate('products.product')

@@ -13,6 +13,8 @@ import {
 import ApiError from '../errors/ApiError'
 import { Cart } from '../models/cartModel'
 import { sendOrderConfirmationEmail } from '../helpers/emailHelpers'
+import { checkStock, updateQuantityInStock } from '../services/productService'
+import { Product } from '../models/productModel'
 
 /**-----------------------------------------------
  * @desc Get All Orders
@@ -65,8 +67,13 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
     if (!cart) {
       throw ApiError.notFound(`Cart not found with user ID: ${req.decodedUser.userId}`)
     }
-
+    //check stock for all prroducts in the cart
+    cart.products.map(async (product) => await checkStock(product.product.toString(), product.quantity))
+    //create order
     const order = await createNewOrder(cart, req.body.shippingInfo)
+    //update quantity in stock
+    cart.products.map(async (product) => await updateQuantityInStock(product.product.toString(), product.quantity))
+    //send confirmation email
     await sendOrderConfirmationEmail(req.decodedUser.email)
 
     res.status(201).json({ meassge: 'Order has been created successfuly', payload: order })

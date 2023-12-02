@@ -3,15 +3,13 @@ import { NextFunction, Request, Response } from 'express'
 import {
   addItem,
   calculateTotalPrice,
-  checkStock,
   createCart,
   deleteCart,
   deleteItemFromCart,
   findCart,
   updateCart,
-  updateQuantityInStock,
 } from '../services/cartService'
-import { findProduct } from '../services/productService'
+import { checkStock, findProduct } from '../services/productService'
 import ApiError from '../errors/ApiError'
 
 /** -----------------------------------------------
@@ -27,18 +25,13 @@ export const addToCart = async (req: Request, res: Response, next: NextFunction)
 
     const product = await findProduct(productId)
 
-    const isValid = await checkStock(product, quantity)
-    if (!isValid.status && isValid.error) {
-      return next(ApiError.badRequest(isValid.error))
-    }
+    await checkStock(productId, quantity)
+
     let cart = await createCart(userId)
 
     cart = await addItem(cart, quantity, product)
 
     const totalPrice = await calculateTotalPrice(cart, discountCode)
-
-    // Update the product stock
-    await updateQuantityInStock(productId, product.quantityInStock)
 
     res.json({
       message: 'Product has been added to the cart successfully',
