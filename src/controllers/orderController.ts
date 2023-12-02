@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express'
-import asyncHandler from 'express-async-handler'
 
 import { OrderStatus } from './../enums/enums'
 import {
@@ -34,8 +33,7 @@ export const getAllOrders = async (req: Request, res: Response, next: NextFuncti
       .status(200)
       .json({ message: 'All orders returned', payload: orders, totalPages, currentPage })
   } catch (error) {
-    console.error(error)
-    next(ApiError.badRequest('Something went wrong'))
+    next(error)
   }
 }
 
@@ -51,8 +49,7 @@ export const getOrderById = async (req: Request, res: Response, next: NextFuncti
 
     res.status(200).json({ message: 'Single order returned successfully', payload: order })
   } catch (error) {
-    console.error(error)
-    next(ApiError.badRequest('Something went wrong'))
+    next(error)
   }
 }
 
@@ -74,8 +71,7 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
 
     res.status(201).json({ meassge: 'Order has been created successfuly', payload: order })
   } catch (error) {
-    console.error(error)
-    next(ApiError.badRequest('Something went wrong'))
+    next(error)
   }
 }
 
@@ -85,16 +81,15 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
  * @method DELETE
  * @access private (admin Only)
  -----------------------------------------------*/
-export const deleteOrder = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+export const deleteOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const order = await removeOrder(req.params.orderId)
 
     res.status(200).json({ meassge: 'Order has been deleted Successfully', result: order })
   } catch (error) {
-    console.error(error)
-    next(ApiError.badRequest('Something went wrong'))
+    next(error)
   }
-})
+}
 
 /**-----------------------------------------------
  * @desc Update Order By ID
@@ -111,8 +106,7 @@ export const updateOrderStatus = async (req: Request, res: Response, next: NextF
       payload: updatedOrder,
     })
   } catch (error) {
-    console.error(error)
-    next(ApiError.badRequest('Something went wrong'))
+    next(error)
   }
 }
 
@@ -128,8 +122,7 @@ export const getOrderHistory = async (req: Request, res: Response, next: NextFun
 
     res.status(200).json({ message: 'Order History returned successfully', payload: orderHistory })
   } catch (error) {
-    console.error(error)
-    next(ApiError.badRequest('Something went wrong'))
+    next(error)
   }
 }
 
@@ -161,8 +154,7 @@ export const returnOrder = async (req: Request, res: Response, next: NextFunctio
       .status(200)
       .json({ message: 'Order has been returned successfully', payload: returnedOrder })
   } catch (error) {
-    console.error(error)
-    next(ApiError.badRequest('Something went wrong'))
+    next(error)
   }
 }
 
@@ -189,7 +181,6 @@ export const updateShippingInfo = async (req: Request, res: Response, next: Next
       .status(200)
       .json({ message: 'Shipping information has been updated successfully', payload: updatedShippingInfo })
   } catch (error) {
-    console.error(error)
-    next(ApiError.badRequest('Something went wrong'))
+    next(error)
   }
 }
