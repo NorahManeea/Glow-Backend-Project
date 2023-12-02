@@ -1940,3 +1940,4 @@ Method: PUT, Path: /api/products/6560b1c41ee50dbf66e78da4, Date: 12/2/2023, Time
 Method: PUT, Path: /api/products/6560b1c41ee50dbf66e78da4, Date: 12/2/2023, Time: 10:18:40 PM
 Method: PUT, Path: /api/products/6560b1c41ee50dbf66e78da4, Date: 12/2/2023, Time: 10:20:39 PM
 Method: PUT, Path: /api/products/6560b1c41ee50dbf66e78da4, Date: 12/2/2023, Time: 10:22:19 PM
+Method: POST, Path: /api/products, Date: 12/2/2023, Time: 10:38:21 PM
