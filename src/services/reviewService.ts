@@ -5,6 +5,10 @@ import { ReviewDocument } from '../types/types'
 //** Service:- Get All Reviews  */
 export const findAllReviews = async () => {
   const reviews = await Review.find().populate('user')
+  if (reviews.length == 0) {
+    throw ApiError.notFound('There are no reviews')
+  }
+
   return reviews
 }
 

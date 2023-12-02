@@ -10,7 +10,6 @@ import {
   updateCart,
 } from '../services/cartService'
 import { checkStock, findProduct } from '../services/productService'
-import ApiError from '../errors/ApiError'
 
 /** -----------------------------------------------
  * @desc Add to cart
@@ -39,8 +38,7 @@ export const addToCart = async (req: Request, res: Response, next: NextFunction)
       Price: totalPrice,
     })
   } catch (error) {
-    console.error(error)
-    next(ApiError.badRequest('Something went wrong'))
+    next(error)
   }
 }
 
@@ -64,7 +62,7 @@ export const getCartItems = async (req: Request, res: Response, next: NextFuncti
         itemsCount: itemsCount,
       })
     } catch (error) {
-      next(ApiError.badRequest('Something went wrong'))
+      next(error)
     }
   }
 }
@@ -84,8 +82,7 @@ export const updateCartItems = async (req: Request, res: Response, next: NextFun
 
     res.status(200).json({ message: 'Cart item has been updated successfully', cart, itemsCount })
   } catch (error) {
-    console.error(error)
-    next(ApiError.badRequest('Something went wrong'))
+    next(error)
   }
 }
 
@@ -105,7 +102,7 @@ export const deleteCartItem = async (req: Request, res: Response, next: NextFunc
       .status(200)
       .json({ meassge: 'Product has been deleted from the cart successfully', result: updatedCart })
   } catch (error) {
-    next(ApiError.badRequest('Something went wrong'))
+    next(error)
   }
 }
 
@@ -123,6 +120,6 @@ export const deleteCartById = async (req: Request, res: Response, next: NextFunc
       payload: cart,
     })
   } catch (error) {
-    next(ApiError.badRequest('Something went wrong'))
+    next(error)
   }
 }

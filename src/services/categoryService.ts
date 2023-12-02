@@ -27,6 +27,7 @@ export const findCategory = async (categoryId: string) => {
   }
   return category
 }
+
 //** Service:- Update a Category */
 export const updateCategory = async (categoryId: string, updatedCategory: CategoryDocument) => {
   const { categoryName } = updatedCategory
@@ -40,6 +41,7 @@ export const updateCategory = async (categoryId: string, updatedCategory: Catego
   }
   return category
 }
+
 //** Service:- Remove a Category */
 export const removeCategory = async (categoryId: string) => {
   const category = await Category.findByIdAndDelete(categoryId)
@@ -48,6 +50,7 @@ export const removeCategory = async (categoryId: string) => {
   }
   return category
 }
+
 //** Service:- Create a Category  */
 export const createNewCategory = async (newCategory: CategoryDocument) => {
   const { categoryName } = newCategory

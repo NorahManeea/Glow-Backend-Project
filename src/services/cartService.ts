@@ -31,6 +31,7 @@ export const addItem = async (
 
   return cart
 }
+
 //** Service:- Calculate Total Price */
 export const calculateTotalPrice = async (
   cart: CartDocument,
@@ -72,6 +73,7 @@ export const findCart = async (userId: string) => {
   }
   return cart.products
 }
+
 //** Service:- Update cart items */
 export const updateCart = async (userId: string, cartItemId: string, quantity: number) => {
   try {
@@ -97,6 +99,7 @@ export const updateCart = async (userId: string, cartItemId: string, quantity: n
     throw new Error('Failed to update cart item')
   }
 }
+
 //** Service:- Delete item from cart */
 export const deleteItemFromCart = async (userId: string, carttItemId: string) => {
   //check if the cart exist
@@ -120,6 +123,7 @@ export const deleteItemFromCart = async (userId: string, carttItemId: string) =>
 
   return updatedCart
 }
+
 //** Service:- Delete Cart */
 export const deleteCart = async (userId: string) => {
   const cart = await Cart.findOneAndDelete({ user: userId })

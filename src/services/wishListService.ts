@@ -19,6 +19,7 @@ export const createWishList = async (userId: string): Promise<WishListDocument> 
   }
   return wishlist
 }
+
 // ** Add Item to Wishlist */
 export const addItemToWishList = async (wishlist: WishListDocument, product: ProductDocument) => {
   const existingWishListItem = wishlist.products.find(
@@ -29,6 +30,7 @@ export const addItemToWishList = async (wishlist: WishListDocument, product: Pro
   }
   return await wishlist.save()
 }
+
 //** Service:- Remove from wishlist */
 export const removeFromWishList = async (productId: string, userId: string) => {
   const wishlist = await WishList.findOne({ user: userId })
