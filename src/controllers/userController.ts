@@ -21,12 +21,14 @@ export const getAllUsers = async (req: Request, res: Response, next: NextFunctio
     let pageNumber = Number(req.query.pageNumber)
     const limit = Number(req.query.limit)
     const searchText = req.query.searchText?.toString()
+    
     const { users, totalPages, currentPage } = await findAllUser(pageNumber, limit, searchText)
+    
     res
       .status(200)
       .json({ message: 'All users returned successfully', payload: users, totalPages, currentPage })
   } catch (error) {
-    next(ApiError.badRequest('Something went wrong'))
+    next(error) 
   }
 }
 
@@ -39,9 +41,10 @@ export const getAllUsers = async (req: Request, res: Response, next: NextFunctio
 export const getUsersCount = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const usersCount = await userCount()
+
     res.status(200).json({ meassge: 'Users Count', usersCount })
   } catch (error) {
-    next(ApiError.badRequest('Something went wrong'))
+    next(error)
   }
 }
 
@@ -49,21 +52,18 @@ export const getUsersCount = async (req: Request, res: Response, next: NextFunct
  * @desc Update user profile
  * @route /api/users/:userId
  * @method PUT
- * @access private (User himself)
+ * @access private (User himself Only)
   -----------------------------------------------*/
-export const updateUserById = async (req: Request, res: Response, next: NextFunction) => {
+export const updateUserById = async (req: Request, res: Response, next: NextFunction) => { 
   try {
-    const avatar = req.file
-    const user = await updateUser(req.params.userId, req.body, avatar)
+    const user = await updateUser(req.params.userId, req.body, req.file)
+
     res.status(200).json({
       message: 'User has been updated successfully',
       payload: user,
     })
   } catch (error) {
-    if (error instanceof ApiError) {
-      return next(error)
-    }
-    next(ApiError.badRequest('Something went wrong'))
+    next(error)
   }
 }
 
@@ -71,7 +71,7 @@ export const updateUserById = async (req: Request, res: Response, next: NextFunc
  * @desc Delete user by ID
  * @route /api/users/:id
  * @method DELETE
- * @access private (Admin Only)
+ * @access private (Admin and User himself Only)
   -----------------------------------------------*/
 export const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -79,12 +79,13 @@ export const deleteUser = async (req: Request, res: Response, next: NextFunction
     if (!user) {
       return next(ApiError.notFound('User not found with the entered ID'))
     }
+
     res.status(200).json({
       message: 'User has been deleted successfully',
       payload: user,
     })
   } catch (error) {
-    next(ApiError.badRequest('Something went wrong'))
+    next(error)
   }
 }
 
@@ -97,12 +98,11 @@ export const deleteUser = async (req: Request, res: Response, next: NextFunction
 export const getUserById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = await findAUser(req.params.userId)
-    if (!user) {
-      return next(ApiError.notFound('User not found with the entered ID'))
-    }
+    console.log(req.params.userId)
+
     res.status(200).json({ message: 'Single user returned successfully', payload: user })
   } catch (error) {
-    next(ApiError.badRequest('Something went wrong'))
+    next(error)
   }
 }
 
@@ -114,18 +114,13 @@ export const getUserById = async (req: Request, res: Response, next: NextFunctio
   -----------------------------------------------*/
 export const blockUserById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = req.params.userId
-
-    const blockedUser = await blockUser(userId)
+    const blockedUser = await blockUser(req.params.userId)
 
     res.status(200).json({
       message: 'User has been blocked successfully',
       payload: blockedUser,
     })
   } catch (error) {
-    if (error instanceof ApiError) {
-      return next(error)
-    }
-    next(ApiError.badRequest('Something went wrong'))
+    next(error)
   }
 }
