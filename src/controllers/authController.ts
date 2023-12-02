@@ -94,7 +94,7 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
         email: user.email,
         role: user.role,
         isBlocked: user.isBlocked,
-        userId: user._id
+        userId: user._id,
       },
       authConfig.jwt.accessToken as string,
       {

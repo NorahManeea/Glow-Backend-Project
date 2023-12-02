@@ -30,7 +30,7 @@ export const findAllProducts = async (
   })
 
   const products = await Product.find()
-  .populate('reviews')
+    .populate('reviews')
     .skip(skip)
     .limit(limit)
     .sort(sortQuery)

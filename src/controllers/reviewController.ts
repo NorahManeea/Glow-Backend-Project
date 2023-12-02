@@ -26,7 +26,6 @@ export const getAllReviews = async (req: Request, res: Response, next: NextFunct
  * @access private (logged in user)
   -----------------------------------------------*/
 export const addNewReview = async (req: Request, res: Response, next: NextFunction) => {
-
   try {
     const { productId, reviewText } = req.body
     await findProduct(productId)
@@ -52,7 +51,7 @@ export const deleteReview = async (req: Request, res: Response, next: NextFuncti
   try {
     const { reviewId } = req.params
     const review = await removeReview(reviewId)
-    if(req.decodedUser.role !== 'ADMIN' && req.decodedUser.userId !== review.userId){
+    if (req.decodedUser.role !== 'ADMIN' && req.decodedUser.userId !== review.userId) {
       return next(ApiError.forbidden('You are not authorized to delete this review'))
     }
     res.status(201).json({ message: 'Review has been deleted successfully', payload: review })

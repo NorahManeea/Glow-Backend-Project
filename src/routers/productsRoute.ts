@@ -28,10 +28,9 @@ router.post(
   checkAuth,
   checkRole('ADMIN'),
   uploadImage.single('productImage'),
-  validateProduct,
-  createProduct
+  createProduct,
+  validateProduct
 )
-
 // Delete product bu id route
 router.delete(
   '/:productId',
@@ -48,7 +47,8 @@ router.put(
   checkRole('ADMIN'),
   validateObjectId('productId'),
   uploadImage.single('productImage'),
-  updateProductById
+  updateProductById,
+  validateProduct
 )
 
 export default router

@@ -21,14 +21,12 @@ export const getAllUsers = async (req: Request, res: Response, next: NextFunctio
     let pageNumber = Number(req.query.pageNumber)
     const limit = Number(req.query.limit)
     const searchText = req.query.searchText?.toString()
-    
     const { users, totalPages, currentPage } = await findAllUser(pageNumber, limit, searchText)
-    
     res
       .status(200)
       .json({ message: 'All users returned successfully', payload: users, totalPages, currentPage })
   } catch (error) {
-    next(error) 
+    next(error)
   }
 }
 
@@ -41,7 +39,6 @@ export const getAllUsers = async (req: Request, res: Response, next: NextFunctio
 export const getUsersCount = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const usersCount = await userCount()
-
     res.status(200).json({ meassge: 'Users Count', usersCount })
   } catch (error) {
     next(error)
@@ -54,10 +51,9 @@ export const getUsersCount = async (req: Request, res: Response, next: NextFunct
  * @method PUT
  * @access private (User himself Only)
   -----------------------------------------------*/
-export const updateUserById = async (req: Request, res: Response, next: NextFunction) => { 
+export const updateUserById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = await updateUser(req.params.userId, req.body, req.file)
-
     res.status(200).json({
       message: 'User has been updated successfully',
       payload: user,
@@ -98,8 +94,6 @@ export const deleteUser = async (req: Request, res: Response, next: NextFunction
 export const getUserById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = await findAUser(req.params.userId)
-    console.log(req.params.userId)
-
     res.status(200).json({ message: 'Single user returned successfully', payload: user })
   } catch (error) {
     next(error)

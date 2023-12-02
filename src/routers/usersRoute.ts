@@ -21,14 +21,25 @@ router.get('/count', checkAuth, checkRole('ADMIN'), getUsersCount)
 // Get users by id route
 router.get('/:userId', checkAuth, checkRole('ADMIN'), validateObjectId('userId'), getUserById)
 
-// Delete user by id route 
+// Delete user by id route
 router.delete('/:userId', checkAuth, validateObjectId('userId'), deleteUser)
 
 // Update user by id route
-router.put('/:userId', checkAuth, uploadavatar.single('avatar'), validateObjectId('userId'), updateUserById)
+router.put(
+  '/:userId',
+  checkAuth,
+  uploadavatar.single('avatar'),
+  validateObjectId('userId'),
+  updateUserById
+)
 
 // Block user by id route
-router.put('/:userId/block', checkAuth, checkRole('ADMIN'), validateObjectId('userId'), blockUserById)
-
+router.put(
+  '/:userId/block',
+  checkAuth,
+  checkRole('ADMIN'),
+  validateObjectId('userId'),
+  blockUserById
+)
 
 export default router

@@ -19,7 +19,6 @@ export const activate = async (activationToken: string) => {
 
 //** Service:- Create a User */
 export const createUser = async (user: UserDocument) => {
-  const newUser = await User.create( user)
+  const newUser = await User.create(user)
   return newUser
 }
-

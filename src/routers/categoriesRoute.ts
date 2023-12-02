@@ -16,7 +16,20 @@ const router = express.Router()
 router.get('/', getAllCategory)
 router.get('/:categoryId', validateObjectId('categoryId'), getCategoryById)
 router.post('/', checkAuth, checkRole('ADMIN'), validateCategory, createCategory)
-router.put('/:categoryId', checkAuth, checkRole('ADMIN'), validateObjectId('categoryId'), validateCategory, updateCategoryById)
-router.delete('/:categoryId', checkAuth, checkRole('ADMIN'), validateObjectId('categoryId'), deleteCategory)
+router.put(
+  '/:categoryId',
+  checkAuth,
+  checkRole('ADMIN'),
+  validateObjectId('categoryId'),
+  validateCategory,
+  updateCategoryById
+)
+router.delete(
+  '/:categoryId',
+  checkAuth,
+  checkRole('ADMIN'),
+  validateObjectId('categoryId'),
+  deleteCategory
+)
 
 export default router

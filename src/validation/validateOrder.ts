@@ -30,4 +30,3 @@ export function validateOrder(req: Request, res: Response, next: NextFunction) {
     next(ApiError.internal('Something went wrong'))
   }
 }
-

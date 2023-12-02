@@ -50,7 +50,6 @@ export const getAllProducts = async (req: Request, res: Response, next: NextFunc
 export const getProductById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const product = await findProduct(req.params.productId)
-
     res.status(200).json({ message: 'Single product returned', payload: product })
   } catch (error) {
     next(error)
@@ -69,7 +68,6 @@ export const deleteProductById = async (req: Request, res: Response, next: NextF
     if (!product) {
       throw ApiError.notFound(`Product not found with ID: ${req.params.productId}`)
     }
-
     res.status(200).json({
       message: 'Product has been deleted successfully',
       payload: product,
@@ -86,23 +84,25 @@ export const deleteProductById = async (req: Request, res: Response, next: NextF
  * @access private (admin Only)
  -----------------------------------------------*/
 export const createProduct = async (req: Request, res: Response, next: NextFunction) => {
-  const {
-    productName,
-    productDescription,
-    productPrice,
-    quantityInStock,
-    category,
-    discount,
-    sizes,
-    variants,
-  } = req.body
   try {
-    const product = new Product({
+    const {
       productName,
       productDescription,
       productPrice,
-      productImage: req.file?.path,
       quantityInStock,
+      category,
+      discount,
+      sizes,
+      variants,
+    } = req.body
+    const parsedQuantityInStock = parseInt(quantityInStock)
+    const parsedProductPrice = parseFloat(productPrice)
+    const product = new Product({
+      productName,
+      productDescription,
+      productPrice: parsedProductPrice,
+      productImage: req.file?.path,
+      quantityInStock: parsedQuantityInStock,
       category,
       discount,
       sizes,
@@ -110,7 +110,6 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
     })
 
     const newProduct = await createNewProduct(product)
-
     res.status(201).json({ message: 'Product has been created successfully', payload: newProduct })
   } catch (error) {
     next(error)
@@ -125,8 +124,13 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
  -----------------------------------------------*/
 export const updateProductById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const updatedProduct = await updateProduct(req.params.productId, req.body, req.file?.path)
-
+    const updatedProduct = await updateProduct(
+      req.params.productId,
+      {
+        ...req.body,
+      },
+      req.file?.path
+    )
     res
       .status(200)
       .json({ message: 'Product has been updated successfully', payload: updatedProduct })

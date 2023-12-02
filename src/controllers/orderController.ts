@@ -179,12 +179,10 @@ export const updateShippingInfo = async (req: Request, res: Response, next: Next
 
     const updatedShippingInfo = await changeShippingInfo(req.params.orderId, req.body.shippingInfo)
 
-    res
-      .status(200)
-      .json({
-        message: 'Shipping information has been updated successfully',
-        payload: updatedShippingInfo,
-      })
+    res.status(200).json({
+      message: 'Shipping information has been updated successfully',
+      payload: updatedShippingInfo,
+    })
   } catch (error) {
     next(error)
   }

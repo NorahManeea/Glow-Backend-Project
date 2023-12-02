@@ -4,6 +4,7 @@ import { Product } from '../models/productModel'
 import ApiError from '../errors/ApiError'
 import { DiscountCode } from '../models/discountCodeModel'
 
+//** Service:- Create Cart */
 export const createCart = async (userId: string): Promise<CartDocument> => {
   let cart = await Cart.findOne({ user: userId })
   if (!cart) {
@@ -11,7 +12,7 @@ export const createCart = async (userId: string): Promise<CartDocument> => {
   }
   return cart
 }
-
+//** Service:- Check Stcok */
 export const checkStock = async (product: ProductDocument, quantity: number) => {
   if (product.quantityInStock === 0) {
     return { status: false, error: 'Product is currently out of stock' }
@@ -21,7 +22,7 @@ export const checkStock = async (product: ProductDocument, quantity: number) => 
   }
   return { status: true, error: null }
 }
-
+//** Service:- Add item to cart */
 export const addItem = async (
   cart: CartDocument,
   quantity: number,
@@ -39,7 +40,7 @@ export const addItem = async (
 
   return cart
 }
-
+//** Service:- Calculate Total Price */
 export const calculateTotalPrice = async (
   cart: CartDocument,
   discountCode: DiscountCodeDocument
@@ -71,7 +72,7 @@ export const calculateTotalPrice = async (
 
   return { totalPrice, savedAmount, totalAfterDiscount }
 }
-
+//** Service:- Update Quantity in Stock */
 export const updateQuantityInStock = async (productId: string, quantityInStock: number) => {
   await Product.findByIdAndUpdate(
     productId,
@@ -79,7 +80,7 @@ export const updateQuantityInStock = async (productId: string, quantityInStock: 
     { new: true }
   )
 }
-
+//** Service:- Find User Cart */
 export const findCart = async (userId: string) => {
   const cart = await Cart.findOne({ user: userId }).populate('products.product')
   if (!cart) {
@@ -87,7 +88,7 @@ export const findCart = async (userId: string) => {
   }
   return cart.products
 }
-
+//** Service:- Update cart items */
 export const updateCart = async (userId: string, cartItemId: string, quantity: number) => {
   try {
     const cart = await Cart.findOne({ user: userId })
@@ -112,7 +113,7 @@ export const updateCart = async (userId: string, cartItemId: string, quantity: n
     throw new Error('Failed to update cart item')
   }
 }
-
+//** Service:- Delete item from cart */
 export const deleteItemFromCart = async (userId: string, carttItemId: string) => {
   //check if the cart exist
   const cart = await Cart.findOne({ user: userId })
@@ -135,7 +136,7 @@ export const deleteItemFromCart = async (userId: string, carttItemId: string) =>
 
   return updatedCart
 }
-
+//** Service:- Delete Cart */
 export const deleteCart = async (userId: string) => {
   const cart = await Cart.findOneAndDelete({ user: userId })
   if (!cart) {
