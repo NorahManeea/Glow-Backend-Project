@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import { createNewReview, findAllReviews, removeReview } from '../services/reviewService'
 import { Review } from '../models/reviewModel'
 import { findProduct } from '../services/productService'
+import ApiError from '../errors/ApiError'
 
 /** -----------------------------------------------
  * @desc Get All Reviews
@@ -28,7 +29,6 @@ export const addNewReview = async (req: Request, res: Response, next: NextFuncti
 
   try {
     const { productId, reviewText } = req.body
-    console.log(productId,reviewText)
     await findProduct(productId)
     const review = new Review({
       userId: req.decodedUser.userId,
@@ -38,7 +38,6 @@ export const addNewReview = async (req: Request, res: Response, next: NextFuncti
     await createNewReview(review)
     res.status(201).json({ message: 'Review added successfully', payload: review })
   } catch (error) {
-    console.log(error)
     next(error)
   }
 }
@@ -53,6 +52,9 @@ export const deleteReview = async (req: Request, res: Response, next: NextFuncti
   try {
     const { reviewId } = req.params
     const review = await removeReview(reviewId)
+    if(req.decodedUser.role !== 'ADMIN' && req.decodedUser.userId !== review.userId){
+      return next(ApiError.forbidden('You are not authorized to delete this review'))
+    }
     res.status(201).json({ message: 'Review has been deleted successfully', payload: review })
   } catch (error) {
     next(error)

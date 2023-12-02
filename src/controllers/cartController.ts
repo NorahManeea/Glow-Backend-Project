@@ -22,7 +22,7 @@ import ApiError from '../errors/ApiError'
   -----------------------------------------------*/
 export const addToCart = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = req.params.id
+    const userId = req.decodedUser.userId
     const { productId, quantity, discountCode } = req.body
 
     const product = await findProduct(productId)

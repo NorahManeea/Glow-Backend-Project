@@ -14,7 +14,6 @@ export function checkAuth(req: Request, res: Response, next: NextFunction) {
   try {
     const decodedUser = jwt.verify(token, authConfig.jwt.accessToken) as DecodedUser
     req.decodedUser = decodedUser
-    console.log(decodedUser)
     return next()
   } catch (error) {
     next(ApiError.forbidden('Invalid token'))
@@ -38,4 +37,13 @@ export function checkBlock(req: Request, res: Response, next: NextFunction) {
     return next(ApiError.forbidden('User is blocked'))
   }
   next()
+}
+
+//** Check User Ownership  */
+export function checkOwnership(req: Request, res: Response, next: NextFunction) {
+  const userId = req.decodedUser.userId
+  if (userId === req.params.userId) {
+    next()
+  }
+  return next(ApiError.forbidden('You are not authorized'))
 }

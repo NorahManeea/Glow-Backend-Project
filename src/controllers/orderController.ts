@@ -61,9 +61,9 @@ export const getOrderById = async (req: Request, res: Response, next: NextFuncti
  -----------------------------------------------*/
 export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const cart = await Cart.findOne({ user: req.decodedUser })
+    const cart = await Cart.findOne({ user: req.decodedUser.userId })
     if (!cart) {
-      throw ApiError.notFound(`Cart not found with user ID: ${req.decodedUser}`)
+      throw ApiError.notFound(`Cart not found with user ID: ${req.decodedUser.userId}`)
     }
 
     const order = await createNewOrder(cart, req.body.shippingInfo)
@@ -129,7 +129,7 @@ export const getOrderHistory = async (req: Request, res: Response, next: NextFun
 /**-----------------------------------------------
  * @desc return order
  * @route /api/orders/:orderId/return
- * @method POST
+ * @method PUT
  * @access private (user who has an order only)  
  -----------------------------------------------*/
 export const returnOrder = async (req: Request, res: Response, next: NextFunction) => {
@@ -150,7 +150,7 @@ export const returnOrder = async (req: Request, res: Response, next: NextFunctio
       )
     }
 
-    const returnedOrder = await changeOrderStatus(req.params.id, OrderStatus.RETURNED)
+    const returnedOrder = await changeOrderStatus(req.params.orderId, OrderStatus.RETURNED)
 
     res
       .status(200)
@@ -163,7 +163,7 @@ export const returnOrder = async (req: Request, res: Response, next: NextFunctio
 /**-----------------------------------------------
  * @desc return order
  * @route /api/orders/:orderId/return
- * @method POST
+ * @method PUT
  * @access private (user who has an order only) 
  -----------------------------------------------*/
 export const updateShippingInfo = async (req: Request, res: Response, next: NextFunction) => {
