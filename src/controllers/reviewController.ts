@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { createNewReview, findAllReviews, removeReview } from '../services/reviewService'
 import { Review } from '../models/reviewModel'
-import { findProduct } from '../services/productService'
 import ApiError from '../errors/ApiError'
 import { findOrderHistory } from '../services/orderService'
 
