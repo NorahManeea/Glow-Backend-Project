@@ -10,6 +10,15 @@ const productStorage = multer.diskStorage({
   },
 })
 
+const usersStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'public/images/users')
+  },
+  filename: function (req: Request, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname)
+  },
+})
+
 const fileFilter = (req: Request, file: Express.Multer.File, cb: FileFilterCallback) => {
   try {
     const allowedTypes = ['image/png', 'image/jpg', 'image/jpeg']
@@ -20,4 +29,6 @@ const fileFilter = (req: Request, file: Express.Multer.File, cb: FileFilterCallb
     }
   } catch (error) {}
 }
+
 export const uploadImage = multer({ storage: productStorage, fileFilter })
+export const uploadavatar = multer({ storage: usersStorage, fileFilter })

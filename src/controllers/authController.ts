@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
-import ApiError from '../errors/ApiError'
 
+import ApiError from '../errors/ApiError'
 import { authConfig } from '../config/auth.config'
-import { generateActivationToken, sendEmail } from '../utils/sendEmailUtils'
+import { generateActivationToken } from '../utils/sendEmailUtils'
 import { User } from '../models/userModel'
 import { activate, checkIfUserExistsByEmail, createUser } from '../services/authService'
 import { sendActivationEmail } from '../helpers/emailHelpers'
@@ -18,7 +18,6 @@ import { sendActivationEmail } from '../helpers/emailHelpers'
 export const registerUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, firstName, lastName, password } = req.body
-    const avatar = req.file?.path || ''
     let isEmailExitsy = await checkIfUserExistsByEmail(email)
     if (isEmailExitsy) {
       return next(ApiError.badRequest('This email is already registered'))
@@ -33,7 +32,6 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
       password: hashPassword,
       activationToken,
       role: 'USER',
-      avatar,
       isBlocked: false,
     })
 

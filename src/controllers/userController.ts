@@ -52,13 +52,11 @@ export const getUsersCount = async (req: Request, res: Response, next: NextFunct
  * @desc Update user profile
  * @route /api/users/:userId
  * @method PUT
- * @access private (User himself)
+ * @access private (User himself Only)
   -----------------------------------------------*/
-export const updateUserById = async (req: Request, res: Response, next: NextFunction) => {
+export const updateUserById = async (req: Request, res: Response, next: NextFunction) => { 
   try {
-    const avatar = req.file
-
-    const user = await updateUser(req.params.userId, req.body, avatar)
+    const user = await updateUser(req.params.userId, req.body, req.file)
 
     res.status(200).json({
       message: 'User has been updated successfully',
@@ -73,7 +71,7 @@ export const updateUserById = async (req: Request, res: Response, next: NextFunc
  * @desc Delete user by ID
  * @route /api/users/:id
  * @method DELETE
- * @access private (Admin Only)
+ * @access private (Admin and User himself Only)
   -----------------------------------------------*/
 export const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -100,9 +98,7 @@ export const deleteUser = async (req: Request, res: Response, next: NextFunction
 export const getUserById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = await findAUser(req.params.userId)
-    if (!user) {
-      return next(ApiError.notFound('User not found with the entered ID'))
-    }
+    console.log(req.params.userId)
 
     res.status(200).json({ message: 'Single user returned successfully', payload: user })
   } catch (error) {

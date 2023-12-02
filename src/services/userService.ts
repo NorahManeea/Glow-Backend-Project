@@ -1,82 +1,74 @@
 import bcrypt from 'bcrypt'
+import { NextFunction } from 'express'
+
 import { User } from '../models/userModel'
 import { UserDocument } from '../types/types'
 import ApiError from '../errors/ApiError'
-import { NextFunction } from 'express'
+import { calculatePagination } from '../utils/paginationUtils'
+import { findBySearchQuery } from '../utils/searchUtils'
 
-
-// @service:- Find All User
+//** Service:- Find All Users */
 export const findAllUser = async (pageNumber = 1, limit = 8, searchText = '') => {
   const userCount = await User.countDocuments()
-  const totalPages = Math.ceil(userCount / limit)
-  if (pageNumber > totalPages) {
-    pageNumber = totalPages
-  }
-  const skip = (pageNumber - 1) * limit
+  const { currentPage, skip, totalPages } = calculatePagination(userCount, pageNumber, limit)
 
   const users = await User.find()
     .skip(skip)
     .limit(limit)
-    .find(
-      searchText
-        ? {
-            $or: [
-              { firstName: { $regex: searchText, $options: 'i' } },
-              { lastName: { $regex: searchText, $options: 'i' } },
-            ],
-          }
-        : {}
-    )
+    .find(findBySearchQuery(searchText, 'firstName'))
+    .find(findBySearchQuery(searchText, 'lastName'))
 
-  return { users, totalPages, currentPage: pageNumber }
+  return { users, totalPages, currentPage }
 }
-// @service:- Find a User
+
+//** Service:- Find Single User */
 export const findAUser = async (userId: string) => {
   const user = await User.findById(userId)
   if (!user) {
-    throw ApiError.notFound('User not found')
+    throw ApiError.notFound(`User not found with ID: ${userId}`)
   }
+
   return user
 }
-// @service:- Remove a User
+
+//** Service:- Remove a User */
 export const removeUser = async (userId: string, next: NextFunction) => {
   const user = await User.findByIdAndDelete(userId)
+
   return user
 }
-// @service:- Update User
+
+//** Service:- Update a User */
 export const updateUser = async (
   userId: string,
   updatedUser: UserDocument,
   avatar?: Express.Multer.File
 ) => {
-  const { password } = updatedUser
-
   let user = await User.findByIdAndUpdate(userId, updatedUser, { new: true })
   if (!user) {
-    throw ApiError.notFound('User not found with the entered ID')
+    throw ApiError.notFound(`User not found with ID: ${userId}`)
   }
 
-  if (password !== undefined) {
-    const salt = await bcrypt.genSalt(10)
-    user.password = await bcrypt.hash(password, salt)
-  }
   if (avatar) {
     user.avatar = avatar.path
   }
 
   return await user.save()
 }
-// @service:- Count Users
+
+//** Service:- Count Users */
 export const userCount = async () => {
   let usersCount = await User.countDocuments()
+
   return usersCount
 }
-// @service:- Block a User
+
+//** Service:- Block a User */
 export const blockUser = async (userId: string) => {
-  const user = await User.findById(userId)
+  const user = await User.findByIdAndUpdate(userId, { $set: { isBlocked: true } }, { new: true })
   if (!user) {
-    throw ApiError.notFound('User not found with the entered ID')
+    throw ApiError.notFound(`User not found with ID: ${userId}`)
   }
-  user.isBlocked = true
-  return await user.save()
+
+  return user
 }
