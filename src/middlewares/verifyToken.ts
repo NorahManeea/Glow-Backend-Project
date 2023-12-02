@@ -39,3 +39,12 @@ export function checkBlock(req: Request, res: Response, next: NextFunction) {
   }
   next()
 }
+
+//** Check User Ownership  */
+export function checkOwnership(req: Request, res: Response, next: NextFunction) {
+  const userId = req.decodedUser.userId
+  if (userId === req.params.userId) {
+    next()
+  }
+  return next(ApiError.forbidden('You are not authorized'))
+}
