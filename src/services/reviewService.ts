@@ -11,6 +11,11 @@ export const findAllReviews = async () => {
 
   return reviews
 }
+export const findReviewById = async (id: string) => {
+  const reviews = await Review.findById(id).populate('user')
+
+  return reviews
+}
 
 //** Service:- Remove a Review  */
 export const removeReview = async (reviewId: string) => {

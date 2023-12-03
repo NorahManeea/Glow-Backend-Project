@@ -61,9 +61,6 @@ export const deleteReview = async (req: Request, res: Response, next: NextFuncti
   try {
     const { reviewId } = req.params
     const review = await removeReview(reviewId)
-    if (req.decodedUser.role !== 'ADMIN' && req.decodedUser.userId !== review.userId) {
-      return next(ApiError.forbidden('You are not authorized to delete this review'))
-    }
     res.status(201).json({ message: 'Review has been deleted successfully', payload: review })
   } catch (error) {
     next(error)
