@@ -17,6 +17,7 @@ import {
 export const createCategory = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const category = await createNewCategory(req.body)
+    console.log(req.body)
     res.status(201).json({ meassge: 'Category has been created successfuly', payload: category })
   } catch (error) {
     next(error)
@@ -41,7 +42,7 @@ export const getAllCategory = async (req: Request, res: Response, next: NextFunc
     )
     res
       .status(200)
-      .json({ message: 'All products returned', payload: categories, totalPages, currentPage })
+      .json({ message: 'All categories returned', payload: categories, totalPages, currentPage })
   } catch (error) {
     next(error)
   }

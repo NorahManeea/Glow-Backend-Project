@@ -7,7 +7,7 @@ const apiErrorHandler = (err: typeof ApiError, req: Request, res: Response, next
     res.status(err.code).json({ msg: err.message })
     return
   }
-
+  console.log(err)
   res.status(500).json({ msg: 'Something went wrong.' })
 }
 

@@ -14,20 +14,18 @@ export type UserDocument = Document & {
 }
 
 export type ProductDocument = Document & {
-  productName: string
-  productDescription: string
-  productImage: string
+  name: string
+  description: string
+  image: string
   quantityInStock: number
-  productPrice: number
+  price: number
   category: mongoose.Types.ObjectId[]
-  variants: string[]
-  sizes: string[]
   itemsSold: number
   discount: number
 }
 
 export type CategoryDocument = Document & {
-  categoryName: string
+  name: string
 }
 export type DiscountCodeDocument = Document & {
   code: string

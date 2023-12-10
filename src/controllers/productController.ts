@@ -86,24 +86,24 @@ export const deleteProductById = async (req: Request, res: Response, next: NextF
 export const createProduct = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const {
-      productName,
-      productDescription,
-      productPrice,
+      name,
+      description,
+      price,
       quantityInStock,
-      category,
+      categories,
       discount,
       sizes,
       variants,
     } = req.body
     const parsedQuantityInStock = parseInt(quantityInStock)
-    const parsedProductPrice = parseFloat(productPrice)
+    const parsedProductPrice = parseFloat(price)
     const product = new Product({
-      productName,
-      productDescription,
-      productPrice: parsedProductPrice,
-      productImage: req.file?.path,
+      name,
+      description,
+      price: parsedProductPrice,
+      image: req.file?.path,
       quantityInStock: parsedQuantityInStock,
-      category,
+      categories,
       discount,
       sizes,
       variants,

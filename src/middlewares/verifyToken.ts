@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken'
 import { authConfig } from '../config/auth.config'
 import { DecodedUser, Role } from '../types/types'
 import ApiError from '../errors/ApiError'
+import { findReviewById } from '../services/reviewService'
 
 //** User Verification  */
 export function checkAuth(req: Request, res: Response, next: NextFunction) {
@@ -47,3 +48,30 @@ export function checkOwnership(req: Request, res: Response, next: NextFunction) 
   }
   return next(ApiError.forbidden('You are not authorized'))
 }
+
+
+//** Check User Ownership  */
+type Resource = 'review' | 'users'
+export function checkOwnershipByParams(resource: Resource) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const resources: Record<string, any> = {
+      review: async () => {
+        const { reviewId } = req.params
+        return {
+          paramsId: reviewId,
+          resource: await findReviewById(reviewId),
+        }
+      },
+    }
+
+    const resourceUser = await resources[resource]
+    if (
+      req.decodedUser.role !== 'ADMIN' ||
+      req.decodedUser.userId !== resourceUser.resource.userId
+    ) {
+      return next(ApiError.forbidden('You are not authorized to delete this review'))
+    }
+    
+  }
+}
+

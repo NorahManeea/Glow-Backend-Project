@@ -11,7 +11,7 @@ export const findAllOrders = async (pageNumber = 1, limit = 8, user = '', status
   const { currentPage, skip, totalPages } = calculatePagination(orderCount, pageNumber, limit)
 
   const orders = await Order.find()
-    .populate('products.product', 'productName productPrice')
+    .populate('products.product', 'name price')
     .skip(skip)
     .limit(limit)
     .find(findBySearchQuery(user, 'user'))
@@ -28,7 +28,7 @@ export const findAllOrders = async (pageNumber = 1, limit = 8, user = '', status
 export const findOrder = async (orderId: string) => {
   const order = await Order.findById(orderId).populate(
     'products.product',
-    'productName productPrice'
+    'name price'
   )
   if (!order) {
     throw ApiError.notFound(`Order not found with ID: ${orderId}`)
@@ -53,7 +53,7 @@ export const createNewOrder = async (
   shippingInfo: { country: string; city: string; address: string }
 ) => {
   const { user, products } = userCart
-  const order = await Order.create({
+  const order = new Order({
     user: user,
     orderDate: new Date(),
     products: products,

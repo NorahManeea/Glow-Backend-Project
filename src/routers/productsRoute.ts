@@ -27,7 +27,7 @@ router.post(
   '/',
   checkAuth,
   checkRole('ADMIN'),
-  uploadImage.single('productImage'),
+  uploadImage.single('image'),
   createProduct,
   validateProduct
 )
@@ -47,7 +47,7 @@ router.put(
   checkAuth,
   checkRole('ADMIN'),
   validateObjectId('productId'),
-  uploadImage.single('productImage'),
+  uploadImage.single('image'),
   updateProductById,
   validateProduct
 )

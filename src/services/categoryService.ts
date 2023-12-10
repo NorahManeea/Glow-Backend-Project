@@ -11,7 +11,7 @@ export const findAllCategories = async (pageNumber = 1, limit = 8, searchText = 
   const categories = await Category.find()
     .skip(skip)
     .limit(limit)
-    .find(findBySearchQuery(searchText, 'categoryName'))
+    .find(findBySearchQuery(searchText, 'name'))
   if (categories.length === 0) {
     throw ApiError.notFound('There are no categories')
   }
@@ -30,10 +30,10 @@ export const findCategory = async (categoryId: string) => {
 
 //** Service:- Update a Category */
 export const updateCategory = async (categoryId: string, updatedCategory: CategoryDocument) => {
-  const { categoryName } = updatedCategory
-  const categoryExist = await Category.exists({ categoryName: categoryName })
+  const { name } = updatedCategory
+  const categoryExist = await Category.exists({ name: name })
   if (categoryExist) {
-    throw ApiError.alreadyExist(`Category already exists with this ${categoryName}`)
+    throw ApiError.alreadyExist(`Category already exists with this ${name}`)
   }
   const category = await Category.findByIdAndUpdate(categoryId, updatedCategory, { new: true })
   if (!category) {
@@ -53,11 +53,12 @@ export const removeCategory = async (categoryId: string) => {
 
 //** Service:- Create a Category  */
 export const createNewCategory = async (newCategory: CategoryDocument) => {
-  const { categoryName } = newCategory
-  const categoryExist = await Category.exists({ categoryName: categoryName })
+  const { name } = newCategory
+  const categoryExist = await Category.exists({ name: name })
   if (categoryExist) {
-    throw ApiError.alreadyExist(`Category already exists with this ${categoryName}`)
+    throw ApiError.alreadyExist(`Category already exists with this ${name}`)
   }
-  const category = await Category.create({ newCategory })
-  return category
+  
+  const category = new Category(newCategory)
+  return category.save()
 }

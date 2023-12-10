@@ -4,20 +4,20 @@ import { ProductDocument } from '../types/types'
 
 const productSchema = new mongoose.Schema(
   {
-    productName: {
+    name: {
       type: String,
       required: true,
       minlength: 3,
       maxlength: 100,
       unique: true,
     },
-    productDescription: {
+    description: {
       type: String,
       required: true,
       minlength: 10,
-      maxlength: 100,
+      maxlength: 500,
     },
-    productImage: {
+    image: {
       type: String,
       default: '',
     },
@@ -26,19 +26,13 @@ const productSchema = new mongoose.Schema(
       required: true,
       default: 1,
     },
-    productPrice: {
+    price: {
       type: Number,
       required: true,
     },
-    category: {
+    categories: {
       type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Category' }],
       required: true,
-    },
-    variants: {
-      type: [String],
-    },
-    sizes: {
-      type: [String],
     },
     itemsSold: {
       type: Number,
