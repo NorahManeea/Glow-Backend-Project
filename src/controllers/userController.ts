@@ -39,7 +39,7 @@ export const getAllUsers = async (req: Request, res: Response, next: NextFunctio
 export const getUsersCount = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const usersCount = await userCount()
-    res.status(200).json({ meassge: 'Users Count', usersCount })
+    res.status(200).json({ meassge: 'Users Count', payload: usersCount })
   } catch (error) {
     next(error)
   }

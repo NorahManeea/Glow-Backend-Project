@@ -4,6 +4,7 @@ import { databaseConnection } from './database/db'
 import apiErrorHandler from './middlewares/errorHandler'
 import myLogger from './middlewares/logger'
 import cors, { CorsOptions } from 'cors'
+import path from 'path'
 
 import usersRouter from './routers/usersRoute'
 import authRouter from './routers/authRoute'
@@ -41,7 +42,11 @@ if (enviroement === 'development') {
 
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
-app.use(cors(corsOptions))
+app.use(cors({
+  origin: "http://localhost:3000"
+}))
+
+app.use('/public', express.static('public'));
 
 app.use('/api/auth', authRouter)
 app.use('/api/users', usersRouter)

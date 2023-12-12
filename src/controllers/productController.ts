@@ -7,6 +7,7 @@ import {
   createNewProduct,
   findProduct,
   findHighestSoldProducts,
+  productCount,
 } from '../services/productService'
 import { Product } from '../models/productModel'
 import ApiError from '../errors/ApiError'
@@ -97,11 +98,16 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
     } = req.body
     const parsedQuantityInStock = parseInt(quantityInStock)
     const parsedProductPrice = parseFloat(price)
+    const productImagePath = req.file?.path;
+if (!productImagePath) {
+  return res.status(400).json({ message: 'Image file not provided.' });
+}
+
     const product = new Product({
       name,
       description,
       price: parsedProductPrice,
-      image: req.file?.path,
+      image: productImagePath,
       quantityInStock: parsedQuantityInStock,
       categories,
       discount,
@@ -157,3 +163,19 @@ export const getHighestSoldProducts = async (req: Request, res: Response, next: 
     next(error)
   }
 }
+
+
+/** -----------------------------------------------
+ * @desc Get Product Count
+ * @route /api/products/count
+ * @method GET
+ * @access public
+  -----------------------------------------------*/
+  export const getProductsCount = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const productsCount = await productCount()
+      res.status(200).json({ meassge: 'Products Count', payload: productsCount })
+    } catch (error) {
+      next(error)
+    }
+  }

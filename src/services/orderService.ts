@@ -63,7 +63,7 @@ export const createNewOrder = async (
     const productId = product.product.toString()
     await updateItemsSold(productId)
   }
-  return order
+  return order.save()
 }
 
 //** Service:- Update Number of Times a Product Sold */

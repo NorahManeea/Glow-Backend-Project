@@ -7,6 +7,7 @@ import {
   getAllProducts,
   getHighestSoldProducts,
   getProductById,
+  getProductsCount,
   updateProductById,
 } from '../controllers/productController'
 import { validateObjectId } from '../middlewares/validateObjectId'
@@ -16,12 +17,13 @@ import { validateProduct } from '../validation/validateProduct'
 const router = express.Router()
 
 // Get all products route
-router.get('/', getAllProducts)
-// Get product by id route
-router.get('/:productId', validateObjectId('productId'), getProductById)
+router.get('/',getAllProducts)
+// Get all products route
+router.get('/count', getProductsCount)
 // Get higest-sold products route !!
 router.get('/highest-sold', getHighestSoldProducts)
-
+// Get product by id route
+router.get('/:productId', validateObjectId('productId'), getProductById)
 // Add new product route
 router.post(
   '/',

@@ -1,4 +1,5 @@
 import multer, { FileFilterCallback } from 'multer'
+import path from 'path'
 import { Request } from 'express'
 
 const productStorage = multer.diskStorage({
@@ -7,8 +8,10 @@ const productStorage = multer.diskStorage({
   },
   filename: function (req: Request, file, cb) {
     cb(null, Date.now() + '-' + file.originalname)
+    console.log("🚀 ~ file: uploadImage.ts:11 ~ file.originalname:", Date.now() + '-' + file.originalname)
+    
   },
-})
+}) 
 
 const usersStorage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -30,5 +33,5 @@ const fileFilter = (req: Request, file: Express.Multer.File, cb: FileFilterCallb
   } catch (error) {}
 }
 
-export const uploadImage = multer({ storage: productStorage, fileFilter })
+export const uploadImage = multer({ storage: productStorage , fileFilter})
 export const uploadavatar = multer({ storage: usersStorage, fileFilter })

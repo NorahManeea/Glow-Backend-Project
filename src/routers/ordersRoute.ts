@@ -16,7 +16,7 @@ import { checkAuth, checkBlock, checkRole } from '../middlewares/verifyToken'
 const router = express.Router()
 
 // Get all orders route
-router.get('/', checkAuth, checkRole('ADMIN'), getAllOrders)
+router.get('/', getAllOrders)
 // Get orders history route
 router.get('/history', checkAuth, getOrderHistory)
 // Get order by id route

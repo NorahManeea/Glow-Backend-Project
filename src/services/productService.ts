@@ -31,18 +31,25 @@ export const findAllProducts = async (
 
   const products = await Product.find()
     .populate('reviews')
-    .skip(skip)
-    .limit(limit)
     .sort(sortQuery)
     .find(findBySearchQuery(searchText, 'name'))
     .find(findBySearchQuery(searchText, 'description'))
-    .find(category ? { category: { $in: foundCategory } } : {})
+    .find(category ? { categories: { $in: foundCategory } } : {})
+    .skip((skip))
+    .limit(limit)
+   
 
   if (products.length == 0) {
     throw ApiError.notFound('There are no products')
   }
 
   return { products, totalPages, currentPage }
+}
+
+//** Service:- Find All Products */
+export const productCount = async () => {
+  const productCount = await Product.countDocuments()
+  return productCount
 }
 
 //** Service:- Find Single Product */

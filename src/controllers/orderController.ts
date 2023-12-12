@@ -63,6 +63,7 @@ export const getOrderById = async (req: Request, res: Response, next: NextFuncti
 export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const cart = await Cart.findOne({ user: req.decodedUser.userId })
+    console.log(cart)
     if (!cart) {
       throw ApiError.notFound(`Cart not found with user ID: ${req.decodedUser.userId}`)
     }
@@ -70,6 +71,7 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
     cart.products.map(async (product) => await checkStock(product.product.toString(), product.quantity))
     //create order
     const order = await createNewOrder(cart, req.body.shippingInfo)
+    console.log(order)
     //update quantity in stock
     cart.products.map(async (product) => await updateQuantityInStock(product.product.toString(), product.quantity))
     //send confirmation email

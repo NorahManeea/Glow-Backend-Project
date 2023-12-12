@@ -16,8 +16,7 @@ const router = express.Router()
 router.get('/', getAllCategory)
 router.get('/:categoryId', validateObjectId('categoryId'), getCategoryById)
 
-router.post('/',  checkAuth,
-checkRole('ADMIN'),validateCategory,createCategory)
+router.post('/',createCategory)
 
 router.put(
   '/:categoryId',
