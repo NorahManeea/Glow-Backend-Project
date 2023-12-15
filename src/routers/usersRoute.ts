@@ -6,6 +6,7 @@ import {
   getAllUsers,
   getUserById,
   getUsersCount,
+  grantRoleById,
   updateUserById,
 } from '../controllers/userController'
 import { uploadavatar } from '../middlewares/uploadImage'
@@ -19,14 +20,14 @@ router.get('/', checkAuth, checkRole('ADMIN'), getAllUsers)
 // Get users count route
 router.get('/count', checkAuth, checkRole('ADMIN'), getUsersCount)
 // Get users by id route
-router.get('/:userId', checkAuth, checkRole('ADMIN'), validateObjectId('userId'), getUserById)
+router.get('/profile/:userId', checkAuth, validateObjectId('userId'), getUserById)
 
 // Delete user by id route
 router.delete('/:userId', checkAuth, validateObjectId('userId'), deleteUser)
 
 // Update user by id route
 router.put(
-  '/:userId',
+  '/profile/:userId',
   checkAuth,
   uploadavatar.single('avatar'),
   validateObjectId('userId'),
@@ -36,11 +37,19 @@ router.put(
 
 // Block user by id route
 router.put(
-  '/:userId/block',
+  '/block/:userId',
   checkAuth,
   checkRole('ADMIN'),
   validateObjectId('userId'),
   blockUserById
+)
+
+router.put(
+  '/grant-role/:userId',
+  checkAuth,
+  checkRole('ADMIN'),
+  validateObjectId('userId'),
+  grantRoleById
 )
 
 export default router

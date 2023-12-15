@@ -68,10 +68,30 @@ export const userCount = async () => {
 
 //** Service:- Block a User */
 export const blockUser = async (userId: string) => {
-  const user = await User.findByIdAndUpdate(userId, { $set: { isBlocked: true } }, { new: true })
-  if (!user) {
-    throw ApiError.notFound(`User not found with ID: ${userId}`)
-  }
+  const user = await User.findById(userId);
 
+  if (!user) {
+    throw ApiError.notFound(`User not found with ID: ${userId}`);
+  }
+  const blockedUser = !user.isBlocked;
+
+  const blockUser = await User.findByIdAndUpdate(
+    userId,
+    { $set: { isBlocked: blockedUser } },
+    { new: true }
+  );
+
+  return blockUser;
+};
+
+//** Service:- Switch Role a User */
+export const grantRole = async (userId: string) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    throw ApiError.notFound(`User not found with ID: ${userId}`);
+  }
+  user.role = user.role === 'ADMIN' ? 'USER' : 'ADMIN';
+
+  await user.save();
   return user
-}
+};

@@ -8,6 +8,7 @@ declare namespace Express {
       userId: string
       email: string
       role: 'USER' | 'ADMIN'
+      firstName: string
       isBlocked: boolean
       iat: number
       exp: number

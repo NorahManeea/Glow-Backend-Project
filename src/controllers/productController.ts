@@ -86,33 +86,21 @@ export const deleteProductById = async (req: Request, res: Response, next: NextF
  -----------------------------------------------*/
 export const createProduct = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const {
-      name,
-      description,
-      price,
-      quantityInStock,
-      categories,
-      discount,
-      sizes,
-      variants,
-    } = req.body
-    const parsedQuantityInStock = parseInt(quantityInStock)
-    const parsedProductPrice = parseFloat(price)
-    const productImagePath = req.file?.path;
-if (!productImagePath) {
-  return res.status(400).json({ message: 'Image file not provided.' });
-}
+    const { name, description, price, quantityInStock, categories, discount } =
+      req.body
+
+    if (!req.file) {
+      return res.status(400).json({ message: 'Image file not provided.' })
+    }
 
     const product = new Product({
       name,
       description,
-      price: parsedProductPrice,
-      image: productImagePath,
-      quantityInStock: parsedQuantityInStock,
+      price,
+      image: req.file.originalname,
+      quantityInStock,
       categories,
       discount,
-      sizes,
-      variants,
     })
 
     const newProduct = await createNewProduct(product)
@@ -153,7 +141,7 @@ export const updateProductById = async (req: Request, res: Response, next: NextF
  -----------------------------------------------*/
 export const getHighestSoldProducts = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const highestSoldProducts = await findHighestSoldProducts(Number(req.query.limit))
+    const highestSoldProducts = await findHighestSoldProducts()
 
     res.status(200).json({
       message: 'Highest Sold Products have been returned successfully',
@@ -164,18 +152,17 @@ export const getHighestSoldProducts = async (req: Request, res: Response, next: 
   }
 }
 
-
 /** -----------------------------------------------
  * @desc Get Product Count
  * @route /api/products/count
  * @method GET
- * @access public
+ * @access private
   -----------------------------------------------*/
-  export const getProductsCount = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const productsCount = await productCount()
-      res.status(200).json({ meassge: 'Products Count', payload: productsCount })
-    } catch (error) {
-      next(error)
-    }
+export const getProductsCount = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const productsCount = await productCount()
+    res.status(200).json({ meassge: 'Products Count', payload: productsCount })
+  } catch (error) {
+    next(error)
   }
+}

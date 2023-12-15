@@ -7,8 +7,12 @@ const productStorage = multer.diskStorage({
     cb(null, 'public/images/products')
   },
   filename: function (req: Request, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname)
-    console.log("🚀 ~ file: uploadImage.ts:11 ~ file.originalname:", Date.now() + '-' + file.originalname)
+    let extArray = file.mimetype.split("/");
+    let extension = extArray[extArray.length - 1];
+    const fileName = file.fieldname + '-' + Date.now()+ '.' +extension
+    console.log("🚀 ~ file: uploadImage.ts:13 ~ fileName:", fileName)
+
+    cb(null, fileName)
     
   },
 }) 

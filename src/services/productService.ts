@@ -102,7 +102,6 @@ export const createNewProduct = async (newProduct: ProductDocument) => {
   const product = new Product(
     newProduct
 )
-
   return product.save()
 }
 

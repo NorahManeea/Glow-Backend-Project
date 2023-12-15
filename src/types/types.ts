@@ -19,7 +19,7 @@ export type ProductDocument = Document & {
   image: string
   quantityInStock: number
   price: number
-  category: mongoose.Types.ObjectId[]
+  category: mongoose.Types.ObjectId
   itemsSold: number
   discount: number
 }
@@ -37,6 +37,7 @@ export type DecodedUser = {
   userId: string
   email: string
   role: Role
+  firstName: string
   isBlocked: boolean
   iat: number
   exp: number
@@ -45,6 +46,7 @@ export type DecodedUser = {
 export type Role = 'USER' | 'ADMIN'
 
 export type OrderDocument = Document & {
+  uniqueId: string;
   user: string
   orderDate: Date
   products: {

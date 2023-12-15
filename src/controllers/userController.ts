@@ -4,6 +4,7 @@ import {
   blockUser,
   findAUser,
   findAllUser,
+  grantRole,
   removeUser,
   updateUser,
   userCount,
@@ -118,3 +119,21 @@ export const blockUserById = async (req: Request, res: Response, next: NextFunct
     next(error)
   }
 }
+
+/** -----------------------------------------------
+ * @desc Block User
+ * @route /api/users/block/:id
+ * @method PUT
+ * @access private (Admin Only)
+  -----------------------------------------------*/
+  export const grantRoleById = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userRole = await grantRole(req.params.userId)
+      res.status(200).json({
+        message: 'User role has been changed successfully',
+        payload: userRole,
+      })
+    } catch (error) {
+      next(error)
+    }
+  }

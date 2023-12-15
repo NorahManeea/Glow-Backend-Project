@@ -1,39 +1,56 @@
+import { OrderDocument, ProductDocument } from '../types/types'
 import { sendEmail } from '../utils/sendEmailUtils'
 
-export const sendActivationEmail = async (email: string, activationLink: string) => {
-  const subject = 'Welcome to Black Tigers Team!'
+export const sendActivationEmail = async (email: string, name: string, activationLink: string) => {
+  const subject = 'Welcome to Glow, Activate Your Account Now!'
   const htmlTemplate = `
-      <div style="color: #333; text-align: center;">
-        <h1 style="color: #1E1E1E;">Welcome to Black Tigers Team!</h1>
-        <a href="${activationLink}" style="display: inline-block; padding: 10px 20px; background-color: #664971; color: #FFFFFF; font-size: 18px; text-decoration: none; border-radius: 5px;">Activate Now</a>
-        <p style="font-size: 14px; color: #302B2E;">Black Tigers Team</p>
+      <div style="background-color: #F7F7F7; padding: 90px;">
+      <div style="background-color: #ffffff; border-top: 3px solid #F2ACAA; text-align: center; padding: 5px;">
+        <p style="color: #956556; font-weight: bold; margin-top: 6px">GLOW</p>
+        <p style="color: #F2ACAA; font-weight: 500;">Hi ${name},</p>
+        <p style="color: #606060;">Welcome to Glow! We're thrilled to have you on board. To get started and unlock the full Glow experience, please take a moment to activate your account.
+        </p>
+        <p style="color: #606060;">Please click the following button to do so.</p>
+        <a href="${activationLink}" style="display: inline-block; background-color: #956556; color: #ffffff; text-decoration: none; padding: 10px 25px; margin-top: 20px; border-radius: 5px;">Activate Account </a>
+        <p style="color: #606060;">Cheers,<br>The Glow Team</p>
       </div>
+    </div>
     `
-  const isSent = await sendEmail(email, subject, htmlTemplate)
+  const isSent = await sendEmail(email,name, subject, htmlTemplate)
   return isSent
 }
 
-export const sendResetPasswordEmail = async (email: string, resetLink: string) => {
-  const subject = 'Reset Your Password'
+export const sendResetPasswordEmail = async (email: string, name: string, resetLink: string) => {
+  const subject = 'Glow Password Reset'
   const htmlTemplate = `
-    <p>Click the following button to reset your password:</p>
-    <a href="${resetLink}">
-      <button style="display: inline-block; padding: 10px 20px; background-color: #664971; color: #FFFFFF; font-size: 18px; text-decoration: none; border-radius: 5px;">
-        Reset Password
-      </button>
-    </a>
+  <div style="background-color: #F7F7F7; padding: 90px;">
+  <div style="background-color: #ffffff; border-top: 3px solid #F2ACAA; text-align: center; padding: 5px;">
+    <p style="color: #956556; font-weight: bold; margin-top: 6px">GLOW</p>
+    <p style="color: #F2ACAA; font-weight: 500;">Hi ${name},</p>
+    <p style="color: #606060;">Looks like you'd like to change your Glow password. Please click the following button to do so.</p>
+    <p style="color: #606060;">Please disregard this e-mail if you did not request a password reset.</p>
+    <a href="${resetLink}" style="display: inline-block; background-color: #956556; color: #ffffff; text-decoration: none; padding: 10px 25px; margin-top: 20px; border-radius: 5px;">Set Password</a>
+    <p style="color: #606060;">Cheers,<br>The Glow Team</p>
+  </div>
+</div>
   `
-  return await sendEmail(email, subject, htmlTemplate)
+  return await sendEmail(email, name, subject, htmlTemplate)
 }
 
-export const sendOrderConfirmationEmail = async (email: string) => {
-  const subject = 'We have received your order'
+export const sendOrderConfirmationEmail = async (email: string,  name: string) => {
+  const subject = 'Thank You for Your Order with Glow'
   const htmlTemplate = `
-        <div style="color: #333; text-align: center;">
-          <h1 style="color: #1E1E1E;">Thanks for your purchase</h1>
-          <p>We'll prepare your order for immediate dispatch and you will recive it shortly. We'll email you the shiping confirmation once your order is on its way.</p>
-          <p style="font-size: 14px; color: #302B2E;">Black Tigers Team</p>
-        </div>
+  <div style="background-color: #F7F7F7; padding: 90px;">
+  <div style="background-color: #ffffff; border-top: 3px solid #F2ACAA; text-align: center; padding: 5px;">
+    <p style="color: #956556; font-weight: bold; margin-top: 6px">GLOW</p>
+    <p style="color: #F2ACAA; font-weight: 500;">Hi ${name},</p>
+    <p style="color: #606060;">Thank you for choosing Glow! We're excited to confirm that we've received your order.</p>
+    <p style="color: #606060; text-align: left; margin-top: 20px;">Your order is now being processed, and we'll notify you once it's shipped. If you have any questions or need further assistance, feel free to reach out to our customer support team.</p>
+
+    <p style="color: #606060;">Cheers,<br>The Glow Team</p>
+  </div>
+</div>
+
       `
-  return await sendEmail(email, subject, htmlTemplate)
+  return await sendEmail(email,name, subject, htmlTemplate)
 }

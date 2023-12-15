@@ -35,12 +35,16 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
       isBlocked: false,
     })
 
+
     const activationLink = `http://localhost:5050/api/auth/activate/${activationToken}`
-    const isSent = await sendActivationEmail(email, activationLink)
+    const isSent = await sendActivationEmail(email, firstName,activationLink)
     isSent && (await createUser(newUser))
+
+        const userWithoutPassword = await User.findOne({email}).select('-password')
 
     res.status(201).json({
       message: 'Registration successful. Check your email to activate your account',
+      user: userWithoutPassword
     })
   } catch (error) {
     next(error)
@@ -101,7 +105,7 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
         expiresIn: '24h',
       }
     )
-    const userWithoutPassword =await User.findOne({email}).select('-password')
+    const userWithoutPassword = await User.findOne({email}).select('-password')
     res.status(200).json({ message: 'Login successful', token, user: userWithoutPassword })
   } catch (error) {
     next(error)

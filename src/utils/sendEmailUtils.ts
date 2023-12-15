@@ -9,7 +9,7 @@ export function generateActivationToken() {
 }
 
 //** Send Email Function */
-export const sendEmail = async (email: string, subject: string, htmlTemplate: string) => {
+export const sendEmail = async (email: string, name: string,subject: string, htmlTemplate: string) => {
   try {
     const transporter = nodemailer.createTransport({
       service: 'gmail',

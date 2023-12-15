@@ -7,6 +7,7 @@ import {
   getAllOrders,
   getOrderById,
   getOrderHistory,
+  getOrdersCount,
   returnOrder,
   updateOrderStatus,
   updateShippingInfo,
@@ -19,6 +20,9 @@ const router = express.Router()
 router.get('/', getAllOrders)
 // Get orders history route
 router.get('/history', checkAuth, getOrderHistory)
+// Get Order Count
+router.get('/count', checkAuth, checkRole('ADMIN'), getOrdersCount)
+
 // Get order by id route
 router.get('/:orderId', getOrderById)
 

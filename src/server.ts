@@ -4,7 +4,6 @@ import { databaseConnection } from './database/db'
 import apiErrorHandler from './middlewares/errorHandler'
 import myLogger from './middlewares/logger'
 import cors, { CorsOptions } from 'cors'
-import path from 'path'
 
 import usersRouter from './routers/usersRoute'
 import authRouter from './routers/authRoute'

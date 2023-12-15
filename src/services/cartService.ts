@@ -48,12 +48,14 @@ export const calculateTotalPrice = async (
   let savedAmount = 0
   let totalAfterDiscount = 0
 
-  const isDiscountCodeFound = await DiscountCode.findById(discountCode)
-  if (isDiscountCodeFound) {
-    savedAmount = (totalPrice * isDiscountCodeFound.discountPercentage) / 100
-    totalAfterDiscount = totalPrice - savedAmount
+  if (discountCode) {
+    const isDiscountCodeFound = await DiscountCode.findById(discountCode);
+    if (isDiscountCodeFound) {
+      savedAmount = (totalPrice * isDiscountCodeFound.discountPercentage) / 100;
+      totalAfterDiscount = totalPrice - savedAmount;
+    }
   } else {
-    throw ApiError.notFound(`Discount Code not found.`)
+    totalAfterDiscount = totalPrice;
   }
 
   return { totalPrice, savedAmount, totalAfterDiscount }

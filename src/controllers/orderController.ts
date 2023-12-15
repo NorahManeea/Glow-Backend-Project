@@ -8,6 +8,7 @@ import {
   findAllOrders,
   findOrder,
   findOrderHistory,
+  orderCount,
   removeOrder,
 } from '../services/orderService'
 import ApiError from '../errors/ApiError'
@@ -75,7 +76,7 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
     //update quantity in stock
     cart.products.map(async (product) => await updateQuantityInStock(product.product.toString(), product.quantity))
     //send confirmation email
-    await sendOrderConfirmationEmail(req.decodedUser.email)
+    await sendOrderConfirmationEmail(req.decodedUser.email, req.decodedUser.firstName)
 
     res.status(201).json({ meassge: 'Order has been created successfuly', payload: order })
   } catch (error) {
@@ -198,3 +199,18 @@ export const updateShippingInfo = async (req: Request, res: Response, next: Next
     next(error)
   }
 }
+
+/** -----------------------------------------------
+ * @desc Get Order Count
+ * @route /api/orders/count
+ * @method GET
+ * @access private
+  -----------------------------------------------*/
+  export const getOrdersCount = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const ordersCount = await orderCount()
+      res.status(200).json({ meassge: 'Orders Count', payload: ordersCount })
+    } catch (error) {
+      next(error)
+    }
+  }

@@ -104,3 +104,9 @@ export const changeShippingInfo = async (orderId: string, newShippingInfo: strin
 
   return order
 }
+
+//** Service:- Count Orders */
+export const orderCount = async () => {
+  let ordersCount = await Order.countDocuments()
+  return ordersCount
+}

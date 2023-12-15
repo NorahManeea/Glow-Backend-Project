@@ -25,7 +25,7 @@ export const sendResetPasswordLink = async (req: Request, res: Response, next: N
 
     await user.save()
     const resetLink = `http://localhost:3000/reset-password/${user._id}/${resetToken}`
-    await sendResetPasswordEmail(user.email, resetLink)
+    await sendResetPasswordEmail(user.email,user.firstName, resetLink)
     res.json({ message: 'Password reset link has been sent successfully' })
   } catch (error) {
     next(error)

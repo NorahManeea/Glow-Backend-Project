@@ -1,10 +1,26 @@
 import mongoose from 'mongoose'
+import { v4 as uuidv4 } from 'uuid'
 
 import { OrderDocument } from '../types/types'
 import { OrderStatus } from '../enums/enums'
 
+//** Custom Order ID */
+let randomvalue = ''
+const customAlphabet = '1234567890abcdefghijklmnopqrstuvwxyz'
+const length = 5
+for (let i = 0; i < length; i++) {
+  const value = Math.floor(Math.random() * customAlphabet.length)
+  randomvalue += customAlphabet.substring(value, value + 1).toUpperCase()
+}
+
 const orderSchema = new mongoose.Schema(
   {
+    uniqueId: {
+      type: String,
+      required: true,
+      default: randomvalue,
+      unique: true,
+    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
