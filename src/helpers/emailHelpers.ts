@@ -45,7 +45,7 @@ export const sendOrderConfirmationEmail = async (email: string,  name: string) =
     <p style="color: #956556; font-weight: bold; margin-top: 6px">GLOW</p>
     <p style="color: #F2ACAA; font-weight: 500;">Hi ${name},</p>
     <p style="color: #606060;">Thank you for choosing Glow! We're excited to confirm that we've received your order.</p>
-    <p style="color: #606060; text-align: left; margin-top: 20px;">Your order is now being processed, and we'll notify you once it's shipped. If you have any questions or need further assistance, feel free to reach out to our customer support team.</p>
+    <p style="color: #606060; text-align: center; margin-top: 20px; padding: 30px">Your order is now being processed, and we'll notify you once it's shipped. If you have any questions or need further assistance, feel free to reach out to our customer support team.</p>
 
     <p style="color: #606060;">Cheers,<br>The Glow Team</p>
   </div>

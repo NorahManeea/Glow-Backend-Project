@@ -6,6 +6,7 @@ import {
   findWishList,
   removeFromWishList,
 } from '../services/wishListService'
+import { findProduct } from '../services/productService'
 
 /**-----------------------------------------------
  * @desc Add to wishlist  
@@ -14,13 +15,15 @@ import {
  -----------------------------------------------*/
 export const addToWishList = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { userId } = req.decodedUser
+    const userId = req.decodedUser.userId
     const { productId } = req.body
+    const product = await findProduct(productId)
+
     let wishlist = await createWishList(userId)
-    wishlist = await addItemToWishList(wishlist, productId)
+    wishlist = await addItemToWishList(wishlist, product)
     res
       .status(200)
-      .json({ message: 'Product has been added successfully to wishlist', payload: wishlist })
+      .json({ message: 'Product has been added successfully to wishlist',  wishlist })
   } catch (error) {
     next(error)
   }
@@ -51,9 +54,10 @@ export const deleteFromWishList = async (req: Request, res: Response, next: Next
  -----------------------------------------------*/
 export const getWishList = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { userId } = req.decodedUser
-    const wishlist = await findWishList(userId)
-    res.status(200).json({ message: 'WishList items returned successfully', payload: wishlist })
+    const userId = req.decodedUser.userId
+
+    const wishlistItem = await findWishList(userId)
+    res.status(200).json({ message: 'WishList items returned successfully', wishlistItems: wishlistItem })
   } catch (error) {
     next(error)
   }

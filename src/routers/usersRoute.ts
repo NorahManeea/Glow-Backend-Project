@@ -15,17 +15,11 @@ import { validateObjectId } from '../middlewares/validateObjectId'
 
 const router = express.Router()
 
-// Get all users route
+
 router.get('/', checkAuth, checkRole('ADMIN'), getAllUsers)
-// Get users count route
 router.get('/count', checkAuth, checkRole('ADMIN'), getUsersCount)
-// Get users by id route
 router.get('/profile/:userId', checkAuth, validateObjectId('userId'), getUserById)
-
-// Delete user by id route
 router.delete('/:userId', checkAuth, validateObjectId('userId'), deleteUser)
-
-// Update user by id route
 router.put(
   '/profile/:userId',
   checkAuth,
@@ -34,8 +28,6 @@ router.put(
   checkOwnership,
   updateUserById
 )
-
-// Block user by id route
 router.put(
   '/block/:userId',
   checkAuth,

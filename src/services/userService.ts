@@ -9,10 +9,10 @@ import { findBySearchQuery } from '../utils/searchUtils'
 //** Service:- Find All Users */
 export const findAllUser = async (pageNumber = 1, limit = 8, searchText = '') => {
   const userCount = await User.countDocuments()
-  const { currentPage, skip, totalPages } = calculatePagination(userCount, pageNumber, limit)
+  const { currentPage, perPage, totalPages } = calculatePagination(userCount, pageNumber, limit)
 
   const users = await User.find()
-    .skip(skip)
+    .skip(perPage)
     .limit(limit)
     .find(findBySearchQuery(searchText, 'firstName'))
     .find(findBySearchQuery(searchText, 'lastName'))

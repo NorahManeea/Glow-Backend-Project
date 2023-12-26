@@ -16,20 +16,13 @@ export function validateProduct(req: Request, res: Response, next: NextFunction)
       : zod
           .string()
           .min(10, { message: 'Product description must at least 3 characters' })
-          .max(100, { message: 'Product description must be 100 characters or less' }),
-          image: zod.string().min(1, { message: 'Product image is required' }).optional(),
+          .max(500, { message: 'Product description must be 100 characters or less' }),
+    image: zod.string().min(1, { message: 'Product image is required' }).optional(),
     quantityInStock: isUpdated
-      ? zod
-          .number()
-          .nonnegative({ message: 'Quantity in stock must be nonnegative number' })
-          .optional()
-      : zod.number().nonnegative({ message: 'Quantity in stock must be nonnegative number' }),
-      price: isUpdated
-      ? zod.number().nonnegative({ message: 'Product price must be nonnegative number' }).optional()
-      : zod.number().nonnegative({ message: 'Product price must be nonnegative number' }),
-      categories: isUpdated
-      ? zod.array(zod.string()).min(1, { message: 'Please enter at least one category' }).optional()
-      : zod.array(zod.string()).min(1, { message: 'Please enter at least one category' }),
+      ? zod.string().transform(Number).optional()
+      : zod.string().transform(Number),
+    price: isUpdated ? zod.string().transform(Number).optional() : zod.string().transform(Number),
+    categories: isUpdated ? zod.string().optional() : zod.string(),
   })
 
   try {

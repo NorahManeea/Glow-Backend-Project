@@ -13,6 +13,8 @@ export function validateOrder(req: Request, res: Response, next: NextFunction) {
       country: zod.string(),
       city: zod.string(),
       address: zod.string(),
+      province: zod.string(),
+      postalCode: zod.number()
     }),
     orderStatus: zod.enum(['PENDING', 'PROCESSING', 'SHIPPED']).optional(),
   })

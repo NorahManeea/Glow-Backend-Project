@@ -8,13 +8,13 @@ import { findBySearchQuery } from '../utils/searchUtils'
 //** Service:- Find All Products */
 export const findAllProducts = async (
   pageNumber = 1,
-  limit = 8,
   sortBy = '',
   searchText = '',
   category = ''
 ) => {
+  const limit = 8
   const productCount = await Product.countDocuments()
-  const { currentPage, skip, totalPages } = calculatePagination(productCount, pageNumber, limit)
+  const { perPage, totalPages , currentPage} = calculatePagination(productCount, pageNumber, limit)
 
   let sortQuery = {}
   if (sortBy === 'newest') {
@@ -25,27 +25,32 @@ export const findAllProducts = async (
     sortQuery = { price: -1 }
   }
 
-  const foundCategory = await Category.find({
-    name: { $regex: `${category}`, $options: 'i' },
-  })
-
-  const products = await Product.find()
+  const query = Product.find()
     .populate('reviews')
+    .populate('categories')
     .sort(sortQuery)
-    .find(findBySearchQuery(searchText, 'name'))
-    .find(findBySearchQuery(searchText, 'description'))
-    .find(category ? { categories: { $in: foundCategory } } : {})
-    .skip((skip))
-    .limit(limit)
-   
+    .find(findBySearchQuery(searchText, 'name'));
 
-  if (products.length == 0) {
+  if (category) {
+    const categoryObj = await Category.findById(category);
+    if (!categoryObj) {
+      throw ApiError.notFound('Category not found');
+    }
+    query.find({ categories: categoryObj });
+  }
+
+  const products = await query.populate('categories')
+    .skip(perPage)
+    .limit(limit);
+
+
+
+  if (products.length === 0) {
     throw ApiError.notFound('There are no products')
   }
 
-  return { products, totalPages, currentPage }
+  return { products, totalPages , perPage, currentPage, productCount}
 }
-
 //** Service:- Find All Products */
 export const productCount = async () => {
   const productCount = await Product.countDocuments()

@@ -12,6 +12,7 @@ export const updatePassword = async (userId: string, password: string) => {
         password: hashedPassword,
         resetPasswordToken: undefined,
       },
+      
     }
   )
 }
@@ -32,6 +33,7 @@ export const resetPassword = async (userId: string, password: string) => {
   if (!user) {
     throw ApiError.notFound('User not found with the entered ID')
   }
+  user.resetPasswordToken = undefined
   return user
 }
 

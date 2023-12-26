@@ -11,6 +11,7 @@ export type UserDocument = Document & {
   isBlocked: boolean
   avatar: string
   resetPasswordToken?: string
+  points: number
 }
 
 export type ProductDocument = Document & {
@@ -57,6 +58,8 @@ export type OrderDocument = Document & {
     country: string
     city: string
     address: string
+    province: string
+    postalCode: number
   }
   orderStatus: string
 }

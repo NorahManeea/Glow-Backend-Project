@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from 'express'
 import { DiscountCode } from '../models/discountCodeModel'
 import {
   createNewDiscountCode,
+  findACode,
   findAllDiscountCodes,
   findDiscountCode,
   findValidDiscountCodes,
@@ -18,11 +19,10 @@ import {
  -----------------------------------------------*/
 export const addDiscountCode = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { code, discountPercentage, discountAmount, expirationDate } = req.body
+    const { code, discountPercentage, expirationDate } = req.body
     const discountCode = new DiscountCode({
       code,
       discountPercentage,
-      discountAmount,
       expirationDate,
     })
     const newDiscountCode = await createNewDiscountCode(discountCode)
@@ -122,3 +122,23 @@ export const getValidDiscountCodes = async (req: Request, res: Response, next: N
     next(error)
   }
 }
+
+/**-----------------------------------------------
+ * @desc Get Discount Code
+ * @route /api/discount-code/:code
+ * @method GET
+ * @access public
+ -----------------------------------------------*/
+export const getDiscountCode = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const code = req.params.code;
+    const discountCode = await findACode(code);
+    res.status(200).json({
+      message: 'Valid Discount code has been returned successfully',
+      discountCode,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+

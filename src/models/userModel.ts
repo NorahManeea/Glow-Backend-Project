@@ -56,6 +56,10 @@ const userSchema = new mongoose.Schema(
     resetPasswordToken: {
       type: String,
     },
+    points: {
+      type: Number,
+      default: 0,
+    },
   },
 
   { timestamps: true }

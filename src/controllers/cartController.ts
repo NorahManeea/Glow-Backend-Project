@@ -53,12 +53,17 @@ export const getCartItems = async (req: Request, res: Response, next: NextFuncti
     const userId = req.decodedUser.userId
 
     const cartItems = await findCart(userId)
-    const itemsCount = cartItems.reduce((count, product) => count + product.quantity, 0)
+    const itemsCount = cartItems.products.reduce((count, product) => count + product.quantity, 0)
+    const { totalPrice, savedAmount, totalAfterDiscount } = await calculateTotalPrice(cartItems)
+
 
     res.status(200).json({
       message: 'All cart items returned',
       cartItems: cartItems,
       itemsCount: itemsCount,
+      totalPrice: totalPrice,
+      savedAmount: savedAmount,
+      totalAfterDiscount: totalAfterDiscount,
     })
   } catch (error) {
     next(error)

@@ -15,6 +15,9 @@ import ApiError from '../errors/ApiError'
 import { Cart } from '../models/cartModel'
 import { sendOrderConfirmationEmail } from '../helpers/emailHelpers'
 import { checkStock, updateQuantityInStock } from '../services/productService'
+import Stripe from 'stripe'
+import { paymentConfig } from '../config/payment.config'
+import { calculateTotalPrice } from '../services/cartService'
 
 /**-----------------------------------------------
  * @desc Get All Orders
@@ -71,14 +74,25 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
     //check stock for all prroducts in the cart
     cart.products.map(async (product) => await checkStock(product.product.toString(), product.quantity))
     //create order
+     const stripe = new Stripe(paymentConfig.stripe , {
+      apiVersion: '2023-10-16',
+    });
+
+    const { totalPrice, savedAmount, totalAfterDiscount } = await calculateTotalPrice(cart, req.body.discountCode);
+      const charge = await stripe.charges.create({
+        amount: totalAfterDiscount * 100,
+        currency: 'sar',
+        source: "tok_mastercard", 
+        description: 'Test Charge'
+      });
     const order = await createNewOrder(cart, req.body.shippingInfo)
-    console.log(order)
     //update quantity in stock
     cart.products.map(async (product) => await updateQuantityInStock(product.product.toString(), product.quantity))
     //send confirmation email
     await sendOrderConfirmationEmail(req.decodedUser.email, req.decodedUser.firstName)
 
-    res.status(201).json({ meassge: 'Order has been created successfuly', payload: order })
+    res.status(201).json({ meassge: 'Order has been created successfuly', payload: { order, totalPrice, savedAmount, totalAfterDiscount }, charge })
+    await Cart.deleteOne({ user: req.decodedUser.userId })
   } catch (error) {
     next(error)
   }
@@ -93,7 +107,6 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
 export const deleteOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const order = await removeOrder(req.params.orderId)
-
     res.status(200).json({ meassge: 'Order has been deleted Successfully', result: order })
   } catch (error) {
     next(error)

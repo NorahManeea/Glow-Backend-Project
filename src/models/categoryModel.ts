@@ -9,6 +9,6 @@ const categorySchema = new mongoose.Schema({
     maxlength: 30,
     required: true,
   },
-})
+}, { timestamps: true })
 
 export const Category = mongoose.model<CategoryDocument>('Category', categorySchema)

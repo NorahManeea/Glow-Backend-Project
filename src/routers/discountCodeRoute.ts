@@ -4,6 +4,7 @@ import { checkAuth, checkRole } from '../middlewares/verifyToken'
 import {
   addDiscountCode,
   deleteDiscountCode,
+  getDiscountCode,
   getDiscountCodes,
   getValidDiscountCodes,
   updateDiscountCodeById,
@@ -13,9 +14,11 @@ import { validateObjectId } from '../middlewares/validateObjectId'
 const router = express.Router()
 
 router.get('/valid', getValidDiscountCodes)
+
 router.get('/', checkAuth, checkRole('ADMIN'), getDiscountCodes)
 
 router.post('/', checkAuth, checkRole('ADMIN'), addDiscountCode)
+router.get('/:code', getDiscountCode)
 
 router.put(
   '/:discountCodeId',

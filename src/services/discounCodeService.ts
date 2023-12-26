@@ -11,6 +11,26 @@ export const findAllDiscountCodes = async () => {
   return discountCodes
 }
 
+//** Service:- Get Signle Discount Code */
+export const findACode = async (code: string) => {
+  console.log('Searching for code:', code);
+  const discountCode = await DiscountCode.findOne({ code: code });
+
+  if (!discountCode) {
+    console.log(`Code not found with code: ${code}`);
+    throw ApiError.notFound(`Code not found with code: ${code}`);
+  }
+
+  const currentDate = new Date();
+  if (discountCode.expirationDate < currentDate) {
+    console.log(`Code is not valid: ${code}`);
+    throw ApiError.notFound(`Code is not valid`);
+  }
+
+  return discountCode;
+};
+
+
 //** Service:- Get a Discount Code  */
 export const findDiscountCode = async (discountCodeId: string) => {
   const discounCode = await DiscountCode.findById(discountCodeId)

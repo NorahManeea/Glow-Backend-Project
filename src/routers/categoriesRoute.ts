@@ -14,9 +14,9 @@ import { checkAuth, checkRole } from '../middlewares/verifyToken'
 const router = express.Router()
 
 router.get('/', getAllCategory)
+router.post('/',createCategory)
 router.get('/:categoryId', validateObjectId('categoryId'), getCategoryById)
 
-router.post('/',createCategory)
 
 router.put(
   '/:categoryId',

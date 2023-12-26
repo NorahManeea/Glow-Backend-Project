@@ -10,8 +10,6 @@ const productStorage = multer.diskStorage({
     let extArray = file.mimetype.split("/");
     let extension = extArray[extArray.length - 1];
     const fileName = file.fieldname + '-' + Date.now()+ '.' +extension
-    console.log("🚀 ~ file: uploadImage.ts:13 ~ fileName:", fileName)
-
     cb(null, fileName)
     
   },

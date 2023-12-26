@@ -35,27 +35,25 @@ export const addItem = async (
 //** Service:- Calculate Total Price */
 export const calculateTotalPrice = async (
   cart: CartDocument,
-  discountCode: DiscountCodeDocument
+  discountCode?: DiscountCodeDocument
 ) => {
   const total = await Promise.all(
     cart.products.map(async (product) => {
       const productFound = await Product.findById(product.product)
-      const productPrice = productFound?.price || 0
-      return productPrice * product.quantity
+      const price = productFound?.price || 0
+      return price * product.quantity
     })
   )
   let totalPrice = total.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
   let savedAmount = 0
   let totalAfterDiscount = 0
 
-  if (discountCode) {
-    const isDiscountCodeFound = await DiscountCode.findById(discountCode);
-    if (isDiscountCodeFound) {
-      savedAmount = (totalPrice * isDiscountCodeFound.discountPercentage) / 100;
-      totalAfterDiscount = totalPrice - savedAmount;
-    }
+  const isDiscountCodeFound = await DiscountCode.findById(discountCode)
+  if (isDiscountCodeFound) {
+    savedAmount = (totalPrice * isDiscountCodeFound.discountPercentage) / 100
+    totalAfterDiscount = totalPrice - savedAmount
   } else {
-    totalAfterDiscount = totalPrice;
+    totalAfterDiscount = totalPrice
   }
 
   return { totalPrice, savedAmount, totalAfterDiscount }
@@ -67,7 +65,7 @@ export const findCart = async (userId: string) => {
   if (!cart) {
     throw ApiError.notFound(`Cart not found with userId: ${userId}`)
   }
-  return cart.products
+  return cart
 }
 
 //** Service:- Update cart items */

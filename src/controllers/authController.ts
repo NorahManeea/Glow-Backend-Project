@@ -34,9 +34,7 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
       role: 'USER',
       isBlocked: false,
     })
-
-
-    const activationLink = `http://localhost:5050/api/auth/activate/${activationToken}`
+    const activationLink = `http://localhost:3000/activation-success/${activationToken}`
     const isSent = await sendActivationEmail(email, firstName,activationLink)
     isSent && (await createUser(newUser))
 
@@ -111,3 +109,7 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
     next(error)
   }
 }
+
+
+
+

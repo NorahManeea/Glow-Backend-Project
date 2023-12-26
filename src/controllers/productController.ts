@@ -11,6 +11,13 @@ import {
 } from '../services/productService'
 import { Product } from '../models/productModel'
 import ApiError from '../errors/ApiError'
+import { v2 as cloudinary } from 'cloudinary'
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+})
 
 /**-----------------------------------------------
  * @desc Get All Products
@@ -20,23 +27,28 @@ import ApiError from '../errors/ApiError'
  -----------------------------------------------*/
 export const getAllProducts = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    let pageNumber = Number(req.query.pageNumber)
-    const limit = Number(req.query.limit)
+    const pageNumber = parseInt(req.query.pageNumber as string)
     const sortBy = req.query.sortBy?.toString()
     const searchText = req.query.searchText?.toString()
-    const category = req.query.category?.toString()
+    const categories = req.query.categories?.toString()
 
-    const { products, totalPages, currentPage } = await findAllProducts(
+    const { products, totalPages, currentPage, perPage, productCount } = await findAllProducts(
       pageNumber,
-      limit,
       sortBy,
       searchText,
-      category
+      categories
     )
 
     res
       .status(200)
-      .json({ message: 'All products returned', payload: products, totalPages, currentPage })
+      .json({
+        message: 'All products returned',
+        payload: products,
+        totalPages,
+        productCount,
+        perPage,
+        currentPage,
+      })
   } catch (error) {
     next(error)
   }
@@ -86,18 +98,27 @@ export const deleteProductById = async (req: Request, res: Response, next: NextF
  -----------------------------------------------*/
 export const createProduct = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { name, description, price, quantityInStock, categories, discount } =
-      req.body
+    const { name, description, price, quantityInStock, categories, discount } = req.body
+
+    let productImage = req.file?.filename
 
     if (!req.file) {
       return res.status(400).json({ message: 'Image file not provided.' })
     }
+    const result = await cloudinary.uploader.upload(`public/images/products/${req.file.filename}`, {
+      folder: 'glow',
+    })
+    productImage = result.secure_url
+    console.log(
+      '🚀 ~ file: productController.ts:108 ~ createProduct ~ productImage:',
+      result.secure_url
+    )
 
     const product = new Product({
       name,
       description,
       price,
-      image: req.file.originalname,
+      image: productImage,
       quantityInStock,
       categories,
       discount,

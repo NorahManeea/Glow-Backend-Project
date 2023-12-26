@@ -4,15 +4,17 @@ import { Product } from '../models/productModel'
 import ApiError from '../errors/ApiError'
 import { calculatePagination } from '../utils/paginationUtils'
 import { findBySearchQuery } from '../utils/searchUtils'
+import { OrderStatus } from '../enums/enums'
+import { User } from '../models/userModel'
 
 //** Service:- Find All Orders */
 export const findAllOrders = async (pageNumber = 1, limit = 8, user = '', status = '') => {
   const orderCount = await Product.countDocuments()
-  const { currentPage, skip, totalPages } = calculatePagination(orderCount, pageNumber, limit)
+  const { currentPage, perPage, totalPages } = calculatePagination(orderCount, pageNumber, limit)
 
   const orders = await Order.find()
     .populate('products.product', 'name price')
-    .skip(skip)
+    .skip(perPage)
     .limit(limit)
     .find(findBySearchQuery(user, 'user'))
     .find(findBySearchQuery(status, 'orderStatus'))
@@ -50,7 +52,7 @@ export const removeOrder = async (orderId: string) => {
 //** Service:- Create an Order  */
 export const createNewOrder = async (
   userCart: CartDocument,
-  shippingInfo: { country: string; city: string; address: string }
+  shippingInfo: { country: string; city: string; address: string, province: string, postalCode: number }
 ) => {
   const { user, products } = userCart
   const order = new Order({
@@ -59,10 +61,22 @@ export const createNewOrder = async (
     products: products,
     shippingInfo: shippingInfo,
   })
+  let totalPoints = 0;
   for (const product of products) {
     const productId = product.product.toString()
+    const productDet = await Product.findById(productId);
+    if (productDet && productDet.price >= 500 ) {
+      totalPoints += 5;
+    }else if(productDet && productDet.price < 500 && productDet.price >= 100){
+      totalPoints += 3;
+    } else {
+      totalPoints += 1;
+    }
     await updateItemsSold(productId)
+
   }
+  await User.findByIdAndUpdate(user, { $inc: { points: totalPoints } });
+
   return order.save()
 }
 
@@ -72,7 +86,7 @@ export const updateItemsSold = async (productId: string) => {
 }
 
 //** Service:- Update Order Status */
-export const changeOrderStatus = async (orderId: string, newStatus: string) => {
+export const changeOrderStatus = async (orderId: string, newStatus: OrderStatus) => {
   const order = await Order.findByIdAndUpdate(
     orderId,
     { $set: { orderStatus: newStatus } },
@@ -84,6 +98,32 @@ export const changeOrderStatus = async (orderId: string, newStatus: string) => {
 
   return order
 }
+
+/**  // Check if the transition is valid
+  if (!isValidStatusTransition(order.orderStatus, newStatus)) {
+    throw ApiError.badRequest(`Invalid status transition from ${order.orderStatus} to ${newStatus}`);
+  }
+
+  // Update the order status
+  order.orderStatus = newStatus;
+  await order.save();
+
+  return order;
+};
+
+// Function to check if the status transition is valid
+const isValidStatusTransition = (currentStatus: OrderStatus, newStatus: OrderStatus): boolean => {
+  // Define your logic for valid transitions here
+  const validTransitions: { [key in OrderStatus]: OrderStatus[] } = {
+    [OrderStatus.PENDING]: [OrderStatus.PROCESSING],
+    [OrderStatus.PROCESSING]: [OrderStatus.SHIPPED],
+    [OrderStatus.SHIPPED]: [OrderStatus.DELIVERED, OrderStatus.RETURNED],
+    [OrderStatus.DELIVERED]: [],
+    [OrderStatus.RETURNED]: [],
+    [OrderStatus.CANCELED]: [],
+  };
+
+  return validTransitions[currentStatus].includes(newStatus); */
 
 //** Service:- Find a User's Order History */
 export const findOrderHistory = async (userId: string) => {

@@ -4,16 +4,16 @@ import { ProductDocument, WishListDocument } from '../types/types'
 
 //** Service:- Find a wishlist */
 export const findWishList = async (userId: string) => {
-  const wishlist = await WishList.findOne({ user: userId })
+  const wishlist = await WishList.findOne({ user: userId }).populate('products.product')
   if (!wishlist) {
-    throw ApiError.notFound('Wishlist not found')
+    throw ApiError.notFound(`Wishlist not found with userId: ${userId}`)
   }
   return wishlist
 }
 
 //** Service:- Create a wishlist */
 export const createWishList = async (userId: string): Promise<WishListDocument> => {
-  let wishlist = await findWishList(userId)
+  let wishlist = await WishList.findOne({user: userId})
   if (!wishlist) {
     wishlist = await WishList.create({ user: userId, products: [] })
   }
@@ -21,14 +21,15 @@ export const createWishList = async (userId: string): Promise<WishListDocument> 
 }
 
 // ** Add Item to Wishlist */
-export const addItemToWishList = async (wishlist: WishListDocument, product: ProductDocument) => {
+export const addItemToWishList = async (wishlist: WishListDocument, product: ProductDocument): Promise<WishListDocument> => {
   const existingWishListItem = wishlist.products.find(
-    (p) => p.product.toString() === product._id.toString()
+    (p) => p.product === product._id
   )
   if (!existingWishListItem) {
     wishlist.products.push({ product: product._id })
   }
-  return await wishlist.save()
+  await wishlist.save()
+  return wishlist
 }
 
 //** Service:- Remove from wishlist */
