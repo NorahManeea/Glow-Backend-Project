@@ -133,6 +133,7 @@ export const getDiscountCode = async (req: Request, res: Response, next: NextFun
   try {
     const code = req.params.code;
     const discountCode = await findACode(code);
+    
     res.status(200).json({
       message: 'Valid Discount code has been returned successfully',
       discountCode,
