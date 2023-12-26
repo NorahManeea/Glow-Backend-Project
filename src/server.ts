@@ -45,9 +45,7 @@ if (enviroement === 'development') {
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(
-  cors({
-    origin: 'http://localhost:3000',
-  })
+  cors()
 )
 app.use(passport.initialize())
 passport.use(loginWithGoogle())
@@ -73,3 +71,5 @@ databaseConnection()
 app.listen(PORT, () => {
   console.log('Server running http://localhost:' + PORT)
 })
+
+export default app

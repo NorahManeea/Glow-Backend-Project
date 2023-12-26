@@ -5,6 +5,8 @@
   "license": "MIT",
   "scripts": {
     "ts-watch": "tsc -w",
+    "build": "tsc",
+    "vercel-build": "echo test",
     "start": "nodemon dist/server.js"
   },
   "dependencies": {
