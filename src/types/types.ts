@@ -46,6 +46,12 @@ export type DecodedUser = {
 
 export type Role = 'USER' | 'ADMIN'
 
+export type CreateNewOrderResponse= {
+  order: OrderDocument;
+  totalPoints: number;
+}
+
+
 export type OrderDocument = Document & {
   uniqueId: string;
   user: string

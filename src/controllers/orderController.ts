@@ -66,50 +66,63 @@ export const getOrderById = async (req: Request, res: Response, next: NextFuncti
  * @method POST
  * @access private (only registered users)
  -----------------------------------------------*/
-export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
+ export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const cart = await Cart.findOne({ user: req.decodedUser.userId })
-    console.log(cart)
+    const cart = await Cart.findOne({ user: req.decodedUser.userId });
+
     if (!cart) {
-      throw ApiError.notFound(`Cart not found with user ID: ${req.decodedUser.userId}`)
+      throw ApiError.notFound(`Cart not found with user ID: ${req.decodedUser.userId}`);
     }
-    //check stock for all prroducts in the cart
-    cart.products.map(
-      async (product) => await checkStock(product.product.toString(), product.quantity)
-    )
-    //create order
+
+    // Check stock for all products in the cart
+    await Promise.all(
+      cart.products.map(async (product) => {
+        await checkStock(product.product.toString(), product.quantity);
+      })
+    );
+
+    // Create order
     const stripe = new Stripe(paymentConfig.stripe, {
       apiVersion: '2023-10-16',
-    })
+    });
 
     const { totalPrice, savedAmount, totalAfterDiscount } = await calculateTotalPrice(
       cart,
       req.body.discountCode
-    )
+    );
+
     const charge = await stripe.charges.create({
       amount: totalAfterDiscount * 100,
       currency: 'sar',
       source: 'tok_mastercard',
       description: 'Test Charge',
-    })
-    const {order, totalPoints} = await createNewOrder(cart, req.body.shippingInfo)
-    //update quantity in stock
-    cart.products.map(
-      async (product) => await updateQuantityInStock(product.product.toString(), product.quantity)
-    )
-    //send confirmation email
-    await sendOrderConfirmationEmail(req.decodedUser.email, req.decodedUser.firstName)
+    });
+    const {order, totalPoints} = await createNewOrder(cart, req.body.shippingInfo);
+
+    // Update quantity in stock
+    await Promise.all(
+      cart.products.map(async (product) => {
+        await updateQuantityInStock(product.product.toString(), product.quantity);
+      })
+    );
+
+    // Send confirmation email
+    await sendOrderConfirmationEmail(req.decodedUser.email, req.decodedUser.firstName);
 
     res.status(201).json({
-      meassge: 'Order has been created successfuly',
+      message: 'Order has been created successfully',
       payload: { order, totalPrice, savedAmount, totalAfterDiscount, totalPoints },
       charge,
-    })
-    await Cart.deleteOne({ user: req.decodedUser.userId })
+    });
+
+    await Cart.deleteOne({ user: req.decodedUser.userId });
   } catch (error) {
-    next(error)
+    console.error('Error in createOrder:', error);
+
+    next(error);
   }
-}
+};
+
 
 /**-----------------------------------------------
  * @desc Delete Order By ID
