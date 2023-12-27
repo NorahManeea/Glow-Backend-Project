@@ -45,9 +45,9 @@ export const findAllProducts = async (
 
 
 
-  if (products.length === 0) {
-    throw ApiError.notFound('There are no products')
-  }
+    if (products.length === 0) {
+      return { products: [], totalPages, perPage, currentPage, productCount };
+    }
 
   return { products, totalPages , perPage, currentPage, productCount}
 }

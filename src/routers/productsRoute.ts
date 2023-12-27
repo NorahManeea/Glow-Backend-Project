@@ -8,6 +8,7 @@ import {
   getHighestSoldProducts,
   getProductById,
   getProductsCount,
+  notifyBackInStock,
   updateProductById,
 } from '../controllers/productController'
 import { validateObjectId } from '../middlewares/validateObjectId'
@@ -29,6 +30,7 @@ router.post(
   validateProduct,
   createProduct,
 )
+router.post('/:productId/notify', notifyBackInStock);
 router.delete(
   '/:productId',
   checkAuth,

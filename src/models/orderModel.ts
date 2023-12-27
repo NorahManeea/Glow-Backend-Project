@@ -29,6 +29,9 @@ const orderSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    deliveryDate:{
+      type: Date,
+    },
     products: [
       {
         product: {
@@ -52,6 +55,10 @@ const orderSchema = new mongoose.Schema(
       type: String,
       enum: OrderStatus,
       default: OrderStatus.PENDING,
+    },
+    price: {
+      type: String,
+      default: 0,
     },
   },
   { timestamps: true }

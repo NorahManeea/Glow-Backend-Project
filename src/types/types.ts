@@ -62,6 +62,8 @@ export type OrderDocument = Document & {
     postalCode: number
   }
   orderStatus: string
+  price: number
+  deliveryDate: Date
 }
 
 export type CartDocument = Document & {

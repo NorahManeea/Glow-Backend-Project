@@ -8,10 +8,12 @@ import {
   findProduct,
   findHighestSoldProducts,
   productCount,
+  checkStock,
 } from '../services/productService'
 import { Product } from '../models/productModel'
 import ApiError from '../errors/ApiError'
 import { v2 as cloudinary } from 'cloudinary'
+import { sendBackInStockNotification } from '../helpers/emailHelpers'
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -187,3 +189,27 @@ export const getProductsCount = async (req: Request, res: Response, next: NextFu
     next(error)
   }
 }
+
+
+/**-----------------------------------------------
+ * @desc Notify User when Product is Back in Stock
+ * @route /api/products/:productId/notify
+ * @method POST
+ * @access public
+ -----------------------------------------------*/
+ export const notifyBackInStock = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+
+    const { email, firstName } = req.decodedUser
+    const productId = req.params.productId;
+    const product = await findProduct(productId);
+
+    await sendBackInStockNotification(email, firstName, product.name);
+
+    res.status(200).json({
+      message: 'Notification email sent successfully!',
+    });
+  } catch (error) {
+    next(error);
+  }
+};

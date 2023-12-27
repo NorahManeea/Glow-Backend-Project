@@ -62,27 +62,36 @@ export const createNewOrder = async (
     shippingInfo: shippingInfo,
   })
   let totalPoints = 0;
-  for (const product of products) {
-    const productId = product.product.toString()
-    const productDet = await Product.findById(productId);
-    if (productDet && productDet.price >= 500 ) {
-      totalPoints += 5;
-    }else if(productDet && productDet.price < 500 && productDet.price >= 100){
-      totalPoints += 3;
-    } else {
-      totalPoints += 1;
-    }
-    await updateItemsSold(productId)
 
-  }
+  const updatePointsPromises = products.map(async (product) => {
+    const productId = product.product.toString()
+    const productQuantity = product.quantity
+
+    const productDet = await Product.findById(productId);
+    if (productDet) {
+      if (productDet.price >= 500) {
+        totalPoints += 5;
+      } else if (productDet.price < 500 && productDet.price >= 100) {
+        totalPoints += 3;
+      } else {
+        totalPoints += 1;
+      }
+
+      await updateItemsSold(productId, productQuantity)
+    }
+  });
+
+  await Promise.all(updatePointsPromises);
+
   await User.findByIdAndUpdate(user, { $inc: { points: totalPoints } });
 
-  return order.save()
+  return { order, totalPoints }
 }
 
+
 //** Service:- Update Number of Times a Product Sold */
-export const updateItemsSold = async (productId: string) => {
-  await Product.findByIdAndUpdate(productId, { $inc: { itemsSold: 1 } }, { new: true })
+export const updateItemsSold = async (productId: string, quantity: number) => {
+  await Product.findByIdAndUpdate(productId, { $inc: { itemsSold: 1+ quantity } }, { new: true })
 }
 
 //** Service:- Update Order Status */
@@ -99,35 +108,10 @@ export const changeOrderStatus = async (orderId: string, newStatus: OrderStatus)
   return order
 }
 
-/**  // Check if the transition is valid
-  if (!isValidStatusTransition(order.orderStatus, newStatus)) {
-    throw ApiError.badRequest(`Invalid status transition from ${order.orderStatus} to ${newStatus}`);
-  }
-
-  // Update the order status
-  order.orderStatus = newStatus;
-  await order.save();
-
-  return order;
-};
-
-// Function to check if the status transition is valid
-const isValidStatusTransition = (currentStatus: OrderStatus, newStatus: OrderStatus): boolean => {
-  // Define your logic for valid transitions here
-  const validTransitions: { [key in OrderStatus]: OrderStatus[] } = {
-    [OrderStatus.PENDING]: [OrderStatus.PROCESSING],
-    [OrderStatus.PROCESSING]: [OrderStatus.SHIPPED],
-    [OrderStatus.SHIPPED]: [OrderStatus.DELIVERED, OrderStatus.RETURNED],
-    [OrderStatus.DELIVERED]: [],
-    [OrderStatus.RETURNED]: [],
-    [OrderStatus.CANCELED]: [],
-  };
-
-  return validTransitions[currentStatus].includes(newStatus); */
 
 //** Service:- Find a User's Order History */
 export const findOrderHistory = async (userId: string) => {
-  const orderHistory = await Order.find({ user: userId })
+  const orderHistory = await Order.find({ user: userId }).populate('products.product')
   return orderHistory
 }
 

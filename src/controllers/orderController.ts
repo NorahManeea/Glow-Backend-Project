@@ -18,6 +18,8 @@ import { checkStock, updateQuantityInStock } from '../services/productService'
 import Stripe from 'stripe'
 import { paymentConfig } from '../config/payment.config'
 import { calculateTotalPrice } from '../services/cartService'
+import { Order } from '../models/orderModel'
+import moment from 'moment'
 
 /**-----------------------------------------------
  * @desc Get All Orders
@@ -72,26 +74,37 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
       throw ApiError.notFound(`Cart not found with user ID: ${req.decodedUser.userId}`)
     }
     //check stock for all prroducts in the cart
-    cart.products.map(async (product) => await checkStock(product.product.toString(), product.quantity))
+    cart.products.map(
+      async (product) => await checkStock(product.product.toString(), product.quantity)
+    )
     //create order
-     const stripe = new Stripe(paymentConfig.stripe , {
+    const stripe = new Stripe(paymentConfig.stripe, {
       apiVersion: '2023-10-16',
-    });
+    })
 
-    const { totalPrice, savedAmount, totalAfterDiscount } = await calculateTotalPrice(cart, req.body.discountCode);
-      const charge = await stripe.charges.create({
-        amount: totalAfterDiscount * 100,
-        currency: 'sar',
-        source: "tok_mastercard", 
-        description: 'Test Charge'
-      });
-    const order = await createNewOrder(cart, req.body.shippingInfo)
+    const { totalPrice, savedAmount, totalAfterDiscount } = await calculateTotalPrice(
+      cart,
+      req.body.discountCode
+    )
+    const charge = await stripe.charges.create({
+      amount: totalAfterDiscount * 100,
+      currency: 'sar',
+      source: 'tok_mastercard',
+      description: 'Test Charge',
+    })
+    const {order, totalPoints} = await createNewOrder(cart, req.body.shippingInfo)
     //update quantity in stock
-    cart.products.map(async (product) => await updateQuantityInStock(product.product.toString(), product.quantity))
+    cart.products.map(
+      async (product) => await updateQuantityInStock(product.product.toString(), product.quantity)
+    )
     //send confirmation email
     await sendOrderConfirmationEmail(req.decodedUser.email, req.decodedUser.firstName)
 
-    res.status(201).json({ meassge: 'Order has been created successfuly', payload: { order, totalPrice, savedAmount, totalAfterDiscount }, charge })
+    res.status(201).json({
+      meassge: 'Order has been created successfuly',
+      payload: { order, totalPrice, savedAmount, totalAfterDiscount, totalPoints },
+      charge,
+    })
     await Cart.deleteOne({ user: req.decodedUser.userId })
   } catch (error) {
     next(error)
@@ -157,33 +170,31 @@ export const getOrderHistory = async (req: Request, res: Response, next: NextFun
  * @method PUT
  * @access private (user who has an order only)  
  -----------------------------------------------*/
-export const returnOrder = async (req: Request, res: Response, next: NextFunction) => {
+ export const returnOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    //Check order status
-    const order = await findOrder(req.params.orderId)
+    const orderId = req.params.orderId;
+    const order = await findOrder(orderId);
+    if (!order) {
+      return next(ApiError.notFound('Order not found.'));
+    }
     if (order.orderStatus !== OrderStatus.DELIVERED) {
-      return next(ApiError.badRequest('Order cannot be returned as it has not been delivered yet'))
+      return next(ApiError.badRequest('Order must be delivered before it can be returned.'));
     }
 
-    //Check return due date
-    const returnDeadline = new Date(order.orderDate)
-    returnDeadline.setDate(returnDeadline.getDate() + 7)
-    const currentDate = new Date()
-    if (currentDate > returnDeadline) {
-      return next(
-        ApiError.badRequest('The order has exceeded the return time limit and cannot be returned')
-      )
+    if (!canOrderBeReturned(order.deliveryDate)) {
+      return next(ApiError.badRequest('Order cannot be returned after 7 days.'));
     }
 
-    const returnedOrder = await changeOrderStatus(req.params.orderId, OrderStatus.RETURNED)
+    const returnedOrder = await changeOrderStatus(orderId, OrderStatus.RETURNED);
 
-    res
-      .status(200)
-      .json({ message: 'Order has been returned successfully', payload: returnedOrder })
+    res.status(200).json({
+      message: 'Order has been returned successfully',
+      payload: returnedOrder,
+    });
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
 
 /**-----------------------------------------------
  * @desc return order
@@ -219,11 +230,96 @@ export const updateShippingInfo = async (req: Request, res: Response, next: Next
  * @method GET
  * @access private
   -----------------------------------------------*/
-  export const getOrdersCount = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const ordersCount = await orderCount()
-      res.status(200).json({ meassge: 'Orders Count', payload: ordersCount })
-    } catch (error) {
-      next(error)
-    }
+export const getOrdersCount = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const ordersCount = await orderCount()
+    res.status(200).json({ meassge: 'Orders Count', payload: ordersCount })
+  } catch (error) {
+    next(error)
   }
+}
+
+
+/** -----------------------------------------------
+ * @desc Cancel Order
+ * @route /api/orders/:orderId/cancel
+ * @method GET
+ * @access private
+  -----------------------------------------------*/
+export const cancelOrder = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const orderId = req.params.orderId
+
+    if (!orderId) {
+      return next(ApiError.badRequest('Order ID is required.'))
+    }
+    const order = await findOrder(orderId)
+
+    if (!order) {
+      return next(ApiError.notFound('Order not found.'))
+    }
+
+    if (order.orderStatus !== OrderStatus.PENDING) {
+      return next(ApiError.badRequest('Order cannot be canceled as it is not in Pending status.'))
+    }
+    const canceledOrder = await changeOrderStatus(orderId, OrderStatus.CANCELED)
+    res
+      .status(200)
+      .json({ message: 'Order has been canceled successfully', payload: canceledOrder })
+  } catch (error) {
+    next(error)
+  }
+}
+
+
+
+/** -----------------------------------------------
+ * @desc Get Order Totak
+ * @route /api/orders/revenue
+ * @method GET
+ * @access private
+  -----------------------------------------------*/
+export const getTotal = async (req: Request, res: Response) => {
+  const monthly = await Order.aggregate([
+    {
+      $match: {
+        createdAt: {
+          $gte: moment().startOf("year").toDate(),
+          $lte: moment().endOf("year").toDate(),
+        },
+      },
+    },
+    {
+      $group: {
+        _id: { $month: "$createdAt" },
+        Total: { $sum: "$price" },
+      },
+    },
+    {
+      $addFields: {
+        name: {
+          $switch: {
+            branches: [
+              { case: { $eq: [ "$_id", 1 ] }, then: "Jan" },
+              { case: { $eq: [ "$_id", 2 ] }, then: "Feb" },
+              { case: { $eq: [ "$_id", 3 ] }, then: "Mar" },
+              { case: { $eq: [ "$_id", 4 ] }, then: "Apr" },
+              { case: { $eq: [ "$_id", 5 ] }, then: "May" },
+              { case: { $eq: [ "$_id", 6 ] }, then: "Jun" },
+              { case: { $eq: [ "$_id", 7 ] }, then: "Jul" },
+              { case: { $eq: [ "$_id", 8 ] }, then: "Aug" },
+              { case: { $eq: [ "$_id", 9 ] }, then: "Sep" },
+              { case: { $eq: [ "$_id", 10 ] }, then: "Oct" },
+              { case: { $eq: [ "$_id", 11 ] }, then: "Nov" },
+              { case: { $eq: [ "$_id", 12 ] }, then: "Dec" },
+            ],
+            default: "Unknown",
+          },
+        },
+        _id: "$$REMOVE", // Remove the original _id field
+      },
+    },
+  ]);
+
+  res.status(200).json(monthly);
+}

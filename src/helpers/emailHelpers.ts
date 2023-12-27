@@ -54,3 +54,20 @@ export const sendOrderConfirmationEmail = async (email: string,  name: string) =
       `
   return await sendEmail(email,name, subject, htmlTemplate)
 }
+
+export const sendBackInStockNotification = async (email: string,name: string, productName: string) => {
+  const subject = 'Product Back in Stock';
+  const htmlTemplate = `
+    <div style="background-color: #F7F7F7; padding: 90px;">
+      <div style="background-color: #ffffff; border-top: 3px solid #F2ACAA; text-align: center; padding: 5px;">
+        <p style="color: #956556; font-weight: bold; margin-top: 6px">GLOW</p>
+        <p style="color: #F2ACAA; font-weight: 500;">Hi there,</p>
+        <p style="color: #606060;">Good news! The product "${productName}" is back in stock.</p>
+        <p style="color: #606060;">Get it before it's gone again!</p>
+        <p style="color: #606060;">Cheers,<br>The Glow Team</p>
+      </div>
+    </div>
+  `;
+
+  return await sendEmail(email, name, subject, htmlTemplate);
+};

@@ -9,7 +9,7 @@ export function generateActivationToken() {
 }
 
 //** Send Email Function */
-export const sendEmail = async (email: string, name: string,subject: string, htmlTemplate: string) => {
+export const sendEmail = async (email: string, name: string, subject: string, htmlTemplate: string) => {
   try {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -29,6 +29,7 @@ export const sendEmail = async (email: string, name: string,subject: string, htm
     const info = await transporter.sendMail(mailOptions)
     return true
   } catch (error) {
-    throw new Error('Nodemailer Error')
+    console.error('Nodemailer Error:', error);
+    throw new Error('Nodemailer Error');
   }
 }
